@@ -1,0 +1,8 @@
+Настройка параметров запуска верстака DayZ
+accuratealx@gmail.com 2023.12.23
+
+#mod{
+Type = DirectoryList
+Description = Список модов
+Prefix = -
+}

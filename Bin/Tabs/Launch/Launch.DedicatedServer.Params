@@ -1,0 +1,90 @@
+Настройка параметров запуска выделенного сервера  DayZ
+accuratealx@gmail.com 2023.12.23
+
+#doLogs{
+Type = Simple
+Description = Включает логирование в файле RPT сервера и server_console.log
+Prefix = -
+}
+
+#adminLog{
+Type = Simple
+Description = Включает журнал администратора
+Prefix = -
+}
+
+#netLog{
+Type = Simple
+Description = Включает логирование сетевого трафика
+Prefix = -
+}
+
+#freezeCheck{
+Type = Simple
+Description = Останавливает сервер при зависании более 5 минут и создает файл дампа
+Prefix = -
+}
+
+#filePatching{
+Type = Simple
+Description = Позволяет патчить файлы модов
+Prefix = -
+}
+
+#config{
+Type = File
+Description = Путь к файлу конфигурации сервера
+Prefix = -
+Default = serverDZ.cfg
+}
+
+#port{
+Type = Integer
+Description = Порт работы
+Prefix = -
+Default = 2302
+}
+
+#cpuCount{
+Type = Integer
+Description = Количество логических ядер ЦП для использования
+Prefix = -
+Default = 4
+}
+
+#limitFPS{
+Type = Integer
+Description = Ограничивает FPS сервера до указанного значения, максимальное значение 200
+Prefix = -
+Default = 200
+}
+
+#profiles{
+Type = Directory
+Description = Путь к папке с профилем сервера
+Prefix = -
+}
+
+#BEpath{
+Type = Directory
+Description = Путь к файлам Battleye
+Prefix = -
+}
+
+#storage{
+Type = Directory
+Description = Корневая папка для хранения базы данных сервера
+Prefix = -
+}
+
+#mod{
+Type = DirectoryList
+Description = Список модов
+Prefix = -
+}
+
+#serverMod{
+Type = DirectoryList
+Description = Список модов только для сервера
+Prefix = -
+}

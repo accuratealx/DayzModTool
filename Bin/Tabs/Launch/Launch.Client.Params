@@ -1,0 +1,66 @@
+Настройка параметров запуска клиента DayZ
+accuratealx@gmail.com 2023.12.23
+
+#doLogs{
+Type = Simple
+Description = Включает логирование в файле RPT сервера и server_console.log
+Prefix = -
+}
+
+#window{
+Type = Simple
+Description = Запуск игры в оконном режиме
+Prefix = -
+}
+
+#nosplash{
+Type = Simple
+Description = Отключает заставку при запуске игры
+Prefix = -
+}
+
+#port{
+Type = Integer
+Description = Порт работы
+Prefix = -
+Default = 2302
+}
+
+#filePatching{
+Type = Simple
+Description = Позволяет патчить файлы модов
+Prefix = -
+}
+
+#password{
+Type = Integer
+Description = Пароль для подключения к серверу
+Prefix = -
+Default = 2302
+}
+
+#name{
+Type = String
+Description = Имя персонажа и название папки профиля
+Prefix = -
+Default = AccurateAlx
+}
+
+#connect{
+Type = String
+Description = Ip или имя сервера для подключения
+Prefix = -
+Default = 127.0.0.1
+}
+
+#profiles{
+Type = Directory
+Description = Путь к папке с профилем сервера
+Prefix = -
+}
+
+#mod{
+Type = DirectoryList
+Description = Список модов
+Prefix = -
+}
