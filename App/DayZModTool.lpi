@@ -15,7 +15,39 @@
       <Icon Value="0"/>
     </General>
     <BuildModes>
-      <Item Name="Default" Default="True"/>
+      <Item Name="Debug" Default="True"/>
+      <Item Name="Release">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="..\Bin\DayZModTool"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <OtherUnitFiles Value="MainForm;..\Units;ParameterModListFrame;DirectoryPathFrame;..\Units\StartParam;ParamFrames;ParamFrames\ParamFrameSimple;LaunchFrames\DedicatedServerFrame;ParamFrames\ParamFrameInteger;ParamFrames\ParamFrameString;ParamFrames\ParamFrameDirectory;ParamFrames\ParamFrameFile;Dialogs\StartParamDialogForm;Dialogs;TabFrames\LaunchExecutableFrame;ParamFrames\ParamFrameDirectoryList;TabFrames;Dialogs\MemoDialogForm"/>
+            <UnitOutputDirectory Value="..\~Tmp\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <CodeGeneration>
+            <SmartLinkUnit Value="True"/>
+            <Optimizations>
+              <OptimizationLevel Value="3"/>
+            </Optimizations>
+          </CodeGeneration>
+          <Linking>
+            <Debugging>
+              <GenerateDebugInfo Value="False"/>
+              <RunWithoutDebug Value="True"/>
+            </Debugging>
+            <LinkSmart Value="True"/>
+            <Options>
+              <Win32>
+                <GraphicApplication Value="True"/>
+              </Win32>
+            </Options>
+          </Linking>
+        </CompilerOptions>
+      </Item>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
@@ -175,9 +207,24 @@
       <OtherUnitFiles Value="MainForm;..\Units;ParameterModListFrame;DirectoryPathFrame;..\Units\StartParam;ParamFrames;ParamFrames\ParamFrameSimple;LaunchFrames\DedicatedServerFrame;ParamFrames\ParamFrameInteger;ParamFrames\ParamFrameString;ParamFrames\ParamFrameDirectory;ParamFrames\ParamFrameFile;Dialogs\StartParamDialogForm;Dialogs;TabFrames\LaunchExecutableFrame;ParamFrames\ParamFrameDirectoryList;TabFrames;Dialogs\MemoDialogForm"/>
       <UnitOutputDirectory Value="..\~Tmp\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <IncludeAssertionCode Value="True"/>
+      </SyntaxOptions>
+    </Parsing>
+    <CodeGeneration>
+      <Checks>
+        <IOChecks Value="True"/>
+        <RangeChecks Value="True"/>
+        <OverflowChecks Value="True"/>
+        <StackChecks Value="True"/>
+      </Checks>
+      <VerifyObjMethodCallValidity Value="True"/>
+    </CodeGeneration>
     <Linking>
       <Debugging>
         <DebugInfoType Value="dsDwarf3"/>
+        <TrashVariables Value="True"/>
       </Debugging>
       <Options>
         <Win32>
