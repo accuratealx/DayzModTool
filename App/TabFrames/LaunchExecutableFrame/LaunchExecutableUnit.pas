@@ -5,24 +5,37 @@ unit LaunchExecutableUnit;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, Buttons,
+  Classes, SysUtils, Forms, Controls, Dialogs, ExtCtrls, Buttons,
   StdCtrls, IniFiles,
   TabCommonUnit, StartParamArray;
 
 type
   TLaunchExecutableFrame = class(TTabCommonFrame)
-    btnOpenDirectory: TSpeedButton;
+    btnClearJournal: TSpeedButton;
+    btnExecutableOpenDirectory: TSpeedButton;
+    btnStop: TSpeedButton;
+    btnOpenJournalDirectory: TSpeedButton;
+    cbEraseJournalDirBeforeRun: TCheckBox;
     edExecutable: TEdit;
     edAdditionalCommandLine: TEdit;
+    edJournalDir: TEdit;
     OpenDialog: TOpenDialog;
+    sbSelectJournalDirectory: TSpeedButton;
     ScrollBox1: TScrollBox;
     pnlContent: TPanel;
     pnlButton: TPanel;
     btnLaunch: TSpeedButton;
     btnShowCommandLine: TSpeedButton;
     sbSelectExecutable: TSpeedButton;
+    SelectDirectoryDialog: TSelectDirectoryDialog;
+    procedure btnClearJournalClick(Sender: TObject);
+    procedure btnLaunchClick(Sender: TObject);
+    procedure btnExecutableOpenDirectoryClick(Sender: TObject);
+    procedure btnOpenJournalDirectoryClick(Sender: TObject);
     procedure btnShowCommandLineClick(Sender: TObject);
+    procedure btnStopClick(Sender: TObject);
     procedure edExecutableChange(Sender: TObject);
+    procedure sbSelectJournalDirectoryClick(Sender: TObject);
     procedure sbSelectExecutableClick(Sender: TObject);
   private
     FItems: TStartParamArray;
@@ -44,7 +57,6 @@ type
     property ParameterFile: String read FParameterFile;
     property SettingsFile: String read FSettingsFile;
   end;
-  TLaunchExecutableFrameClass = class of TLaunchExecutableFrame;
 
 
 implementation
@@ -52,6 +64,7 @@ implementation
 {$R *.lfm}
 
 uses
+  DayZUtils,
   MemoDialogUnit,
   StartParamSimple,
   ParamFrameCommonUnit,
@@ -63,6 +76,8 @@ const
   SECTION_EXECUTABLE = 'Executable';
   PARAM_APP = 'Application';
   PARAM_CMD_LINE = 'CmdLine';
+  PARAM_ERASE_JOURNAL = 'EraseJournalBeforeRun';
+  PARAM_ERASE_JOURNAL_DIRECTORY = 'JournalDirectory';
 
 
 procedure TLaunchExecutableFrame.btnShowCommandLineClick(Sender: TObject);
@@ -71,9 +86,75 @@ begin
 end;
 
 
+procedure TLaunchExecutableFrame.btnStopClick(Sender: TObject);
+var
+  Fn: String;
+begin
+  Fn := Trim(edExecutable.Text);
+  if FileExists(Fn) then
+    KillProcess(ExtractFileName(Fn));
+end;
+
+
+procedure TLaunchExecutableFrame.btnLaunchClick(Sender: TObject);
+var
+  Dir: String;
+begin
+  Dir := Trim(edJournalDir.Text);
+
+  //Удалить содержимое каталога
+  if cbEraseJournalDirBeforeRun.Checked and (Dir <> '') then
+    DeleteFolderToRecycle(Dir);
+
+  //Execute application
+  ExecuteFile(Trim(edExecutable.Text), GetCommandLine);
+end;
+
+
+procedure TLaunchExecutableFrame.btnClearJournalClick(Sender: TObject);
+begin
+  edJournalDir.Text := '';
+end;
+
+
+procedure TLaunchExecutableFrame.btnExecutableOpenDirectoryClick(Sender: TObject);
+var
+  Dir: String;
+begin
+  Dir := ExtractFilePath(Trim(edExecutable.Text));
+  if DirectoryExists(Dir) then
+    OpenFolderInExplorer(Dir);
+end;
+
+
+procedure TLaunchExecutableFrame.btnOpenJournalDirectoryClick(Sender: TObject);
+var
+  Dir: String;
+begin
+  Dir := edJournalDir.Text;
+  if DirectoryExists(Dir) then
+    OpenFolderInExplorer(Dir);
+end;
+
+
 procedure TLaunchExecutableFrame.edExecutableChange(Sender: TObject);
 begin
   btnLaunch.Enabled := FileExists(edExecutable.Text);
+  btnStop.Enabled := FileExists(edExecutable.Text);
+end;
+
+
+procedure TLaunchExecutableFrame.sbSelectJournalDirectoryClick(Sender: TObject);
+var
+  Dir: String;
+begin
+  Dir := edJournalDir.Text;
+
+  SelectDirectoryDialog.InitialDir := Dir;
+  if SelectDirectoryDialog.Execute then
+  begin
+    edJournalDir.Text := SelectDirectoryDialog.FileName;
+  end;
 end;
 
 
@@ -113,50 +194,37 @@ begin
     //Ссылка на параметр
     Item := Items.Item[i];
 
-    case Item.&Type of
+    FrameItem := nil;
 
+    //Создать фрейм
+    case Item.&Type of
       'Simple':
-      begin
         FrameItem := TParamFrameSimpleFrame.Create(Item);
-        FrameItem.Parent := pnlContent;
-        FrameItem.Align := alTop;
-      end;
 
       'Integer':
-      begin
         FrameItem := TParamFrameIntegerFrame.Create(Item);
-        FrameItem.Parent := pnlContent;
-        FrameItem.Align := alTop;
-      end;
 
       'String':
-      begin
         FrameItem := TParamFrameStringFrame.Create(Item);
-        FrameItem.Parent := pnlContent;
-        FrameItem.Align := alTop;
-      end;
 
       'Directory':
-      begin
         FrameItem := TParamFrameDirectoryFrame.Create(Item);
-        FrameItem.Parent := pnlContent;
-        FrameItem.Align := alTop;
-      end;
 
       'File':
-      begin
         FrameItem := TParamFrameFileFrame.Create(Item);
-        FrameItem.Parent := pnlContent;
-        FrameItem.Align := alTop;
-      end;
 
       'DirectoryList':
-      begin
         FrameItem := TParamFrameDirectoryListFrame.Create(Item);
-        FrameItem.Parent := pnlContent;
-        FrameItem.Align := alTop;
-      end;
 
+      else
+        ShowMessage(Format('Неизвестный тип фрейма %s', [Item.&Type]));
+    end;
+
+    //Заполнить фрейм если создан
+    if FrameItem <> nil then
+    begin
+      FrameItem.Parent := pnlContent;
+      FrameItem.Align := alTop;
     end;
   end;
 end;
@@ -217,6 +285,10 @@ begin
     F.WriteString(SECTION_Executable, PARAM_APP, edExecutable.Text);
     F.WriteString(SECTION_Executable, PARAM_CMD_LINE, edAdditionalCommandLine.Text);
 
+    //Очистка каталога перед запуском
+    F.WriteBool(SECTION_Executable, PARAM_ERASE_JOURNAL, cbEraseJournalDirBeforeRun.Checked);
+    F.WriteString(SECTION_Executable, PARAM_ERASE_JOURNAL_DIRECTORY, edJournalDir.Text);
+
     //Записать параметры
     for i := 0 to pnlContent.ControlCount - 1 do
     begin
@@ -245,6 +317,10 @@ begin
     //Настройки запуска
     edExecutable.Text := F.ReadString(SECTION_Executable, PARAM_APP, '');
     edAdditionalCommandLine.Text := F.ReadString(SECTION_Executable, PARAM_CMD_LINE, '');
+
+    //Очистка каталога перед запуском
+    cbEraseJournalDirBeforeRun.Checked := F.ReadBool(SECTION_Executable, PARAM_ERASE_JOURNAL, False);
+    edJournalDir.Text := F.ReadString(SECTION_Executable, PARAM_ERASE_JOURNAL_DIRECTORY, '');
 
     //Чтение параметров
     for i := 0 to pnlContent.ControlCount - 1 do
