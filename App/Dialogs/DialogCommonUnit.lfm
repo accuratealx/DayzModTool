@@ -1,0 +1,27 @@
+object DialogCommonForm: TDialogCommonForm
+  Left = 553
+  Height = 258
+  Top = 265
+  Width = 493
+  ClientHeight = 258
+  ClientWidth = 493
+  LCLVersion = '3.0.0.2'
+  object pnlButton: TPanel
+    Left = 0
+    Height = 45
+    Top = 213
+    Width = 493
+    Align = alBottom
+    ParentBackground = False
+    ParentColor = False
+    TabOrder = 0
+  end
+  object pnlContent: TPanel
+    Left = 0
+    Height = 213
+    Top = 0
+    Width = 493
+    Align = alClient
+    TabOrder = 1
+  end
+end
