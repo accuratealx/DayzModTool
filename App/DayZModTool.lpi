@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="12"/>
+    <PathDelim Value="\"/>
+    <General>
+      <SessionStorage Value="InProjectDir"/>
+      <Title Value="DayZModTool"/>
+      <Scaled Value="True"/>
+      <ResourceType Value="res"/>
+      <UseXPManifest Value="True"/>
+      <XPManifest>
+        <DpiAware Value="True"/>
+      </XPManifest>
+      <Icon Value="0"/>
+    </General>
+    <BuildModes>
+      <Item Name="Default" Default="True"/>
+    </BuildModes>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+    <RunParams>
+      <FormatVersion Value="2"/>
+    </RunParams>
+    <RequiredPackages>
+      <Item>
+        <PackageName Value="SimpleGameEngine2"/>
+      </Item>
+      <Item>
+        <PackageName Value="FCL"/>
+      </Item>
+      <Item>
+        <PackageName Value="LazControls"/>
+      </Item>
+      <Item>
+        <PackageName Value="LazControlDsgn"/>
+      </Item>
+      <Item>
+        <PackageName Value="LCL"/>
+      </Item>
+    </RequiredPackages>
+    <Units>
+      <Unit>
+        <Filename Value="DayZModTool.lpr"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="MainForm\MainUnit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MainForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\Units\StartParam\StartParamArray.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\Units\StartParam\StartParamDirectory.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\Units\StartParam\StartParamFile.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\Units\StartParam\StartParamDirectoryList.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\Units\StartParam\StartParamInteger.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\Units\StartParam\StartParamSimple.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\Units\StartParam\StartParamString.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ParamFrames\ParamFrameCommonUnit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ParamFrameCommonFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ParamFrames\ParamFrameSimple\ParamFrameSimpleUnit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ParamFrameSimpleFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ParamFrames\ParamFrameInteger\ParamFrameIntegerUnit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ParamFrameIntegerFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ParamFrames\ParamFrameString\ParamFrameStringUnit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ParamFrameStringFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ParamFrames\ParamFrameDirectory\ParamFrameDirectoryUnit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ParamFrameDirectoryFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ParamFrames\ParamFrameFile\ParamFrameFileUnit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ParamFrameFileFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Dialogs\DialogCommonUnit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="DialogCommonForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="TabFrames\LaunchExecutableFrame\LaunchExecutableUnit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="LaunchExecutableFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ParamFrames\ParamFrameDirectoryList\ParamFrameDirectoryListUnit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ParamFrameDirectoryListFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="TabFrames\TabCommonUnit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="TabCommonFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Dialogs\MemoDialogForm\MemoDialogUnit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MemoDialogForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\Units\DayZUtils.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="11"/>
+    <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="..\Bin\DayZModTool"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)"/>
+      <OtherUnitFiles Value="MainForm;..\Units;ParameterModListFrame;DirectoryPathFrame;..\Units\StartParam;ParamFrames;ParamFrames\ParamFrameSimple;LaunchFrames\DedicatedServerFrame;ParamFrames\ParamFrameInteger;ParamFrames\ParamFrameString;ParamFrames\ParamFrameDirectory;ParamFrames\ParamFrameFile;Dialogs\StartParamDialogForm;Dialogs;TabFrames\LaunchExecutableFrame;ParamFrames\ParamFrameDirectoryList;TabFrames;Dialogs\MemoDialogForm"/>
+      <UnitOutputDirectory Value="..\~Tmp\$(TargetCPU)-$(TargetOS)"/>
+    </SearchPaths>
+    <Linking>
+      <Debugging>
+        <DebugInfoType Value="dsDwarf3"/>
+      </Debugging>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions>
+      <Item>
+        <Name Value="EAbort"/>
+      </Item>
+      <Item>
+        <Name Value="ECodetoolError"/>
+      </Item>
+      <Item>
+        <Name Value="EFOpenError"/>
+      </Item>
+    </Exceptions>
+  </Debugging>
+</CONFIG>
