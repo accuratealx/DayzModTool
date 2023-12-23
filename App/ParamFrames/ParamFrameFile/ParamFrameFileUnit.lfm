@@ -1,8 +1,6 @@
 inherited ParamFrameFileFrame: TParamFrameFileFrame
   inherited ContentPanel: TPanel
     inherited btnDefault: TSpeedButton
-      Height = 23
-      Top = 1
       Visible = True
     end
     object edValue: TEdit[2]
@@ -163,7 +161,7 @@ inherited ParamFrameFileFrame: TParamFrameFileFrame
     end
   end
   object OpenDialog: TOpenDialog[1]
-    Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofViewDetail]
+    Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofForceShowHidden, ofViewDetail]
     Left = 230
     Top = 65531
   end

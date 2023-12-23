@@ -1,8 +1,6 @@
 inherited ParamFrameDirectoryFrame: TParamFrameDirectoryFrame
   inherited ContentPanel: TPanel
     inherited btnDefault: TSpeedButton
-      Height = 23
-      Top = 1
       Visible = True
     end
     object btnSelectDirectory: TSpeedButton[2]
@@ -163,7 +161,7 @@ inherited ParamFrameDirectoryFrame: TParamFrameDirectoryFrame
     end
   end
   object SelectDirectoryDialog: TSelectDirectoryDialog[1]
-    Options = [ofPathMustExist, ofEnableSizing, ofViewDetail]
+    Options = [ofPathMustExist, ofEnableSizing, ofForceShowHidden, ofViewDetail]
     Left = 255
     Top = 65531
   end
