@@ -15,16 +15,9 @@ object MainForm: TMainForm
     Height = 292
     Top = 0
     Width = 487
-    ActivePage = tabDedicatedServer
     Align = alClient
-    TabIndex = 1
+    Images = ilTab
     TabOrder = 0
-    object tabLaunchClient: TTabSheet
-      Caption = 'Запуск клиента'
-    end
-    object tabDedicatedServer: TTabSheet
-      Caption = 'Запуск выделенного сервера'
-    end
   end
   object MainMenu: TMainMenu
     Images = ilMainMenu
@@ -310,5 +303,9 @@ object MainForm: TMainForm
       EFCDF98CC99064CF06B5D83165E8801043B2FDD1617F77DC657770E60BEFBC4D
       D2441B6510E2F36D335FF2BEFB3DEDEFF7F7863F0067E48A6B
     }
+  end
+  object ilTab: TImageList
+    Left = 45
+    Top = 15
   end
 end

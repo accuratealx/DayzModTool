@@ -17,6 +17,7 @@ type
   TMainForm = class(TForm)
     ilTray: TImageList;
     ilMainMenu: TImageList;
+    ilTab: TImageList;
     MainMenu: TMainMenu;
     miMainHide: TMenuItem;
     miMainSeparator1: TMenuItem;
@@ -26,8 +27,6 @@ type
     miTraySeparator1: TMenuItem;
     miTrayExit: TMenuItem;
     PageControl: TPageControl;
-    tabLaunchClient: TTabSheet;
-    tabDedicatedServer: TTabSheet;
     TrayMenu: TPopupMenu;
     TrayIcon: TTrayIcon;
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -44,9 +43,7 @@ type
     //Каталоги
     FMainDir: String;
     FSettingsDir: String;
-
-    //Фреймы
-    FDedicatedServerFrame: TLaunchExecutableFrame;
+    FLaunchDir: String;
 
     procedure Init;
     procedure Done;
@@ -54,6 +51,9 @@ type
     procedure LoadFormSettings;
     procedure SaveSettings;
     procedure LoadSettings;
+
+    procedure CreateLaunchFrames(const SettingsFile: String);
+    procedure DestroyFrames;
   public
 
   end;
@@ -66,11 +66,18 @@ implementation
 {$R *.lfm}
 
 uses
-  IniFiles;
+  IniFiles,
+  TabCommonUnit;
 
 const
   CONFIG_FILE_NAME = 'DayZConfig.ini';
   CONFIG_SECTION_MAIN_FORM = 'MainForm';
+  CONFIG_PARAM_LEFT = 'Left';
+  CONFIG_PARAM_TOP = 'Top';
+  CONFIG_PARAM_WIDTH = 'Width';
+  CONFIG_PARAM_HEIGHT = 'Height';
+  CONFIG_PARAM_VISIBLE = 'Visible';
+  CONFIG_PARAM_TAB_INDEX = 'TabIndex';
 
 
 procedure TMainForm.FormCreate(Sender: TObject);
@@ -142,22 +149,20 @@ begin
   Caption := 'DayZ Mod Tool (v' + VERSION + ')';
 
   FMainDir := ExtractFilePath(ParamStr(0));
-  FSettingsDir := FMainDir + '\Settings\';
+  FSettingsDir := FMainDir + 'Settings\';
   ForceDirectories(FSettingsDir);
-  LoadSettings;
+  FLaunchDir := FMainDir + 'Tabs\Launch\';
+  ForceDirectories(FLaunchDir);
 
-  //Запуск сервера
-  FDedicatedServerFrame := TLaunchExecutableFrame.Create(
-    FMainDir + 'StartParameters\DedicatedServer.cfg',
-    FSettingsDir + 'DedicatedServer.ini'
-  );
-  FDedicatedServerFrame.Parent := tabDedicatedServer;
+  CreateLaunchFrames(FLaunchDir + 'List.ini');
+
+  LoadSettings;
 end;
 
 
 procedure TMainForm.Done;
 begin
-  FDedicatedServerFrame.Free;
+  DestroyFrames;
 
   SaveSettings;
 end;
@@ -167,15 +172,17 @@ procedure TMainForm.SaveFormSettings;
 var
   Ini: TIniFile;
 begin
-  Ini := TIniFile.Create(FMainDir + CONFIG_FILE_NAME);
+  Ini := TIniFile.Create(FSettingsDir + CONFIG_FILE_NAME);
   try
 
-    Ini.WriteInteger(CONFIG_SECTION_MAIN_FORM, 'Top', Self.Top);
-    Ini.WriteInteger(CONFIG_SECTION_MAIN_FORM, 'Left', Self.Left);
-    Ini.WriteInteger(CONFIG_SECTION_MAIN_FORM, 'Width', Self.Width);
-    Ini.WriteInteger(CONFIG_SECTION_MAIN_FORM, 'Height', Self.Height);
+    Ini.WriteInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_TOP, Self.Top);
+    Ini.WriteInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_LEFT, Self.Left);
+    Ini.WriteInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_WIDTH, Self.Width);
+    Ini.WriteInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_HEIGHT, Self.Height);
 
-    Ini.WriteBool(CONFIG_SECTION_MAIN_FORM, 'Visible', IsWindowVisible(Handle));
+    Ini.WriteBool(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_VISIBLE, IsWindowVisible(Handle));
+
+    Ini.WriteInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_TAB_INDEX, PageControl.TabIndex);
 
   finally
     Ini.Free;
@@ -187,15 +194,17 @@ procedure TMainForm.LoadFormSettings;
 var
   Ini: TIniFile;
 begin
-  Ini := TIniFile.Create(FMainDir + CONFIG_FILE_NAME);
+  Ini := TIniFile.Create(FSettingsDir + CONFIG_FILE_NAME);
   try
 
-    Self.Top := Ini.ReadInteger(CONFIG_SECTION_MAIN_FORM, 'Top', 100);
-    Self.Left := Ini.ReadInteger(CONFIG_SECTION_MAIN_FORM, 'Left', 100);
-    Self.Width := Ini.ReadInteger(CONFIG_SECTION_MAIN_FORM, 'Width', 300);
-    Self.Height := Ini.ReadInteger(CONFIG_SECTION_MAIN_FORM, 'Height', 300);
+    Self.Top := Ini.ReadInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_TOP, 100);
+    Self.Left := Ini.ReadInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_LEFT, 100);
+    Self.Width := Ini.ReadInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_WIDTH, 300);
+    Self.Height := Ini.ReadInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_HEIGHT, 300);
 
-    Application.ShowMainForm := Ini.ReadBool(CONFIG_SECTION_MAIN_FORM, 'Visible', True);
+    Application.ShowMainForm := Ini.ReadBool(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_VISIBLE, True);
+
+    PageControl.TabIndex := Ini.ReadInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_TAB_INDEX, -1);
 
   finally
     Ini.Free;
@@ -212,6 +221,100 @@ end;
 procedure TMainForm.LoadSettings;
 begin
   LoadFormSettings;
+end;
+
+
+procedure TMainForm.CreateLaunchFrames(const SettingsFile: String);
+var
+  F: TIniFile;
+  SectionList: TStringList;
+  i: Integer;
+  FrameCaption, FrameParams, FrameSettings, FrameName, FrameIconName: String;
+  Frame: TLaunchExecutableFrame;
+  Tab: TTabSheet;
+  FrameIcon: TIcon;
+  IconIndex: Integer;
+begin
+  F := TIniFile.Create(SettingsFile);
+  SectionList := TStringList.Create;
+  FrameIcon := TIcon.Create;
+  try
+
+    //Прочитать список секций
+    F.ReadSections(SectionList);
+
+    //Создать фреймы запуска
+    for i := 0 to SectionList.Count - 1 do
+    begin
+      //Прочитать параметры фрейма
+      FrameCaption := SectionList.Strings[i];
+      FrameParams := FLaunchDir + F.ReadString(FrameCaption, 'ParamFile', '');
+      FrameSettings := FSettingsDir + F.ReadString(FrameCaption, 'SettingsFile', '');
+      FrameName := F.ReadString(FrameCaption, 'InnerName', '');
+      FrameIconName := FLaunchDir + F.ReadString(FrameCaption, 'Icon', '');
+
+      //Если нет файла с настройками параметров, то пропуск
+      if not FileExists(FrameParams) then
+        Continue;
+
+      //Грузим иконку
+      try
+        if FileExists(FrameIconName) then
+          FrameIcon.LoadFromFile(FrameIconName)
+        else
+          FrameIcon.Assign(Icon);
+      except
+        FrameIcon.Assign(Icon);
+      end;
+
+      //Добавим в список иконок
+      IconIndex := ilTab.Count;
+      ilTab.AddIcon(FrameIcon);
+
+      //Создать фрейм
+      Frame := TLaunchExecutableFrame.Create(FrameParams, FrameSettings);
+
+      //Создать закладку
+      Tab := TTabSheet.Create(PageControl);
+      Tab.Name := FrameName;
+      Tab.Caption := FrameCaption;
+      Tab.ImageIndex := IconIndex;
+      Tab.Parent := PageControl;
+
+      //Прикрепить фрейм к закладке
+      Frame.Parent := Tab;
+    end;
+
+  finally
+    FrameIcon.Free;
+    SectionList.Free;
+    F.Free;
+  end;
+end;
+
+
+procedure TMainForm.DestroyFrames;
+var
+  i: Integer;
+  Tab: TTabSheet;
+begin
+  //Просмотрим все закладки
+  for i := 0 to PageControl.ControlCount - 1 do
+  begin
+    //Пропуск компонентов не Tab
+    if not (PageControl.Controls[i] is TTabSheet) then
+      Continue;
+
+    //Ссылка на закладку
+    Tab := PageControl.Controls[i] as TTabSheet;
+
+    //Найти первый элемент. Всегда должен быть только один
+    if Tab.ControlCount = 1 then
+    begin
+      if Tab.Controls[0] is TTabCommonFrame then
+        Tab.Controls[0].Free;
+    end;
+  end;
 end;
 
 
