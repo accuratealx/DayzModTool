@@ -1,0 +1,9 @@
+object TabCommonFrame: TTabCommonFrame
+  Left = 0
+  Height = 134
+  Top = 0
+  Width = 404
+  TabOrder = 0
+  DesignLeft = 689
+  DesignTop = 263
+end
