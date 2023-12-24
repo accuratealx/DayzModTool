@@ -3,8 +3,12 @@ object DialogCommonForm: TDialogCommonForm
   Height = 258
   Top = 265
   Width = 493
+  BorderIcons = [biSystemMenu]
   ClientHeight = 258
   ClientWidth = 493
+  KeyPreview = True
+  OnKeyDown = FormKeyDown
+  Position = poMainFormCenter
   LCLVersion = '3.0.0.2'
   object pnlButton: TPanel
     Left = 0
