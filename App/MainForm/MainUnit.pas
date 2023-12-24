@@ -11,7 +11,7 @@ uses
   LaunchExecutableUnit;
 
 const
-  VERSION = '0.1';
+  VERSION = '0.2';
 
 type
   TMainForm = class(TForm)
@@ -154,7 +154,7 @@ end;
 
 procedure TMainForm.Init;
 begin
-  Caption := 'DayZ Mod Tool (v' + VERSION + ')';
+  Caption := 'DayZ Mod Tool  v' + VERSION;
 
   FMainDir := ExtractFilePath(ParamStr(0));
   FSettingsDir := FMainDir + 'Settings\';
