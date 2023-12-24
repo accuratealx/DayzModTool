@@ -1,5 +1,13 @@
 # Набор инструментов, собранный в одном месте, помогающий при разработке модификаций DayZ
 
+![](https://img.shields.io/github/v/release/accuratealx/DayzModTool)
+![](https://img.shields.io/github/stars/accuratealx/DayzModTool)
+![](https://img.shields.io/github/downloads/accuratealx/DayzModTool/total)
+![](https://img.shields.io/github/repo-size/accuratealx/DayzModTool%20)
+![](https://img.shields.io/github/release-date/accuratealx/DayzModTool)
+![](https://img.shields.io/github/last-commit/accuratealx/DayzModTool)
+![](https://img.shields.io/github/languages/top/accuratealx/DayzModTool)
+
 ## Предисловие:
 Далеко не секрет, что инструменты для создания модификаций DayZ от [Bohemia Interactive](https://www.bohemia.net/) оставляют желать лучшего. Особенно кривой и неудобный **DayZ Tool**. Для его замены и была разработана данная утилита. Дорабатываю по мере необходимости в свободное от работы время. На данный момент реализован не весь функционал.
     
