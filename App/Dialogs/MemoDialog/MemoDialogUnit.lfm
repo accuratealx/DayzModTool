@@ -3,18 +3,14 @@ inherited MemoDialogForm: TMemoDialogForm
   Height = 200
   Top = 279
   Width = 500
-  BorderStyle = bsSizeToolWin
   ClientHeight = 200
   ClientWidth = 500
   Constraints.MinHeight = 200
   Constraints.MinWidth = 200
   OnResize = FormResize
-  Position = poMainFormCenter
   inherited pnlButton: TPanel
-    Height = 45
     Top = 155
     Width = 500
-    ClientHeight = 45
     ClientWidth = 500
     object btnClose: TSpeedButton[0]
       Cursor = crHandPoint
