@@ -16,7 +16,6 @@ type
     btnClearValue: TSpeedButton;
     cbFullPath: TCheckBox;
     edValue: TEdit;
-    SelectDirectoryDialog: TSelectDirectoryDialog;
     procedure btnClearValueClick(Sender: TObject);
     procedure btnOpenDirectoryClick(Sender: TObject);
     procedure btnSelectDirectoryClick(Sender: TObject);
@@ -41,15 +40,16 @@ implementation
 {$R *.lfm}
 
 uses
-  DayZUtils;
+  DayZUtils, SelectDirectoryDialogUnit;
 
 
 procedure TParamFrameDirectoryListFrame.btnSelectDirectoryClick(Sender: TObject);
+var
+  Dir: String;
 begin
-  if SelectDirectoryDialog.Execute then
-  begin
-    SetValue(SelectDirectoryDialog.FileName);
-  end;
+  Dir := edValue.Text;
+  if SelectDirectoryDialogExecute('Выберите каталог', Dir) then
+    SetValue(Dir);
 end;
 
 

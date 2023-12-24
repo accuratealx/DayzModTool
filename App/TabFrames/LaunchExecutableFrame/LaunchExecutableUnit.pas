@@ -27,7 +27,6 @@ type
     btnLaunch: TSpeedButton;
     btnShowCommandLine: TSpeedButton;
     sbSelectExecutable: TSpeedButton;
-    SelectDirectoryDialog: TSelectDirectoryDialog;
     procedure btnClearJournalClick(Sender: TObject);
     procedure btnLaunchClick(Sender: TObject);
     procedure btnExecutableOpenDirectoryClick(Sender: TObject);
@@ -70,7 +69,7 @@ implementation
 
 uses
   DayZUtils,
-  MemoDialogUnit,
+  MemoDialogUnit, SelectDirectoryDialogUnit,
   StartParamSimple,
   ParamFrameCommonUnit,
   ParamFrameSimpleUnit, ParamFrameIntegerUnit, ParamFrameStringUnit,
@@ -155,10 +154,9 @@ var
 begin
   Dir := edJournalDir.Text;
 
-  SelectDirectoryDialog.InitialDir := Dir;
-  if SelectDirectoryDialog.Execute then
+  if SelectDirectoryDialogExecute('Выберите каталог', Dir) then
   begin
-    edJournalDir.Text := SelectDirectoryDialog.FileName;
+    edJournalDir.Text := Dir;
   end;
 end;
 

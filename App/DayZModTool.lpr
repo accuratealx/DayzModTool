@@ -3,15 +3,7 @@ program DayZModTool;
 {$mode objfpc}{$H+}
 
 uses
-  {$IFDEF UNIX}
-  cthreads,
-  {$ENDIF}
-  {$IFDEF HASAMIGA}
-  athreads,
-  {$ENDIF}
-  Interfaces, // this includes the LCL widgetset
-  Forms, lazcontrols, MainUnit
-  { you can add units after this };
+  Interfaces, Forms, MainUnit;
 
 {$R *.res}
 

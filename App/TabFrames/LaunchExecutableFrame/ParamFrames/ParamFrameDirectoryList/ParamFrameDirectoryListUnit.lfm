@@ -175,9 +175,4 @@ inherited ParamFrameDirectoryListFrame: TParamFrameDirectoryListFrame
       ParentShowHint = False
     end
   end
-  object SelectDirectoryDialog: TSelectDirectoryDialog[1]
-    Options = [ofPathMustExist, ofEnableSizing, ofForceShowHidden, ofViewDetail]
-    Left = 340
-    Top = 30
-  end
 end

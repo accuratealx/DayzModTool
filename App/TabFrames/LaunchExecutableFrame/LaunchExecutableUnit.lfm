@@ -479,9 +479,4 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
     Left = 30
     Top = 155
   end
-  object SelectDirectoryDialog: TSelectDirectoryDialog[3]
-    Options = [ofPathMustExist, ofEnableSizing, ofForceShowHidden, ofViewDetail]
-    Left = 125
-    Top = 155
-  end
 end
