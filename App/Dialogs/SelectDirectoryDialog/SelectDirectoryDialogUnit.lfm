@@ -1,0 +1,69 @@
+inherited SelectDirectoryDialogForm: TSelectDirectoryDialogForm
+  Left = 619
+  Height = 500
+  Top = 241
+  Width = 470
+  ClientHeight = 500
+  ClientWidth = 470
+  Constraints.MinHeight = 200
+  Constraints.MinWidth = 300
+  OnResize = FormResize
+  inherited pnlButton: TPanel
+    Top = 455
+    Width = 470
+    ClientWidth = 470
+    object btnClose: TSpeedButton[0]
+      Cursor = crHandPoint
+      Left = 240
+      Height = 25
+      Top = 10
+      Width = 100
+      Caption = 'Закрыть'
+      OnClick = btnCloseClick
+    end
+    object btnSelect: TSpeedButton[1]
+      Cursor = crHandPoint
+      Left = 130
+      Height = 25
+      Top = 10
+      Width = 100
+      Caption = 'Выбрать'
+      Enabled = False
+      OnClick = btnSelectClick
+    end
+  end
+  inherited pnlContent: TPanel
+    Height = 455
+    Width = 470
+    ClientHeight = 455
+    ClientWidth = 470
+    object stvDirectoryTree: TShellTreeView[0]
+      Left = 10
+      Height = 402
+      Top = 10
+      Width = 450
+      Align = alCustom
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      AutoExpand = True
+      BackgroundColor = clDefault
+      Color = clDefault
+      FileSortType = fstAlphabet
+      ReadOnly = True
+      ScrollBars = ssAutoBoth
+      ShowLines = False
+      TabOrder = 0
+      OnClick = stvDirectoryTreeClick
+      Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+      ObjectTypes = [otFolders, otHidden]
+    end
+    object edCurrentPath: TEdit[1]
+      Left = 10
+      Height = 23
+      Top = 422
+      Width = 450
+      Anchors = [akLeft, akRight, akBottom]
+      Enabled = False
+      TabOrder = 1
+    end
+  end
+end
