@@ -8,6 +8,8 @@
 ![](https://img.shields.io/github/last-commit/accuratealx/DayzModTool)
 ![](https://img.shields.io/github/languages/top/accuratealx/DayzModTool)
 
+![История изменений](https://github.com/accuratealx/DayzModTool/raw/master/Bin/ChangeLog.txt)
+
 ## Предисловие:
 Далеко не секрет, что инструменты для создания модификаций DayZ от [Bohemia Interactive](https://www.bohemia.net/) оставляют желать лучшего. Особенно кривой и неудобный **DayZ Tool**. Для его замены и была разработана данная утилита. Дорабатываю по мере необходимости в свободное от работы время. На данный момент реализован не весь функционал.
     
