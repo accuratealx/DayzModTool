@@ -18,7 +18,11 @@ type
     ilTray: TImageList;
     ilMainMenu: TImageList;
     ilTab: TImageList;
+    ilTrayLaunch: TImageList;
     MainMenu: TMainMenu;
+    miTrayStop: TMenuItem;
+    miTrayLaunch: TMenuItem;
+    miTraySeparator2: TMenuItem;
     miMainHide: TMenuItem;
     miMainSeparator1: TMenuItem;
     miMainExit: TMenuItem;
@@ -49,11 +53,15 @@ type
     procedure Done;
     procedure SaveFormSettings;
     procedure LoadFormSettings;
-    procedure SaveSettings;
-    procedure LoadSettings;
+
+    function GetLaunchFrameList: TLaunchExecutableFrameList;
 
     procedure CreateLaunchFrames(const SettingsFile: String);
+    procedure CreateTrayMenuLaunchItems;
     procedure DestroyFrames;
+
+    procedure miTrayLaunchClick(Sender: TObject);
+    procedure miTrayStopClick(Sender: TObject);
   public
 
   end;
@@ -154,9 +162,13 @@ begin
   FLaunchDir := FMainDir + 'Tabs\Launch\';
   ForceDirectories(FLaunchDir);
 
+  //Создать закладки запуска
   CreateLaunchFrames(FLaunchDir + 'List.ini');
 
-  LoadSettings;
+  //Создать элементы запуска/останова приложений
+  CreateTrayMenuLaunchItems;
+
+  LoadFormSettings;
 end;
 
 
@@ -164,7 +176,7 @@ procedure TMainForm.Done;
 begin
   DestroyFrames;
 
-  SaveSettings;
+  SaveFormSettings;
 end;
 
 
@@ -174,14 +186,11 @@ var
 begin
   Ini := TIniFile.Create(FSettingsDir + CONFIG_FILE_NAME);
   try
-
     Ini.WriteInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_TOP, Self.Top);
     Ini.WriteInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_LEFT, Self.Left);
     Ini.WriteInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_WIDTH, Self.Width);
     Ini.WriteInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_HEIGHT, Self.Height);
-
     Ini.WriteBool(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_VISIBLE, IsWindowVisible(Handle));
-
     Ini.WriteInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_TAB_INDEX, PageControl.TabIndex);
 
   finally
@@ -196,14 +205,11 @@ var
 begin
   Ini := TIniFile.Create(FSettingsDir + CONFIG_FILE_NAME);
   try
-
     Self.Top := Ini.ReadInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_TOP, 100);
     Self.Left := Ini.ReadInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_LEFT, 100);
     Self.Width := Ini.ReadInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_WIDTH, 300);
     Self.Height := Ini.ReadInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_HEIGHT, 300);
-
     Application.ShowMainForm := Ini.ReadBool(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_VISIBLE, True);
-
     PageControl.TabIndex := Ini.ReadInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_TAB_INDEX, -1);
 
   finally
@@ -212,15 +218,32 @@ begin
 end;
 
 
-procedure TMainForm.SaveSettings;
+function TMainForm.GetLaunchFrameList: TLaunchExecutableFrameList;
+var
+  i, c: Integer;
+  Tab: TTabSheet;
 begin
-  SaveFormSettings;
-end;
+  //Просмотрим все закладки
+  for i := 0 to PageControl.ControlCount - 1 do
+  begin
+    //Пропуск компонентов не Tab
+    if not (PageControl.Controls[i] is TTabSheet) then
+      Continue;
 
+    //Ссылка на закладку
+    Tab := PageControl.Controls[i] as TTabSheet;
 
-procedure TMainForm.LoadSettings;
-begin
-  LoadFormSettings;
+    //Найти первый элемент. Всегда должен быть только один
+    if Tab.ControlCount = 1 then
+    begin
+      if Tab.Controls[0] is TLaunchExecutableFrame then
+      begin
+        c := Length(Result);
+        SetLength(Result, c + 1);
+        Result[c] := Tab.Controls[0] as TLaunchExecutableFrame;
+      end;
+    end;
+  end;
 end;
 
 
@@ -272,7 +295,7 @@ begin
       ilTab.AddIcon(FrameIcon);
 
       //Создать фрейм
-      Frame := TLaunchExecutableFrame.Create(FrameParams, FrameSettings);
+      Frame := TLaunchExecutableFrame.Create(FrameCaption, FrameIcon, FrameParams, FrameSettings);
 
       //Создать закладку
       Tab := TTabSheet.Create(PageControl);
@@ -289,6 +312,39 @@ begin
     FrameIcon.Free;
     SectionList.Free;
     F.Free;
+  end;
+end;
+
+
+procedure TMainForm.CreateTrayMenuLaunchItems;
+
+  procedure AddMenu(RootMenu: TMenuItem; Frame: TLaunchExecutableFrame; IconIndex: Integer; Proc: TNotifyEvent);
+  var
+    MenuItem: TMenuItem;
+  begin
+    MenuItem := TMenuItem.Create(RootMenu);
+    MenuItem.Caption := Frame.Caption;
+    MenuItem.ImageIndex := IconIndex;
+    MenuItem.OnClick := Proc;
+    MenuItem.Tag := PtrUInt(Frame);
+
+    RootMenu.Add(MenuItem);
+  end;
+
+var
+  FrameList: TLaunchExecutableFrameList;
+  c, i, IconIndex: Integer;
+begin
+  FrameList := GetLaunchFrameList;
+
+  c := Length(FrameList) - 1;
+  for i := 0 to c do
+  begin
+    IconIndex := ilTrayLaunch.Count;
+    ilTrayLaunch.AddIcon(FrameList[i].Icon);
+
+    AddMenu(miTrayLaunch, FrameList[i], IconIndex, @miTrayLaunchClick);
+    AddMenu(miTrayStop, FrameList[i], IconIndex, @miTrayStopClick);
   end;
 end;
 
@@ -315,6 +371,30 @@ begin
         Tab.Controls[0].Free;
     end;
   end;
+end;
+
+
+procedure TMainForm.miTrayLaunchClick(Sender: TObject);
+var
+  Frame: TLaunchExecutableFrame;
+begin
+  if not (Sender is TMenuItem) then
+    Exit;
+
+  Frame := TLaunchExecutableFrame((Sender as TMenuItem).Tag);
+  Frame.Launch;
+end;
+
+
+procedure TMainForm.miTrayStopClick(Sender: TObject);
+var
+  Frame: TLaunchExecutableFrame;
+begin
+  if not (Sender is TMenuItem) then
+    Exit;
+
+  Frame := TLaunchExecutableFrame((Sender as TMenuItem).Tag);
+  Frame.Stop;
 end;
 
 

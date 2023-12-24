@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Dialogs, ExtCtrls, Buttons,
-  StdCtrls, IniFiles,
+  StdCtrls, Graphics, IniFiles,
   TabCommonUnit, StartParamArray;
 
 type
@@ -50,13 +50,18 @@ type
     procedure SaveSettings(const FileName: String);
     procedure LoadSettings(const FileName: String);
   public
-    constructor Create(ParameterFile: String; SettingsFile: String); reintroduce;
+    constructor Create(const ACaption: string; AIcon: TIcon; const ParameterFile: String; const SettingsFile: String); reintroduce;
     destructor Destroy; override;
+
+    procedure Launch;
+    procedure Stop;
 
     property Items: TStartParamArray read FItems;
     property ParameterFile: String read FParameterFile;
     property SettingsFile: String read FSettingsFile;
   end;
+
+  TLaunchExecutableFrameList = array of TLaunchExecutableFrame;
 
 
 implementation
@@ -106,7 +111,7 @@ begin
   if cbEraseJournalDirBeforeRun.Checked and (Dir <> '') then
     DeleteFolderToRecycle(Dir);
 
-  //Execute application
+  //Launch application
   ExecuteFile(Trim(edExecutable.Text), GetCommandLine);
 end;
 
@@ -244,9 +249,9 @@ begin
 end;
 
 
-constructor TLaunchExecutableFrame.Create(ParameterFile: String; SettingsFile: String);
+constructor TLaunchExecutableFrame.Create(const ACaption: string; AIcon: TIcon; const ParameterFile: String; const SettingsFile: String);
 begin
-  inherited Create(nil);
+  inherited Create(ACaption, AIcon);
 
   FParameterFile := ParameterFile;
   FSettingsFile := SettingsFile;
@@ -269,6 +274,19 @@ begin
   ClearInterface;
 
   inherited Destroy;
+end;
+
+
+procedure TLaunchExecutableFrame.Launch;
+begin
+  if btnLaunch.Enabled then
+    btnLaunch.Click;
+end;
+
+
+procedure TLaunchExecutableFrame.Stop;
+begin
+  btnStop.Click;
 end;
 
 
