@@ -91,6 +91,7 @@ begin
   begin
     stvDirectoryTree.Path := APath;
     edCurrentPath.Text := APath;
+    btnSelect.Enabled := True;
   end;
 end;
 
