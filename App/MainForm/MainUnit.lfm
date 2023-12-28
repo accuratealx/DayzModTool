@@ -9,7 +9,7 @@ object MainForm: TMainForm
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '3.0.0.2'
+  LCLVersion = '3.0.0.3'
   object PageControl: TPageControl
     Left = 0
     Height = 292

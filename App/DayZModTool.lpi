@@ -186,6 +186,7 @@
         <Filename Value="TabFrames\LaunchExecutableFrame\ParamFrames\ParamFrameDirectoryList\ParamFrameDirectoryListModEditorUnit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ParamFrameDirectoryListModEditorFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
       </Unit>
       <Unit>
@@ -212,6 +213,8 @@
         <Filename Value="TabFrames\LaunchExecutableFrame\ParamFrames\ParamFrameInteger\ParamFrameIntegerUnit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ParamFrameIntegerFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
       </Unit>
       <Unit>
         <Filename Value="TabFrames\LaunchExecutableFrame\ParamFrames\ParamFrameSimple\ParamFrameSimpleUnit.lfm"/>
@@ -232,6 +235,7 @@
         <Filename Value="TabFrames\LaunchExecutableFrame\ParamFrames\ParamFrameString\ParamFrameStringUnit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ParamFrameStringFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
       </Unit>
     </Units>

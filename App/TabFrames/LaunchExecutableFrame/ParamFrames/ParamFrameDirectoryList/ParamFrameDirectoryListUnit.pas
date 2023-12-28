@@ -21,6 +21,7 @@ type
     procedure btnSelectDirectoryClick(Sender: TObject);
     procedure cbFullPathClick(Sender: TObject);
   private
+    FOnHeightChange: TNotifyEvent;
     FModList: TParamFrameDirectoryListModEditorFrame;
 
     procedure SetValue(AValue: String);
@@ -32,6 +33,8 @@ type
   public
     constructor Create(AItem: TStartParamSimple); reintroduce;
     destructor  Destroy; override;
+
+    property OnHeightChange: TNotifyEvent read FOnHeightChange write FOnHeightChange;
   end;
 
 
@@ -87,6 +90,9 @@ end;
 procedure TParamFrameDirectoryListFrame.UpdateHeight;
 begin
   Self.Height := FModList.Top + FModList.Height + 5;
+
+  if Assigned(FOnHeightChange) then
+    FOnHeightChange(Self);
 end;
 
 

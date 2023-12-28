@@ -1,36 +1,12 @@
 inherited LaunchExecutableFrame: TLaunchExecutableFrame
-  Height = 256
+  Height = 516
   Width = 600
-  Align = alClient
-  ClientHeight = 256
+  Align = alTop
+  ClientHeight = 516
   ClientWidth = 600
-  DesignLeft = 495
-  DesignTop = 279
-  object ScrollBox1: TScrollBox[0]
-    Left = 0
-    Height = 122
-    Top = 134
-    Width = 600
-    HorzScrollBar.Page = 1
-    HorzScrollBar.Tracking = True
-    VertScrollBar.Page = 1
-    VertScrollBar.Tracking = True
-    Align = alClient
-    BorderStyle = bsNone
-    ClientHeight = 122
-    ClientWidth = 600
-    TabOrder = 0
-    object pnlContent: TPanel
-      Left = 0
-      Height = 122
-      Top = 0
-      Width = 600
-      Align = alClient
-      BevelOuter = bvNone
-      TabOrder = 0
-    end
-  end
-  object pnlButton: TPanel[1]
+  DesignLeft = 574
+  DesignTop = 253
+  object pnlButton: TPanel[0]
     Left = 0
     Height = 134
     Top = 0
@@ -39,7 +15,7 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
     BevelOuter = bvNone
     ClientHeight = 134
     ClientWidth = 600
-    TabOrder = 1
+    TabOrder = 0
     object btnLaunch: TSpeedButton
       Cursor = crHandPoint
       Left = 10
@@ -89,7 +65,7 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
     end
     object btnShowCommandLine: TSpeedButton
       Cursor = crHandPoint
-      Left = 430
+      Left = 434
       Height = 25
       Top = 10
       Width = 160
@@ -139,7 +115,7 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
       Height = 23
       Hint = 'Файл для запуска'
       Top = 45
-      Width = 529
+      Width = 533
       Anchors = [akTop, akLeft, akRight]
       ParentShowHint = False
       ShowHint = True
@@ -148,7 +124,7 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
     end
     object sbSelectExecutable: TSpeedButton
       Cursor = crHandPoint
-      Left = 567
+      Left = 571
       Height = 23
       Hint = 'Выбрать файл для запуска'
       Top = 45
@@ -200,7 +176,7 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
       Height = 23
       Hint = 'Дополнительные параметры запуска'
       Top = 73
-      Width = 580
+      Width = 584
       Anchors = [akTop, akLeft, akRight]
       ParentShowHint = False
       ShowHint = True
@@ -209,7 +185,7 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
     end
     object btnExecutableOpenDirectory: TSpeedButton
       Cursor = crHandPoint
-      Left = 545
+      Left = 549
       Height = 23
       Hint = 'Открыть каталог в проводнике'
       Top = 45
@@ -261,7 +237,7 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
       Height = 23
       Hint = 'Каталог с журналами'
       Top = 101
-      Width = 291
+      Width = 295
       Anchors = [akTop, akLeft, akRight]
       Enabled = False
       ParentShowHint = False
@@ -271,7 +247,7 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
     end
     object btnOpenJournalDirectory: TSpeedButton
       Cursor = crHandPoint
-      Left = 522
+      Left = 526
       Height = 23
       Hint = 'Открыть каталог в проводнике'
       Top = 101
@@ -320,7 +296,7 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
     end
     object sbSelectJournalDirectory: TSpeedButton
       Cursor = crHandPoint
-      Left = 544
+      Left = 548
       Height = 23
       Hint = 'Выбрать каталог журналов'
       Top = 101
@@ -425,7 +401,7 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
     end
     object btnClearJournal: TSpeedButton
       Cursor = crHandPoint
-      Left = 567
+      Left = 571
       Height = 23
       Hint = 'Очистить значение'
       Top = 101
@@ -472,11 +448,30 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
       ShowHint = True
       ParentShowHint = False
     end
+    object SpeedButton1: TSpeedButton
+      Left = 315
+      Height = 25
+      Top = 10
+      Width = 23
+      OnClick = SpeedButton1Click
+    end
+  end
+  object pnlContent: TPanel[1]
+    Left = 0
+    Height = 151
+    Top = 134
+    Width = 600
+    Align = alTop
+    BevelOuter = bvNone
+    Color = clActiveCaption
+    ParentBackground = False
+    ParentColor = False
+    TabOrder = 1
   end
   object OpenDialog: TOpenDialog[2]
     Filter = 'Программы (*.exe)|*.exe'
     Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofForceShowHidden, ofViewDetail]
-    Left = 30
-    Top = 155
+    Left = 395
+    Top = 55
   end
 end

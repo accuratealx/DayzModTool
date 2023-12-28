@@ -1,8 +1,7 @@
 inherited ParamFrameStringFrame: TParamFrameStringFrame
+  Anchors = [akTop, akLeft, akRight]
   inherited ContentPanel: TPanel
     inherited btnDefault: TSpeedButton
-      Height = 23
-      Top = 1
       Visible = True
     end
     object edValue: TEdit[2]

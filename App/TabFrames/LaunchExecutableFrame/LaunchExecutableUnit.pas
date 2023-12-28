@@ -21,12 +21,13 @@ type
     edJournalDir: TEdit;
     OpenDialog: TOpenDialog;
     sbSelectJournalDirectory: TSpeedButton;
-    ScrollBox1: TScrollBox;
+    ContentScrollBox: TScrollBox;
     pnlContent: TPanel;
     pnlButton: TPanel;
     btnLaunch: TSpeedButton;
     btnShowCommandLine: TSpeedButton;
     sbSelectExecutable: TSpeedButton;
+    SpeedButton1: TSpeedButton;
     procedure btnClearJournalClick(Sender: TObject);
     procedure btnLaunchClick(Sender: TObject);
     procedure btnExecutableOpenDirectoryClick(Sender: TObject);
@@ -36,18 +37,27 @@ type
     procedure edExecutableChange(Sender: TObject);
     procedure sbSelectJournalDirectoryClick(Sender: TObject);
     procedure sbSelectExecutableClick(Sender: TObject);
+    procedure SpeedButton1Click(Sender: TObject);
   private
     FItems: TStartParamArray;
     FParameterFile: String;
     FSettingsFile: String;
+    FCollapsed: Boolean;
 
     procedure ClearInterface;
     procedure PrepareInterface(Items: TStartParamArray);
+    procedure ArrangeContentPanelItems;
+
+    function  GetTotalFrameHeight: Integer;
 
     function  GetCommandLine: String;
 
     procedure SaveSettings(const FileName: String);
     procedure LoadSettings(const FileName: String);
+
+    procedure OnChangeContentHeight(Sender: TObject);
+
+    procedure SetCollapsed(ACollapsed: Boolean);
   public
     constructor Create(const ACaption: string; AIcon: TIcon; const ParameterFile: String; const SettingsFile: String); reintroduce;
     destructor Destroy; override;
@@ -58,6 +68,7 @@ type
     property Items: TStartParamArray read FItems;
     property ParameterFile: String read FParameterFile;
     property SettingsFile: String read FSettingsFile;
+    property Collapsed: Boolean read FCollapsed write SetCollapsed;
   end;
 
   TLaunchExecutableFrameList = array of TLaunchExecutableFrame;
@@ -177,6 +188,12 @@ begin
 end;
 
 
+procedure TLaunchExecutableFrame.SpeedButton1Click(Sender: TObject);
+begin
+  Collapsed := not Collapsed;
+end;
+
+
 procedure TLaunchExecutableFrame.ClearInterface;
 var
   i: Integer;
@@ -192,7 +209,7 @@ var
   Item: TStartParamSimple;
   FrameItem: TParamFrameCommonFrame;
 begin
-  for i := Items.Count - 1 downto 0 do
+  for i := 0 to Items.Count - 1 do
   begin
     //Ссылка на параметр
     Item := Items.Item[i];
@@ -217,7 +234,10 @@ begin
         FrameItem := TParamFrameFileFrame.Create(Item);
 
       'DirectoryList':
+      begin
         FrameItem := TParamFrameDirectoryListFrame.Create(Item);
+        (FrameItem as TParamFrameDirectoryListFrame).OnHeightChange := @OnChangeContentHeight;
+      end
 
       else
         ShowMessage(Format('Неизвестный тип фрейма %s', [Item.&Type]));
@@ -227,9 +247,46 @@ begin
     if FrameItem <> nil then
     begin
       FrameItem.Parent := pnlContent;
-      FrameItem.Align := alTop;
+      //FrameItem.Align := alTop;
     end;
   end;
+
+  //Расположить элементы на панели и выставить правильную высоту
+  ArrangeContentPanelItems;
+
+  //Поправить высоту основного фрейма
+  Height := GetTotalFrameHeight;
+end;
+
+
+procedure TLaunchExecutableFrame.ArrangeContentPanelItems;
+var
+  FrameItem: TParamFrameCommonFrame;
+  i, Y: Integer;
+begin
+  Y := 0;
+
+  for i := 0 to pnlContent.ControlCount - 1 do
+  begin
+    if not (pnlContent.Controls[i] is TParamFrameCommonFrame) then
+      Continue;
+
+    FrameItem := pnlContent.Controls[i] as TParamFrameCommonFrame;
+
+    FrameItem.Left := 0;
+    FrameItem.Width := pnlContent.Width;
+    FrameItem.Top := Y;
+
+    Inc(Y, FrameItem.Height);
+  end;
+
+  pnlContent.Height := Y;
+end;
+
+
+function TLaunchExecutableFrame.GetTotalFrameHeight: Integer;
+begin
+  Result := pnlButton.Height + pnlContent.Height;
 end;
 
 
@@ -351,9 +408,35 @@ begin
       (pnlContent.Controls[i] as TParamFrameSimpleFrame).UpdateInterface;
     end;
 
+    //Расположить элементы на панели и выставить правильную высоту
+    ArrangeContentPanelItems;
+
+    //Поправить высоту основного фрейма
+    Height := GetTotalFrameHeight;
+
   finally
     F.Free;
   end;
+end;
+
+
+procedure TLaunchExecutableFrame.OnChangeContentHeight(Sender: TObject);
+begin
+  ArrangeContentPanelItems;
+end;
+
+
+procedure TLaunchExecutableFrame.SetCollapsed(ACollapsed: Boolean);
+begin
+  if FCollapsed = ACollapsed then
+    Exit;
+
+  FCollapsed := ACollapsed;
+
+  if FCollapsed then
+    Height := 45
+  else
+    Height := GetTotalFrameHeight;
 end;
 
 
