@@ -25,6 +25,7 @@ type
     property Value: String read FValue write FValue;
   end;
 
+
   TStartParamDirectoryListItemArray = class(specialize TsgeTemplateCollection<TStartParamDirectoryListItem>)
   protected
     function IndexOfName(AName: String): Integer;
@@ -97,12 +98,14 @@ begin
   List.LineBreak := ':';
   List.Text := Str;
 
-  if List.Count = 2 then
-  begin
+  //Активность
+  if List.Count > 0 then
     if not TryStrToBool(List.Strings[0], FChecked) then
       FChecked := False;
+
+  //Значение
+  if List.Count > 1 then
     FValue := List.Strings[1];
-  end;
 
   List.Free;
 end;
@@ -267,13 +270,17 @@ begin
   List.LineBreak := ';';
   List.Text := Str;
 
-  if List.Count = 4 then
+  //Активность, Полный путь, Каталог
+  if List.Count > 2 then
   begin
     inherited ValueFromString(List.Strings[0]);
     FFullPath := StrToBool(List.Strings[1]);
     Value := List.Strings[2];
-    FDirectoryList.ValueFromString(List.Strings[3]);
   end;
+
+  //Значение
+  if List.Count > 3 then
+    FDirectoryList.ValueFromString(List.Strings[3]);
 
   List.Free;
 end;

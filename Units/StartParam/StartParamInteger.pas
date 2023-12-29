@@ -64,9 +64,13 @@ begin
   List.LineBreak := ';';
   List.Text := Str;
 
-  if List.Count = 2 then
-  begin
+  //Активность
+  if List.Count > 0 then
     inherited ValueFromString(List.Strings[0]);
+
+  //Значение
+  if List.Count > 1 then
+  begin
     if not TryStrToInt(List.Strings[1], FValue) then
       FValue := FDefault;
   end;
