@@ -7,21 +7,26 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Spin, Buttons,
   StartParamSimple, StartParamInteger,
-  ParamFrameSimpleUnit;
+  ParamFrameSimpleUnit, Types;
 
 type
   TParamFrameIntegerFrame = class(TParamFrameSimpleFrame)
     seValue: TSpinEdit;
+    procedure seValueMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
   protected
     procedure PrepareInterface(AItem: TStartParamSimple); override;
-  public
-
   end;
 
 
 implementation
 
 {$R *.lfm}
+
+
+procedure TParamFrameIntegerFrame.seValueMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+begin
+  Handled := True;
+end;
 
 
 procedure TParamFrameIntegerFrame.PrepareInterface(AItem: TStartParamSimple);

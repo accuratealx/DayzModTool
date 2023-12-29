@@ -1,8 +1,6 @@
 inherited ParamFrameIntegerFrame: TParamFrameIntegerFrame
   inherited ContentPanel: TPanel
     inherited btnDefault: TSpeedButton
-      Height = 23
-      Top = 1
       Visible = True
     end
     object seValue: TSpinEdit[2]
@@ -11,6 +9,7 @@ inherited ParamFrameIntegerFrame: TParamFrameIntegerFrame
       Top = 1
       Width = 312
       Anchors = [akTop, akLeft, akRight]
+      OnMouseWheel = seValueMouseWheel
       TabOrder = 1
     end
   end

@@ -1,8 +1,8 @@
 inherited LaunchExecutableFrame: TLaunchExecutableFrame
-  Height = 516
+  Height = 276
   Width = 600
   Align = alTop
-  ClientHeight = 516
+  ClientHeight = 276
   ClientWidth = 600
   DesignLeft = 574
   DesignTop = 253
@@ -15,13 +15,15 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
     BevelOuter = bvNone
     ClientHeight = 134
     ClientWidth = 600
+    ParentBackground = False
     TabOrder = 0
     object btnLaunch: TSpeedButton
       Cursor = crHandPoint
-      Left = 10
+      Left = 250
       Height = 25
       Top = 10
-      Width = 120
+      Width = 110
+      Anchors = [akTop, akRight]
       Caption = 'Запустить'
       Enabled = False
       Flat = True
@@ -65,12 +67,12 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
     end
     object btnShowCommandLine: TSpeedButton
       Cursor = crHandPoint
-      Left = 434
+      Left = 480
       Height = 25
       Top = 10
-      Width = 160
+      Width = 110
       Anchors = [akTop, akRight]
-      Caption = 'Параметры запуска'
+      Caption = 'Параметры'
       Flat = True
       Glyph.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
@@ -115,7 +117,7 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
       Height = 23
       Hint = 'Файл для запуска'
       Top = 45
-      Width = 533
+      Width = 529
       Anchors = [akTop, akLeft, akRight]
       ParentShowHint = False
       ShowHint = True
@@ -124,7 +126,7 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
     end
     object sbSelectExecutable: TSpeedButton
       Cursor = crHandPoint
-      Left = 571
+      Left = 567
       Height = 23
       Hint = 'Выбрать файл для запуска'
       Top = 45
@@ -176,7 +178,7 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
       Height = 23
       Hint = 'Дополнительные параметры запуска'
       Top = 73
-      Width = 584
+      Width = 580
       Anchors = [akTop, akLeft, akRight]
       ParentShowHint = False
       ShowHint = True
@@ -185,7 +187,7 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
     end
     object btnExecutableOpenDirectory: TSpeedButton
       Cursor = crHandPoint
-      Left = 549
+      Left = 544
       Height = 23
       Hint = 'Открыть каталог в проводнике'
       Top = 45
@@ -237,7 +239,7 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
       Height = 23
       Hint = 'Каталог с журналами'
       Top = 101
-      Width = 295
+      Width = 291
       Anchors = [akTop, akLeft, akRight]
       Enabled = False
       ParentShowHint = False
@@ -245,9 +247,57 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
       TabOrder = 2
       OnChange = edExecutableChange
     end
+    object pnlCollapse: TPanel
+      Cursor = crHandPoint
+      Left = 0
+      Height = 45
+      Top = 0
+      Width = 235
+      Anchors = [akTop, akLeft, akRight]
+      BevelOuter = bvNone
+      ClientHeight = 45
+      ClientWidth = 235
+      TabOrder = 4
+      OnClick = btnCollapseClick
+      object lblTitle: TLabel
+        Cursor = crHandPoint
+        Left = 74
+        Height = 17
+        Top = 14
+        Width = 83
+        Caption = 'Приложение'
+        Font.CharSet = RUSSIAN_CHARSET
+        Font.Height = -13
+        Font.Pitch = fpVariable
+        Font.Quality = fqDraft
+        Font.Style = [fsBold]
+        ParentFont = False
+        OnClick = btnCollapseClick
+      end
+      object imgCollapse: TImage
+        Cursor = crHandPoint
+        Left = 10
+        Height = 25
+        Top = 10
+        Width = 25
+        Center = True
+        Images = ilCollapse
+        OnClick = btnCollapseClick
+        ParentShowHint = False
+      end
+      object imgIcon: TImage
+        Cursor = crHandPoint
+        Left = 40
+        Height = 29
+        Top = 8
+        Width = 29
+        OnClick = btnCollapseClick
+        Stretch = True
+      end
+    end
     object btnOpenJournalDirectory: TSpeedButton
       Cursor = crHandPoint
-      Left = 526
+      Left = 522
       Height = 23
       Hint = 'Открыть каталог в проводнике'
       Top = 101
@@ -296,7 +346,7 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
     end
     object sbSelectJournalDirectory: TSpeedButton
       Cursor = crHandPoint
-      Left = 548
+      Left = 544
       Height = 23
       Hint = 'Выбрать каталог журналов'
       Top = 101
@@ -354,10 +404,11 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
     end
     object btnStop: TSpeedButton
       Cursor = crHandPoint
-      Left = 135
+      Left = 365
       Height = 25
       Top = 10
-      Width = 120
+      Width = 110
+      Anchors = [akTop, akRight]
       Caption = 'Остановить'
       Enabled = False
       Flat = True
@@ -401,7 +452,7 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
     end
     object btnClearJournal: TSpeedButton
       Cursor = crHandPoint
-      Left = 571
+      Left = 567
       Height = 23
       Hint = 'Очистить значение'
       Top = 101
@@ -448,30 +499,41 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
       ShowHint = True
       ParentShowHint = False
     end
-    object SpeedButton1: TSpeedButton
-      Left = 315
-      Height = 25
-      Top = 10
-      Width = 23
-      OnClick = SpeedButton1Click
-    end
   end
   object pnlContent: TPanel[1]
     Left = 0
-    Height = 151
+    Height = 70
     Top = 134
     Width = 600
     Align = alTop
     BevelOuter = bvNone
-    Color = clActiveCaption
     ParentBackground = False
-    ParentColor = False
     TabOrder = 1
   end
   object OpenDialog: TOpenDialog[2]
     Filter = 'Программы (*.exe)|*.exe'
     Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofForceShowHidden, ofViewDetail]
-    Left = 395
-    Top = 55
+    Left = 110
+    Top = 140
+  end
+  object ilCollapse: TImageList[3]
+    Left = 30
+    Top = 140
+    Bitmap = {
+      4C7A020000001000000010000000940100000000000078DAED94CF4A02511C85
+      7D80790C1FA15DA3A3AE675BAB7013ED7C00578D5A61102DFAB7A9682304622B
+      7146DA44A9C564988B40820417D518B98AB6C1E99EF1CE46A8BCB38AE8C2C559
+      78CE5C7E73BF2F12F97DCBC919A81712108F51B1B530F951FF02F6F22C3B74D5
+      8EBA15C3F0AE8AE7DB0A6CF1ACDAE1E462F03A659CAFCFE051FCDA565CA9C3C9
+      1B18B64B70B792B8DE4E61E096E0287438F9043C771FDD4313DD0313BDE3341E
+      1A47C14C7FEC60FEE57217BDD2BCD873E89F2CE2FE6C2FC867E577F936FFDADA
+      44BFBC8041250DAFB513CCA0364DDE16F951A388A7EA12BCE6066A96116457A7
+      393FF36F572B78BF6136AE941D9F3F898FCE9AF27B83755A34E11452A1B27271
+      3E19392B3D04039AEC08C5CFFF0AE72CDF5BC217E49F0C938360DB72F36EF17E
+      4C7E1BB24567D13B7407F927C3E4902C9107DE69DE4B79B732131C45E93B3A8B
+      DEA13BC83F1926876469CC83F115873C8B4EDFD159F48EEF0EC1BFCF70732A96
+      6447DC7716BD4377907F0596FC0EFA8ECEA2776C7586FD0ECE543A2B0C879AFC
+      7FF62F73F809A3A34538
+    }
   end
 end

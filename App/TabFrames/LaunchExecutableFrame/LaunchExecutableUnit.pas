@@ -19,7 +19,12 @@ type
     edExecutable: TEdit;
     edAdditionalCommandLine: TEdit;
     edJournalDir: TEdit;
+    ilCollapse: TImageList;
+    imgCollapse: TImage;
+    imgIcon: TImage;
+    lblTitle: TLabel;
     OpenDialog: TOpenDialog;
+    pnlCollapse: TPanel;
     sbSelectJournalDirectory: TSpeedButton;
     ContentScrollBox: TScrollBox;
     pnlContent: TPanel;
@@ -27,7 +32,6 @@ type
     btnLaunch: TSpeedButton;
     btnShowCommandLine: TSpeedButton;
     sbSelectExecutable: TSpeedButton;
-    SpeedButton1: TSpeedButton;
     procedure btnClearJournalClick(Sender: TObject);
     procedure btnLaunchClick(Sender: TObject);
     procedure btnExecutableOpenDirectoryClick(Sender: TObject);
@@ -37,12 +41,13 @@ type
     procedure edExecutableChange(Sender: TObject);
     procedure sbSelectJournalDirectoryClick(Sender: TObject);
     procedure sbSelectExecutableClick(Sender: TObject);
-    procedure SpeedButton1Click(Sender: TObject);
+    procedure btnCollapseClick(Sender: TObject);
   private
     FItems: TStartParamArray;
     FParameterFile: String;
     FSettingsFile: String;
     FCollapsed: Boolean;
+    FHiglight: Boolean;
 
     procedure ClearInterface;
     procedure PrepareInterface(Items: TStartParamArray);
@@ -54,10 +59,12 @@ type
 
     procedure SaveSettings(const FileName: String);
     procedure LoadSettings(const FileName: String);
+    procedure LoadItemsSettings(const FileName: String);
 
     procedure OnChangeContentHeight(Sender: TObject);
 
     procedure SetCollapsed(ACollapsed: Boolean);
+    procedure SetHighlight(AHighlight: Boolean);
   public
     constructor Create(const ACaption: string; AIcon: TIcon; const ParameterFile: String; const SettingsFile: String); reintroduce;
     destructor Destroy; override;
@@ -69,6 +76,7 @@ type
     property ParameterFile: String read FParameterFile;
     property SettingsFile: String read FSettingsFile;
     property Collapsed: Boolean read FCollapsed write SetCollapsed;
+    property Higlight: Boolean read FHiglight write SetHighlight;
   end;
 
   TLaunchExecutableFrameList = array of TLaunchExecutableFrame;
@@ -93,6 +101,7 @@ const
   PARAM_CMD_LINE = 'CmdLine';
   PARAM_ERASE_JOURNAL = 'EraseJournalBeforeRun';
   PARAM_ERASE_JOURNAL_DIRECTORY = 'JournalDirectory';
+  PARAM_COLLAPSED = 'Collapsed';
 
 
 procedure TLaunchExecutableFrame.btnShowCommandLineClick(Sender: TObject);
@@ -188,7 +197,7 @@ begin
 end;
 
 
-procedure TLaunchExecutableFrame.SpeedButton1Click(Sender: TObject);
+procedure TLaunchExecutableFrame.btnCollapseClick(Sender: TObject);
 begin
   Collapsed := not Collapsed;
 end;
@@ -209,6 +218,9 @@ var
   Item: TStartParamSimple;
   FrameItem: TParamFrameCommonFrame;
 begin
+  imgIcon.Picture.Assign(Icon);
+  lblTitle.Caption := Caption;
+
   for i := 0 to Items.Count - 1 do
   begin
     //Ссылка на параметр
@@ -247,7 +259,7 @@ begin
     if FrameItem <> nil then
     begin
       FrameItem.Parent := pnlContent;
-      //FrameItem.Align := alTop;
+      FrameItem.Anchors := [akTop, akLeft, akRight];
     end;
   end;
 
@@ -314,6 +326,8 @@ begin
   FItems := TStartParamArray.Create;
   FItems.LoadFromFile(FParameterFile);
 
+  LoadItemsSettings(FSettingsFile);
+
   PrepareInterface(FItems);
 
   LoadSettings(FSettingsFile);
@@ -349,28 +363,24 @@ procedure TLaunchExecutableFrame.SaveSettings(const FileName: String);
 var
   F: TIniFile;
   i: Integer;
-  Item: TStartParamSimple;
 begin
   F := TIniFile.Create(FileName);
   try
 
     //Настройки запуска
-    F.WriteString(SECTION_Executable, PARAM_APP, edExecutable.Text);
-    F.WriteString(SECTION_Executable, PARAM_CMD_LINE, edAdditionalCommandLine.Text);
+    F.WriteString(SECTION_EXECUTABLE, PARAM_APP, edExecutable.Text);
+    F.WriteString(SECTION_EXECUTABLE, PARAM_CMD_LINE, edAdditionalCommandLine.Text);
 
     //Очистка каталога перед запуском
-    F.WriteBool(SECTION_Executable, PARAM_ERASE_JOURNAL, cbEraseJournalDirBeforeRun.Checked);
-    F.WriteString(SECTION_Executable, PARAM_ERASE_JOURNAL_DIRECTORY, edJournalDir.Text);
+    F.WriteBool(SECTION_EXECUTABLE, PARAM_ERASE_JOURNAL, cbEraseJournalDirBeforeRun.Checked);
+    F.WriteString(SECTION_EXECUTABLE, PARAM_ERASE_JOURNAL_DIRECTORY, edJournalDir.Text);
 
     //Записать параметры
-    for i := 0 to pnlContent.ControlCount - 1 do
-    begin
-      if not (pnlContent.Controls[i] is TParamFrameSimpleFrame) then
-        Continue;
+    for i := 0 to FItems.Count - 1 do
+      F.WriteString(SECTION_PARAMS, FItems.Item[i].Name, FItems.Item[i].ValueToString);
 
-      Item := (pnlContent.Controls[i] as TParamFrameSimpleFrame).Item;
-      F.WriteString(SECTION_PARAMS, Item.Name, Item.ValueToString);
-    end;
+    //Минимальный вид
+    F.WriteBool(SECTION_EXECUTABLE, PARAM_COLLAPSED, Collapsed);
 
   finally
     F.Free;
@@ -382,7 +392,6 @@ procedure TLaunchExecutableFrame.LoadSettings(const FileName: String);
 var
   F: TIniFile;
   i: Integer;
-  Item: TStartParamSimple;
 begin
   F := TIniFile.Create(FileName);
   try
@@ -401,9 +410,6 @@ begin
       if not (pnlContent.Controls[i] is TParamFrameSimpleFrame) then
         Continue;
 
-      Item := (pnlContent.Controls[i] as TParamFrameSimpleFrame).Item;
-      Item.ValueFromString(F.ReadString(SECTION_PARAMS, Item.Name, ''));
-
       //Поправить интерфейс
       (pnlContent.Controls[i] as TParamFrameSimpleFrame).UpdateInterface;
     end;
@@ -414,6 +420,26 @@ begin
     //Поправить высоту основного фрейма
     Height := GetTotalFrameHeight;
 
+    //Минимальный вид
+    Collapsed := F.ReadBool(SECTION_EXECUTABLE, PARAM_COLLAPSED, False);
+
+  finally
+    F.Free;
+  end;
+end;
+
+
+procedure TLaunchExecutableFrame.LoadItemsSettings(const FileName: String);
+var
+  F: TIniFile;
+  i: Integer;
+begin
+  F := TIniFile.Create(FileName);
+  try
+
+    for i := 0 to FItems.Count - 1 do
+      FItems.Item[i].ValueFromString(F.ReadString(SECTION_PARAMS, FItems.Item[i].Name, ''));
+
   finally
     F.Free;
   end;
@@ -423,6 +449,7 @@ end;
 procedure TLaunchExecutableFrame.OnChangeContentHeight(Sender: TObject);
 begin
   ArrangeContentPanelItems;
+  Height := GetTotalFrameHeight;
 end;
 
 
@@ -434,9 +461,33 @@ begin
   FCollapsed := ACollapsed;
 
   if FCollapsed then
-    Height := 45
+  begin
+    Height := 45;
+    imgCollapse.ImageIndex := 0;
+  end
   else
+  begin
     Height := GetTotalFrameHeight;
+    imgCollapse.ImageIndex := 1;
+  end;
+end;
+
+
+procedure TLaunchExecutableFrame.SetHighlight(AHighlight: Boolean);
+begin
+  if FHiglight = AHighlight then
+    Exit;
+
+  FHiglight := AHighlight;
+
+  //Изменить фоновый цвет
+  Self.ParentColor := not FHiglight;
+  Self.ParentBackground := not FHiglight;
+
+  if FHiglight then
+    Color := cl3DLight
+  else
+    Color := clDefault;
 end;
 
 
