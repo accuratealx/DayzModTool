@@ -38,7 +38,6 @@ type
     procedure btnOpenJournalDirectoryClick(Sender: TObject);
     procedure btnShowCommandLineClick(Sender: TObject);
     procedure btnStopClick(Sender: TObject);
-    procedure edExecutableChange(Sender: TObject);
     procedure sbSelectJournalDirectoryClick(Sender: TObject);
     procedure sbSelectExecutableClick(Sender: TObject);
     procedure btnCollapseClick(Sender: TObject);
@@ -52,10 +51,9 @@ type
     procedure ClearInterface;
     procedure PrepareInterface(Items: TStartParamArray);
     procedure ArrangeContentPanelItems;
-
     function  GetTotalFrameHeight: Integer;
-
     function  GetCommandLine: String;
+    function  IsExecutableReady: Boolean;
 
     procedure SaveSettings(const FileName: String);
     procedure LoadSettings(const FileName: String);
@@ -105,8 +103,30 @@ const
 
 
 procedure TLaunchExecutableFrame.btnShowCommandLineClick(Sender: TObject);
+var
+  ParamStr, Cmd, Fn: String;
 begin
-  MemoDialogExecute('Параметры запуска', GetCommandLine);
+  ParamStr := '';
+
+  //Приложение
+  Fn := Trim(edExecutable.Text);
+  if FileExists(Fn) then
+    ParamStr := Format('"%s"', [Fn])
+  else
+    ParamStr := '';
+
+  //Параметры
+  Cmd := GetCommandLine;
+  if Cmd <> '' then
+  begin
+    if ParamStr <> '' then
+      ParamStr := ParamStr + ' ' + Cmd
+    else
+      ParamStr := Cmd;
+  end;
+
+  //Показать диалог
+  MemoDialogExecute('Параметры запуска',  ParamStr);
 end;
 
 
@@ -114,9 +134,13 @@ procedure TLaunchExecutableFrame.btnStopClick(Sender: TObject);
 var
   Fn: String;
 begin
+  //Проверка на отсутствие файла
+  if not IsExecutableReady then
+    Exit;
+
+  //Убить процесс по имени
   Fn := Trim(edExecutable.Text);
-  if FileExists(Fn) then
-    KillProcess(ExtractFileName(Fn));
+  KillProcess(ExtractFileName(Fn));
 end;
 
 
@@ -124,6 +148,10 @@ procedure TLaunchExecutableFrame.btnLaunchClick(Sender: TObject);
 var
   Dir: String;
 begin
+  //Проверка на отсутствие файла
+  if not IsExecutableReady then
+    Exit;
+
   Dir := Trim(edJournalDir.Text);
 
   //Удалить содержимое каталога
@@ -158,13 +186,6 @@ begin
   Dir := edJournalDir.Text;
   if DirectoryExists(Dir) then
     OpenFolderInExplorer(Dir);
-end;
-
-
-procedure TLaunchExecutableFrame.edExecutableChange(Sender: TObject);
-begin
-  btnLaunch.Enabled := FileExists(edExecutable.Text);
-  btnStop.Enabled := FileExists(edExecutable.Text);
 end;
 
 
@@ -316,6 +337,24 @@ begin
 end;
 
 
+function TLaunchExecutableFrame.IsExecutableReady: Boolean;
+begin
+  Result := False;
+
+  if not FileExists(Trim(edExecutable.Text)) then
+  begin
+    //Открыть диалог выбора файла
+    sbSelectExecutable.Click;
+
+    //Если после действий пользователя файл все таки выбрали
+    if FileExists(Trim(edExecutable.Text)) then
+      Result := True;
+  end
+  else
+    Result := True;
+end;
+
+
 constructor TLaunchExecutableFrame.Create(const ACaption: string; AIcon: TIcon; const ParameterFile: String; const SettingsFile: String);
 begin
   inherited Create(ACaption, AIcon);
@@ -331,6 +370,11 @@ begin
   PrepareInterface(FItems);
 
   LoadSettings(FSettingsFile);
+
+
+  FCollapsed := True;
+  imgCollapse.ImageIndex := 0;
+  Height := 45;
 end;
 
 
