@@ -65,6 +65,7 @@ type
     procedure miTrayStopClick(Sender: TObject);
   end;
 
+
 var
   MainForm: TMainForm;
 

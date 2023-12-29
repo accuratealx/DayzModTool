@@ -1,10 +1,10 @@
 object MainForm: TMainForm
   Left = 474
-  Height = 700
+  Height = 600
   Top = 171
-  Width = 630
-  ClientHeight = 700
-  ClientWidth = 630
+  Width = 550
+  ClientHeight = 600
+  ClientWidth = 550
   Menu = MainMenu
   OnClose = FormClose
   OnCreate = FormCreate
@@ -12,9 +12,9 @@ object MainForm: TMainForm
   LCLVersion = '3.0.0.3'
   object PageControl: TPageControl
     Left = 0
-    Height = 700
+    Height = 600
     Top = 0
-    Width = 630
+    Width = 550
     ActivePage = tabLaunch
     Align = alClient
     Images = ilTab
@@ -22,14 +22,14 @@ object MainForm: TMainForm
     TabOrder = 0
     object tabLaunch: TTabSheet
       Caption = 'Запуск программ'
-      ClientHeight = 672
-      ClientWidth = 622
+      ClientHeight = 572
+      ClientWidth = 542
       ImageIndex = 0
       object sbLaunch: TScrollBox
         Left = 0
-        Height = 672
+        Height = 572
         Top = 0
-        Width = 622
+        Width = 542
         HorzScrollBar.Increment = 30
         HorzScrollBar.Page = 1
         HorzScrollBar.Tracking = True
@@ -358,7 +358,7 @@ object MainForm: TMainForm
     }
   end
   object ilTab: TImageList
-    Left = 10
+    Left = 45
     Top = 30
     Bitmap = {
       4C7A010000001000000010000000840000000000000078DAFBFFFF3FC37F2A61
@@ -369,7 +369,7 @@ object MainForm: TMainForm
     }
   end
   object ilTrayLaunch: TImageList
-    Left = 305
+    Left = 285
     Top = 105
   end
 end

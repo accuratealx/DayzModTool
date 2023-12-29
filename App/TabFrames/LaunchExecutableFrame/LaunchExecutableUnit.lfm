@@ -19,7 +19,7 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
     TabOrder = 0
     object btnLaunch: TSpeedButton
       Cursor = crHandPoint
-      Left = 250
+      Left = 335
       Height = 25
       Top = 10
       Width = 110
@@ -66,12 +66,12 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
     end
     object btnShowCommandLine: TSpeedButton
       Cursor = crHandPoint
-      Left = 480
+      Left = 565
       Height = 25
+      Hint = 'Параметры запуска'
       Top = 10
-      Width = 110
+      Width = 25
       Anchors = [akTop, akRight]
-      Caption = 'Параметры'
       Flat = True
       Glyph.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
@@ -110,6 +110,8 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
         15FFB78115FFB78115FFB78114FFB88215FFB98418EABA861D00
       }
       OnClick = btnShowCommandLineClick
+      ShowHint = True
+      ParentShowHint = False
     end
     object edExecutable: TEdit
       Left = 10
@@ -248,11 +250,11 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
       Left = 0
       Height = 45
       Top = 0
-      Width = 235
+      Width = 325
       Anchors = [akTop, akLeft, akRight]
       BevelOuter = bvNone
       ClientHeight = 45
-      ClientWidth = 235
+      ClientWidth = 325
       TabOrder = 4
       OnClick = btnCollapseClick
       object lblTitle: TLabel
@@ -401,7 +403,7 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
     end
     object btnStop: TSpeedButton
       Cursor = crHandPoint
-      Left = 365
+      Left = 450
       Height = 25
       Top = 10
       Width = 110
