@@ -11,7 +11,7 @@ uses
   LaunchExecutableUnit;
 
 const
-  VERSION = '0.2';
+  VERSION = '0.3';
 
 type
   TMainForm = class(TForm)
@@ -205,11 +205,11 @@ begin
   Ini := TIniFile.Create(FSettingsDir + CONFIG_FILE_NAME);
   try
     Self.Top := Ini.ReadInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_TOP, 100);
-    Self.Left := Ini.ReadInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_LEFT, 100);
-    Self.Width := Ini.ReadInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_WIDTH, 300);
-    Self.Height := Ini.ReadInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_HEIGHT, 300);
+    Self.Left := Ini.ReadInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_LEFT, 300);
+    Self.Width := Ini.ReadInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_WIDTH, Self.Width);
+    Self.Height := Ini.ReadInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_HEIGHT, Self.Height);
     Application.ShowMainForm := Ini.ReadBool(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_VISIBLE, True);
-    PageControl.TabIndex := Ini.ReadInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_TAB_INDEX, -1);
+    PageControl.TabIndex := Ini.ReadInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_TAB_INDEX, 0);
 
   finally
     Ini.Free;
@@ -271,7 +271,7 @@ begin
         if FileExists(FrameIconName) then
           FrameIcon.LoadFromFile(FrameIconName)
         else
-          FrameIcon.Assign(Icon);
+          FrameIcon.Assign(Application.Icon);
       except
         FrameIcon.Assign(Icon);
       end;
