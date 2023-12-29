@@ -1,4 +1,4 @@
-Список изменений DayzModTool accuratealx@gmail.com
+Список изменений DayZModTool accuratealx@gmail.com
 
 Версия 0.3
   Фреймы запуска переехали на одну общую закладку
