@@ -15,9 +15,32 @@ object MainForm: TMainForm
     Height = 292
     Top = 0
     Width = 487
+    ActivePage = tabLaunch
     Align = alClient
     Images = ilTab
+    TabIndex = 0
     TabOrder = 0
+    object tabLaunch: TTabSheet
+      Caption = 'Запуск программ'
+      ClientHeight = 264
+      ClientWidth = 479
+      ImageIndex = 0
+      object sbLaunch: TScrollBox
+        Left = 0
+        Height = 264
+        Top = 0
+        Width = 479
+        HorzScrollBar.Increment = 30
+        HorzScrollBar.Page = 1
+        HorzScrollBar.Tracking = True
+        VertScrollBar.Increment = 30
+        VertScrollBar.Page = 1
+        VertScrollBar.Tracking = True
+        Align = alClient
+        BorderStyle = bsNone
+        TabOrder = 0
+      end
+    end
   end
   object MainMenu: TMainMenu
     Images = ilMainMenu
@@ -335,8 +358,15 @@ object MainForm: TMainForm
     }
   end
   object ilTab: TImageList
-    Left = 45
-    Top = 15
+    Left = 10
+    Top = 30
+    Bitmap = {
+      4C7A010000001000000010000000840000000000000078DAFBFFFF3FC37F2A61
+      864686170C4D0C1164EB6F60F8CFD0CEF095A1856122C32A0666B2F41F07E2C9
+      40339A194E03F96224EB3F03C58B197E02CD780D1433214B3F086F66F80734E3
+      1B305CE2C9D20FC2FBE061321F28CF42B27E103E08C48D0C7F09B983EAF653E2
+      7F58F83731189319FFA7C88A7F4AD21F85E97F203000242F8986
+    }
   end
   object ilTrayLaunch: TImageList
     Left = 305

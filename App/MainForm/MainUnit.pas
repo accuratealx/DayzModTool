@@ -31,6 +31,8 @@ type
     miTraySeparator1: TMenuItem;
     miTrayExit: TMenuItem;
     PageControl: TPageControl;
+    sbLaunch: TScrollBox;
+    tabLaunch: TTabSheet;
     TrayMenu: TPopupMenu;
     TrayIcon: TTrayIcon;
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -54,16 +56,13 @@ type
     procedure SaveFormSettings;
     procedure LoadFormSettings;
 
-    function GetLaunchFrameList: TLaunchExecutableFrameList;
-
-    procedure CreateLaunchFrames(const SettingsFile: String);
+    function  GetLaunchFrameList: TLaunchExecutableFrameList;
+    procedure CreateLaunchFrame(const SettingsFile: String);
+    procedure DestroyLaunchFrame;
     procedure CreateTrayMenuLaunchItems;
-    procedure DestroyFrames;
 
     procedure miTrayLaunchClick(Sender: TObject);
     procedure miTrayStopClick(Sender: TObject);
-  public
-
   end;
 
 var
@@ -163,7 +162,7 @@ begin
   ForceDirectories(FLaunchDir);
 
   //Создать закладки запуска
-  CreateLaunchFrames(FLaunchDir + 'List.ini');
+  CreateLaunchFrame(FLaunchDir + 'List.ini');
 
   //Создать элементы запуска/останова приложений
   CreateTrayMenuLaunchItems;
@@ -174,7 +173,7 @@ end;
 
 procedure TMainForm.Done;
 begin
-  DestroyFrames;
+  DestroyLaunchFrame;
 
   SaveFormSettings;
 end;
@@ -221,42 +220,30 @@ end;
 function TMainForm.GetLaunchFrameList: TLaunchExecutableFrameList;
 var
   i, c: Integer;
-  Tab: TTabSheet;
 begin
+  Result := nil;
+
   //Просмотрим все закладки
-  for i := 0 to PageControl.ControlCount - 1 do
+  for i := 0 to sbLaunch.ControlCount - 1 do
   begin
-    //Пропуск компонентов не Tab
-    if not (PageControl.Controls[i] is TTabSheet) then
-      Continue;
-
-    //Ссылка на закладку
-    Tab := PageControl.Controls[i] as TTabSheet;
-
-    //Найти первый элемент. Всегда должен быть только один
-    if Tab.ControlCount = 1 then
+    if sbLaunch.Controls[i] is TLaunchExecutableFrame then
     begin
-      if Tab.Controls[0] is TLaunchExecutableFrame then
-      begin
-        c := Length(Result);
-        SetLength(Result, c + 1);
-        Result[c] := Tab.Controls[0] as TLaunchExecutableFrame;
-      end;
+      c := Length(Result);
+      SetLength(Result, c + 1);
+      Result[c] := sbLaunch.Controls[i] as TLaunchExecutableFrame;
     end;
   end;
 end;
 
 
-procedure TMainForm.CreateLaunchFrames(const SettingsFile: String);
+procedure TMainForm.CreateLaunchFrame(const SettingsFile: String);
 var
   F: TIniFile;
   SectionList: TStringList;
   i: Integer;
-  FrameCaption, FrameParams, FrameSettings, FrameName, FrameIconName: String;
+  FrameCaption, FrameParams, FrameSettings, FrameIconName: String;
   Frame: TLaunchExecutableFrame;
-  Tab: TTabSheet;
   FrameIcon: TIcon;
-  IconIndex: Integer;
 begin
   F := TIniFile.Create(SettingsFile);
   SectionList := TStringList.Create;
@@ -267,13 +254,12 @@ begin
     F.ReadSections(SectionList);
 
     //Создать фреймы запуска
-    for i := 0 to SectionList.Count - 1 do
+    for i := SectionList.Count - 1 downto 0 do
     begin
       //Прочитать параметры фрейма
       FrameCaption := SectionList.Strings[i];
       FrameParams := FLaunchDir + F.ReadString(FrameCaption, 'ParamFile', '');
       FrameSettings := FSettingsDir + F.ReadString(FrameCaption, 'SettingsFile', '');
-      FrameName := F.ReadString(FrameCaption, 'InnerName', '');
       FrameIconName := FLaunchDir + F.ReadString(FrameCaption, 'Icon', '');
 
       //Если нет файла с настройками параметров, то пропуск
@@ -290,28 +276,32 @@ begin
         FrameIcon.Assign(Icon);
       end;
 
-      //Добавим в список иконок
-      IconIndex := ilTab.Count;
-      ilTab.AddIcon(FrameIcon);
-
       //Создать фрейм
       Frame := TLaunchExecutableFrame.Create(FrameCaption, FrameIcon, FrameParams, FrameSettings);
 
-      //Создать закладку
-      Tab := TTabSheet.Create(PageControl);
-      Tab.Name := FrameName;
-      Tab.Caption := FrameCaption;
-      Tab.ImageIndex := IconIndex;
-      Tab.Parent := PageControl;
+      //Настроить выделение
+      Frame.Higlight := not Odd(i);
 
       //Прикрепить фрейм к закладке
-      Frame.Parent := Tab;
+      Frame.Parent := sbLaunch;
     end;
 
   finally
     FrameIcon.Free;
     SectionList.Free;
     F.Free;
+  end;
+end;
+
+
+procedure TMainForm.DestroyLaunchFrame;
+var
+  i: Integer;
+begin
+  for i := sbLaunch.ControlCount - 1 downto 0 do
+  begin
+    if sbLaunch.Controls[i] is TLaunchExecutableFrame then
+      (sbLaunch.Controls[i] as TLaunchExecutableFrame).Free;
   end;
 end;
 
@@ -338,38 +328,13 @@ begin
   FrameList := GetLaunchFrameList;
 
   c := Length(FrameList) - 1;
-  for i := 0 to c do
+  for i := c downto 0 do
   begin
     IconIndex := ilTrayLaunch.Count;
     ilTrayLaunch.AddIcon(FrameList[i].Icon);
 
     AddMenu(miTrayLaunch, FrameList[i], IconIndex, @miTrayLaunchClick);
     AddMenu(miTrayStop, FrameList[i], IconIndex, @miTrayStopClick);
-  end;
-end;
-
-
-procedure TMainForm.DestroyFrames;
-var
-  i: Integer;
-  Tab: TTabSheet;
-begin
-  //Просмотрим все закладки
-  for i := 0 to PageControl.ControlCount - 1 do
-  begin
-    //Пропуск компонентов не Tab
-    if not (PageControl.Controls[i] is TTabSheet) then
-      Continue;
-
-    //Ссылка на закладку
-    Tab := PageControl.Controls[i] as TTabSheet;
-
-    //Найти первый элемент. Всегда должен быть только один
-    if Tab.ControlCount = 1 then
-    begin
-      if Tab.Controls[0] is TTabCommonFrame then
-        Tab.Controls[0].Free;
-    end;
   end;
 end;
 
