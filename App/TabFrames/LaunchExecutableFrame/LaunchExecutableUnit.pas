@@ -373,11 +373,6 @@ begin
   PrepareInterface(FItems);
 
   LoadSettings(FSettingsFile);
-
-
-  FCollapsed := True;
-  imgCollapse.ImageIndex := 0;
-  Height := 45;
 end;
 
 
@@ -468,7 +463,7 @@ begin
     Height := GetTotalFrameHeight;
 
     //Минимальный вид
-    Collapsed := F.ReadBool(SECTION_EXECUTABLE, PARAM_COLLAPSED, False);
+    Collapsed := F.ReadBool(SECTION_EXECUTABLE, PARAM_COLLAPSED, True);
 
   finally
     F.Free;
