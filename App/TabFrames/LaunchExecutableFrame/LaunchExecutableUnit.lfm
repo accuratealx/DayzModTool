@@ -1,7 +1,6 @@
 inherited LaunchExecutableFrame: TLaunchExecutableFrame
   Height = 276
   Width = 600
-  Align = alTop
   ClientHeight = 276
   ClientWidth = 600
   DesignLeft = 574

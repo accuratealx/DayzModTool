@@ -47,6 +47,7 @@ type
     FSettingsFile: String;
     FCollapsed: Boolean;
     FHiglight: Boolean;
+    FOnHeightChange: TNotifyEvent;
 
     procedure ClearInterface;
     procedure PrepareInterface(Items: TStartParamArray);
@@ -60,6 +61,7 @@ type
     procedure LoadItemsSettings(const FileName: String);
 
     procedure OnChangeContentHeight(Sender: TObject);
+    procedure DoHeightChange;
 
     procedure SetCollapsed(ACollapsed: Boolean);
     procedure SetHighlight(AHighlight: Boolean);
@@ -75,6 +77,7 @@ type
     property SettingsFile: String read FSettingsFile;
     property Collapsed: Boolean read FCollapsed write SetCollapsed;
     property Higlight: Boolean read FHiglight write SetHighlight;
+    property OnHeightChange: TNotifyEvent read FOnHeightChange write FOnHeightChange;
   end;
 
   TLaunchExecutableFrameList = array of TLaunchExecutableFrame;
@@ -492,8 +495,21 @@ end;
 
 procedure TLaunchExecutableFrame.OnChangeContentHeight(Sender: TObject);
 begin
+  //Поправить элементы внутри
   ArrangeContentPanelItems;
+
+  //Поправить общую высоту
   Height := GetTotalFrameHeight;
+
+  //Вызвать обработчик изменения размеров
+  DoHeightChange;
+end;
+
+
+procedure TLaunchExecutableFrame.DoHeightChange;
+begin
+  if Assigned(FOnHeightChange) then
+    FOnHeightChange(Self);
 end;
 
 
@@ -514,6 +530,9 @@ begin
     Height := GetTotalFrameHeight;
     imgCollapse.ImageIndex := 1;
   end;
+
+  //Вызвать обработчик изменения высоты
+  DoHeightChange;
 end;
 
 

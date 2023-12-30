@@ -11,7 +11,7 @@ uses
   LaunchExecutableUnit;
 
 const
-  VERSION = '0.3';
+  VERSION = '0.3.1';
 
 type
   TMainForm = class(TForm)
@@ -41,6 +41,7 @@ type
     procedure miMainHideClick(Sender: TObject);
     procedure miExitClick(Sender: TObject);
     procedure miTrayShowHideClick(Sender: TObject);
+    procedure sbLaunchResize(Sender: TObject);
     procedure TrayIconDblClick(Sender: TObject);
     procedure TrayMenuPopup(Sender: TObject);
   private
@@ -60,9 +61,12 @@ type
     procedure CreateLaunchFrame(const SettingsFile: String);
     procedure DestroyLaunchFrame;
     procedure CreateTrayMenuLaunchItems;
+    procedure ArrangeLaunchTabItems;
 
     procedure miTrayLaunchClick(Sender: TObject);
     procedure miTrayStopClick(Sender: TObject);
+
+    procedure OnChangeLaunchContentHeight(Sender: TObject);
   end;
 
 
@@ -128,6 +132,12 @@ begin
     Hide
   else
     Show;
+end;
+
+
+procedure TMainForm.sbLaunchResize(Sender: TObject);
+begin
+  ArrangeLaunchTabItems;
 end;
 
 
@@ -255,7 +265,7 @@ begin
     F.ReadSections(SectionList);
 
     //Создать фреймы запуска
-    for i := SectionList.Count - 1 downto 0 do
+    for i := 0 to SectionList.Count - 1 do
     begin
       //Прочитать параметры фрейма
       FrameCaption := SectionList.Strings[i];
@@ -282,6 +292,9 @@ begin
 
       //Настроить выделение
       Frame.Higlight := not Odd(i);
+
+      //Установить обработчик изменения высоты
+      Frame.OnHeightChange := @OnChangeLaunchContentHeight;
 
       //Прикрепить фрейм к закладке
       Frame.Parent := sbLaunch;
@@ -329,13 +342,35 @@ begin
   FrameList := GetLaunchFrameList;
 
   c := Length(FrameList) - 1;
-  for i := c downto 0 do
+  for i := 0 to c do
   begin
     IconIndex := ilTrayLaunch.Count;
     ilTrayLaunch.AddIcon(FrameList[i].Icon);
 
     AddMenu(miTrayLaunch, FrameList[i], IconIndex, @miTrayLaunchClick);
     AddMenu(miTrayStop, FrameList[i], IconIndex, @miTrayStopClick);
+  end;
+end;
+
+
+procedure TMainForm.ArrangeLaunchTabItems;
+var
+  i, Y: Integer;
+  Frame: TLaunchExecutableFrame;
+begin
+  Y := 0;
+
+  for i := 0 to sbLaunch.ControlCount - 1 do
+  begin
+    if not (sbLaunch.Controls[i] is TLaunchExecutableFrame) then
+      Continue;
+
+    Frame := sbLaunch.Controls[i] as TLaunchExecutableFrame;
+    Frame.Left := 0;
+    Frame.Width := sbLaunch.ClientWidth;
+    Frame.Top := Y;
+
+    Inc(Y, Frame.Height);
   end;
 end;
 
@@ -361,6 +396,12 @@ begin
 
   Frame := TLaunchExecutableFrame((Sender as TMenuItem).Tag);
   Frame.Stop;
+end;
+
+
+procedure TMainForm.OnChangeLaunchContentHeight(Sender: TObject);
+begin
+  ArrangeLaunchTabItems;
 end;
 
 
