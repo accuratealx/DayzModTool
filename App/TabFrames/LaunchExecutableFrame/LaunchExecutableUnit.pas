@@ -38,6 +38,7 @@ type
     procedure btnOpenJournalDirectoryClick(Sender: TObject);
     procedure btnShowCommandLineClick(Sender: TObject);
     procedure btnStopClick(Sender: TObject);
+    procedure edExecutableChange(Sender: TObject);
     procedure sbSelectJournalDirectoryClick(Sender: TObject);
     procedure sbSelectExecutableClick(Sender: TObject);
     procedure btnCollapseClick(Sender: TObject);
@@ -45,6 +46,7 @@ type
     FItems: TStartParamArray;
     FParameterFile: String;
     FSettingsFile: String;
+    FRelativeFileName: String;
     FCollapsed: Boolean;
     FHiglight: Boolean;
     FOnHeightChange: TNotifyEvent;
@@ -54,7 +56,6 @@ type
     procedure ArrangeContentPanelItems;
     function  GetTotalFrameHeight: Integer;
     function  GetCommandLine: String;
-    function  IsExecutableReady: Boolean;
 
     procedure SaveSettings(const FileName: String);
     procedure LoadSettings(const FileName: String);
@@ -65,16 +66,20 @@ type
 
     procedure SetCollapsed(ACollapsed: Boolean);
     procedure SetHighlight(AHighlight: Boolean);
+    procedure SetValue(AValue: String);
   public
-    constructor Create(const ACaption: string; AIcon: TIcon; const ParameterFile: String; const SettingsFile: String); reintroduce;
+    constructor Create(const ACaption: string; AIcon: TIcon; const ParameterFile: String; const SettingsFile: String; RelativeFileName: String); reintroduce;
     destructor Destroy; override;
 
     procedure Launch;
     procedure Stop;
+    procedure FindExecutable;
+    function  ExecatableEnable: Boolean;
 
     property Items: TStartParamArray read FItems;
     property ParameterFile: String read FParameterFile;
     property SettingsFile: String read FSettingsFile;
+    property RelativeFileName: String read FRelativeFileName write FRelativeFileName;
     property Collapsed: Boolean read FCollapsed write SetCollapsed;
     property Higlight: Boolean read FHiglight write SetHighlight;
     property OnHeightChange: TNotifyEvent read FOnHeightChange write FOnHeightChange;
@@ -88,8 +93,8 @@ implementation
 {$R *.lfm}
 
 uses
-  DayZUtils,
-  MemoDialogUnit, SelectDirectoryDialogUnit,
+  DayZUtils, SteamUtils,
+  MemoDialogUnit, SelectDirectoryDialogUnit, YesNoQuestionDialogUnit,
   StartParamSimple,
   ParamFrameCommonUnit,
   ParamFrameSimpleUnit, ParamFrameIntegerUnit, ParamFrameStringUnit,
@@ -137,13 +142,15 @@ procedure TLaunchExecutableFrame.btnStopClick(Sender: TObject);
 var
   Fn: String;
 begin
-  //Проверка на отсутствие файла
-  if not IsExecutableReady then
-    Exit;
-
   //Убить процесс по имени
   Fn := Trim(edExecutable.Text);
   KillProcess(ExtractFileName(Fn));
+end;
+
+
+procedure TLaunchExecutableFrame.edExecutableChange(Sender: TObject);
+begin
+  SetValue(edExecutable.Text);
 end;
 
 
@@ -151,10 +158,6 @@ procedure TLaunchExecutableFrame.btnLaunchClick(Sender: TObject);
 var
   Dir: String;
 begin
-  //Проверка на отсутствие файла
-  if not IsExecutableReady then
-    Exit;
-
   Dir := Trim(edJournalDir.Text);
 
   //Удалить содержимое каталога
@@ -215,9 +218,7 @@ begin
   OpenDialog.InitialDir := Dir;
   OpenDialog.FileName := Fn;
   if OpenDialog.Execute then
-  begin
-    edExecutable.Text := OpenDialog.FileName;
-  end;
+    SetValue(OpenDialog.FileName);
 end;
 
 
@@ -340,38 +341,20 @@ begin
 end;
 
 
-function TLaunchExecutableFrame.IsExecutableReady: Boolean;
-begin
-  Result := False;
-
-  if not FileExists(Trim(edExecutable.Text)) then
-  begin
-    //Открыть диалог выбора файла
-    sbSelectExecutable.Click;
-
-    //Если после действий пользователя файл все таки выбрали
-    if FileExists(Trim(edExecutable.Text)) then
-      Result := True;
-  end
-  else
-    Result := True;
-end;
-
-
-constructor TLaunchExecutableFrame.Create(const ACaption: string; AIcon: TIcon; const ParameterFile: String; const SettingsFile: String);
+constructor TLaunchExecutableFrame.Create(const ACaption: string; AIcon: TIcon; const ParameterFile: String; const SettingsFile: String; RelativeFileName: String);
 begin
   inherited Create(ACaption, AIcon);
+  DoubleBuffered := True;
 
   FParameterFile := ParameterFile;
   FSettingsFile := SettingsFile;
+  FRelativeFileName := RelativeFileName;
 
   FItems := TStartParamArray.Create;
   FItems.LoadFromFile(FParameterFile);
 
   LoadItemsSettings(FSettingsFile);
-
   PrepareInterface(FItems);
-
   LoadSettings(FSettingsFile);
 end;
 
@@ -390,14 +373,54 @@ end;
 
 procedure TLaunchExecutableFrame.Launch;
 begin
-  if btnLaunch.Enabled then
-    btnLaunch.Click;
+  btnLaunch.Click;
 end;
 
 
 procedure TLaunchExecutableFrame.Stop;
 begin
   btnStop.Click;
+end;
+
+
+procedure TLaunchExecutableFrame.FindExecutable;
+var
+  Fn: String;
+  DirSteam, DirTools: String;
+begin
+  //Не искать если уже все найдено
+  if FileExists(Trim(edExecutable.Text)) then
+    Exit;
+
+  //Основные каталоги стима
+  DirSteam := GetSteamInstallPathFromRegistry;
+  DirTools := GetDayZToolsInstallPathFromRegistry;
+
+  //Смотрим в папку с инструментами
+  Fn := DirTools + FRelativeFileName;
+  if FileExists(Fn) then
+  begin
+    edExecutable.Text := Fn;
+    Exit;
+  end;
+
+  //Смотрим в папку common steam
+  Fn := DirSteam + FRelativeFileName;
+  if FileExists(Fn) then
+  begin
+    edExecutable.Text := Fn;
+    Exit;
+  end;
+
+  //Ничего не нашли, спросить пользователя
+  if YesNoQuestionDialogExecute('Вопрос', 'Не удалось автоматически определить путь для "' + Caption + '"' + sLineBreak + 'Указать в ручную?') then
+    sbSelectExecutable.Click;
+end;
+
+
+function TLaunchExecutableFrame.ExecatableEnable: Boolean;
+begin
+  Result := btnLaunch.Enabled;
 end;
 
 
@@ -408,7 +431,6 @@ var
 begin
   F := TIniFile.Create(FileName);
   try
-
     //Настройки запуска
     F.WriteString(SECTION_EXECUTABLE, PARAM_APP, edExecutable.Text);
     F.WriteString(SECTION_EXECUTABLE, PARAM_CMD_LINE, edAdditionalCommandLine.Text);
@@ -437,9 +459,8 @@ var
 begin
   F := TIniFile.Create(FileName);
   try
-
     //Настройки запуска
-    edExecutable.Text := F.ReadString(SECTION_Executable, PARAM_APP, '');
+    SetValue(F.ReadString(SECTION_Executable, PARAM_APP, ''));
     edAdditionalCommandLine.Text := F.ReadString(SECTION_Executable, PARAM_CMD_LINE, '');
 
     //Очистка каталога перед запуском
@@ -478,7 +499,6 @@ var
 begin
   F := TIniFile.Create(FileName);
   try
-
     for i := 0 to FItems.Count - 1 do
       FItems.Item[i].ValueFromString(F.ReadString(SECTION_PARAMS, FItems.Item[i].Name, ''));
 
@@ -546,6 +566,18 @@ begin
     Color := cl3DLight
   else
     Color := clDefault;
+end;
+
+
+procedure TLaunchExecutableFrame.SetValue(AValue: String);
+var
+  IsEnable: Boolean;
+begin
+  edExecutable.Text := Trim(AValue);
+
+  IsEnable := FileExists(edExecutable.Text);
+  btnLaunch.Enabled := IsEnable;
+  btnStop.Enabled := IsEnable;
 end;
 
 

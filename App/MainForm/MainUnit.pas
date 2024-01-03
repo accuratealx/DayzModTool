@@ -11,7 +11,7 @@ uses
   LaunchExecutableUnit;
 
 const
-  VERSION = '0.3.1';
+  VERSION = '0.4';
 
 type
   TMainForm = class(TForm)
@@ -20,13 +20,19 @@ type
     ilTab: TImageList;
     ilTrayLaunch: TImageList;
     MainMenu: TMainMenu;
+    miMainTabLaunchFindExecutables: TMenuItem;
+    miMainSeparator2: TMenuItem;
+    miMainTabLaunchCollapseAll: TMenuItem;
+    miMainTabLaunchExpandAll: TMenuItem;
+    miMainTabLaunch: TMenuItem;
+    miMainTabs: TMenuItem;
     miTrayStop: TMenuItem;
     miTrayLaunch: TMenuItem;
     miTraySeparator2: TMenuItem;
     miMainHide: TMenuItem;
     miMainSeparator1: TMenuItem;
     miMainExit: TMenuItem;
-    miMainFIle: TMenuItem;
+    miMainSystem: TMenuItem;
     miTrayShowHide: TMenuItem;
     miTraySeparator1: TMenuItem;
     miTrayExit: TMenuItem;
@@ -40,6 +46,9 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure miMainHideClick(Sender: TObject);
     procedure miExitClick(Sender: TObject);
+    procedure miMainTabLaunchCollapseAllClick(Sender: TObject);
+    procedure miMainTabLaunchExpandAllClick(Sender: TObject);
+    procedure miMainTabLaunchFindExecutablesClick(Sender: TObject);
     procedure miTrayShowHideClick(Sender: TObject);
     procedure sbLaunchResize(Sender: TObject);
     procedure TrayIconDblClick(Sender: TObject);
@@ -60,13 +69,16 @@ type
     function  GetLaunchFrameList: TLaunchExecutableFrameList;
     procedure CreateLaunchFrame(const SettingsFile: String);
     procedure DestroyLaunchFrame;
-    procedure CreateTrayMenuLaunchItems;
     procedure ArrangeLaunchTabItems;
+    procedure FindExecutables;
+    procedure SetLaunchFrameCollapsed(ACollapsed: Boolean);
+    procedure OnChangeLaunchContentHeight(Sender: TObject);
 
+    procedure CreateTrayMenuLaunchItems;
+    procedure CorrectTrayMenuLaunchItems;
     procedure miTrayLaunchClick(Sender: TObject);
     procedure miTrayStopClick(Sender: TObject);
 
-    procedure OnChangeLaunchContentHeight(Sender: TObject);
   end;
 
 
@@ -126,6 +138,24 @@ begin
 end;
 
 
+procedure TMainForm.miMainTabLaunchCollapseAllClick(Sender: TObject);
+begin
+  SetLaunchFrameCollapsed(True);
+end;
+
+
+procedure TMainForm.miMainTabLaunchExpandAllClick(Sender: TObject);
+begin
+  SetLaunchFrameCollapsed(False);
+end;
+
+
+procedure TMainForm.miMainTabLaunchFindExecutablesClick(Sender: TObject);
+begin
+  FindExecutables;
+end;
+
+
 procedure TMainForm.miTrayShowHideClick(Sender: TObject);
 begin
   if MainForm.Visible then
@@ -159,6 +189,9 @@ begin
     miTrayShowHide.Caption := 'Показать';
     miTrayShowHide.ImageIndex := 2;
   end;
+
+  //Поправить кнопки запуска / останова
+  CorrectTrayMenuLaunchItems;
 end;
 
 
@@ -252,7 +285,7 @@ var
   F: TIniFile;
   SectionList: TStringList;
   i: Integer;
-  FrameCaption, FrameParams, FrameSettings, FrameIconName: String;
+  FrameCaption, FrameParams, FrameSettings, FrameIconName, FrameRelativeFilename: String;
   Frame: TLaunchExecutableFrame;
   FrameIcon: TIcon;
 begin
@@ -272,6 +305,7 @@ begin
       FrameParams := FLaunchDir + F.ReadString(FrameCaption, 'ParamFile', '');
       FrameSettings := FSettingsDir + F.ReadString(FrameCaption, 'SettingsFile', '');
       FrameIconName := FLaunchDir + F.ReadString(FrameCaption, 'Icon', '');
+      FrameRelativeFilename := F.ReadString(FrameCaption, 'RelativeFileName', '');
 
       //Если нет файла с настройками параметров, то пропуск
       if not FileExists(FrameParams) then
@@ -288,7 +322,7 @@ begin
       end;
 
       //Создать фрейм
-      Frame := TLaunchExecutableFrame.Create(FrameCaption, FrameIcon, FrameParams, FrameSettings);
+      Frame := TLaunchExecutableFrame.Create(FrameCaption, FrameIcon, FrameParams, FrameSettings, FrameRelativeFilename);
 
       //Настроить выделение
       Frame.Higlight := not Odd(i);
@@ -317,6 +351,58 @@ begin
     if sbLaunch.Controls[i] is TLaunchExecutableFrame then
       (sbLaunch.Controls[i] as TLaunchExecutableFrame).Free;
   end;
+end;
+
+
+procedure TMainForm.ArrangeLaunchTabItems;
+var
+  i, Y: Integer;
+  Frame: TLaunchExecutableFrame;
+begin
+  Y := 0;
+
+  for i := 0 to sbLaunch.ControlCount - 1 do
+  begin
+    if not (sbLaunch.Controls[i] is TLaunchExecutableFrame) then
+      Continue;
+
+    Frame := sbLaunch.Controls[i] as TLaunchExecutableFrame;
+    Frame.Left := 0;
+    Frame.Width := sbLaunch.ClientWidth;
+    Frame.Top := Y;
+
+    Inc(Y, Frame.Height);
+  end;
+end;
+
+
+procedure TMainForm.FindExecutables;
+var
+  FrameList: TLaunchExecutableFrameList;
+  i: Integer;
+begin
+  FrameList := GetLaunchFrameList;
+
+  //В каждом фрейме вызвать поиск приложения
+  for i := 0 to Length(FrameList) - 1 do
+    FrameList[i].FindExecutable;
+end;
+
+
+procedure TMainForm.SetLaunchFrameCollapsed(ACollapsed: Boolean);
+var
+  FrameList: TLaunchExecutableFrameList;
+  i: Integer;
+begin
+  FrameList := GetLaunchFrameList;
+  for i := Length(FrameList) - 1 downto 0 do
+    FrameList[i].Collapsed := ACollapsed;
+end;
+
+
+procedure TMainForm.OnChangeLaunchContentHeight(Sender: TObject);
+begin
+  ArrangeLaunchTabItems;
 end;
 
 
@@ -353,25 +439,23 @@ begin
 end;
 
 
-procedure TMainForm.ArrangeLaunchTabItems;
-var
-  i, Y: Integer;
-  Frame: TLaunchExecutableFrame;
-begin
-  Y := 0;
+procedure TMainForm.CorrectTrayMenuLaunchItems;
 
-  for i := 0 to sbLaunch.ControlCount - 1 do
+  procedure SetMenuItemsEnabled(Root: TMenuItem);
+  var
+    Frame: TLaunchExecutableFrame;
+    i: Integer;
   begin
-    if not (sbLaunch.Controls[i] is TLaunchExecutableFrame) then
-      Continue;
-
-    Frame := sbLaunch.Controls[i] as TLaunchExecutableFrame;
-    Frame.Left := 0;
-    Frame.Width := sbLaunch.ClientWidth;
-    Frame.Top := Y;
-
-    Inc(Y, Frame.Height);
+    for i := 0 to Root.Count - 1 do
+    begin
+      Frame := TLaunchExecutableFrame(Root.Items[i].Tag);
+      Root.Items[i].Enabled := Frame.ExecatableEnable;
+    end;
   end;
+
+begin
+  SetMenuItemsEnabled(miTrayLaunch);
+  SetMenuItemsEnabled(miTrayStop);
 end;
 
 
@@ -396,12 +480,6 @@ begin
 
   Frame := TLaunchExecutableFrame((Sender as TMenuItem).Tag);
   Frame.Stop;
-end;
-
-
-procedure TMainForm.OnChangeLaunchContentHeight(Sender: TObject);
-begin
-  ArrangeLaunchTabItems;
 end;
 
 

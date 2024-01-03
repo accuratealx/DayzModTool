@@ -25,7 +25,7 @@
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <OtherUnitFiles Value="MainForm;..\Units;ParameterModListFrame;DirectoryPathFrame;..\Units\StartParam;LaunchFrames\DedicatedServerFrame;Dialogs\StartParamDialogForm;Dialogs;TabFrames\LaunchExecutableFrame;TabFrames;Dialogs\MemoDialogForm;Dialogs\SelectDirectoryDialog;Dialogs\MemoDialog;TabFrames\LaunchExecutableFrame\ParamFrames;TabFrames\LaunchExecutableFrame\ParamFrames\ParamFrameDirectory;TabFrames\LaunchExecutableFrame\ParamFrames\ParamFrameDirectoryList;TabFrames\LaunchExecutableFrame\ParamFrames\ParamFrameFile;TabFrames\LaunchExecutableFrame\ParamFrames\ParamFrameInteger;TabFrames\LaunchExecutableFrame\ParamFrames\ParamFrameSimple;TabFrames\LaunchExecutableFrame\ParamFrames\ParamFrameString"/>
+            <OtherUnitFiles Value="MainForm;..\Units;ParameterModListFrame;DirectoryPathFrame;..\Units\StartParam;LaunchFrames\DedicatedServerFrame;Dialogs\StartParamDialogForm;Dialogs;TabFrames\LaunchExecutableFrame;TabFrames;Dialogs\MemoDialogForm;Dialogs\SelectDirectoryDialog;Dialogs\MemoDialog;TabFrames\LaunchExecutableFrame\ParamFrames;TabFrames\LaunchExecutableFrame\ParamFrames\ParamFrameDirectory;TabFrames\LaunchExecutableFrame\ParamFrames\ParamFrameDirectoryList;TabFrames\LaunchExecutableFrame\ParamFrames\ParamFrameFile;TabFrames\LaunchExecutableFrame\ParamFrames\ParamFrameInteger;TabFrames\LaunchExecutableFrame\ParamFrames\ParamFrameSimple;TabFrames\LaunchExecutableFrame\ParamFrames\ParamFrameString;Dialogs\YesNoQuestionDialog"/>
             <UnitOutputDirectory Value="..\~Tmp\$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <CodeGeneration>
@@ -238,6 +238,17 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
       </Unit>
+      <Unit>
+        <Filename Value="..\Units\SteamUtils.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Dialogs\YesNoQuestionDialog\YesNoQuestionDialogUnit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="YesNoQuestionDialogForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -248,7 +259,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="MainForm;..\Units;ParameterModListFrame;DirectoryPathFrame;..\Units\StartParam;LaunchFrames\DedicatedServerFrame;Dialogs\StartParamDialogForm;Dialogs;TabFrames\LaunchExecutableFrame;TabFrames;Dialogs\MemoDialogForm;Dialogs\SelectDirectoryDialog;Dialogs\MemoDialog;TabFrames\LaunchExecutableFrame\ParamFrames;TabFrames\LaunchExecutableFrame\ParamFrames\ParamFrameDirectory;TabFrames\LaunchExecutableFrame\ParamFrames\ParamFrameDirectoryList;TabFrames\LaunchExecutableFrame\ParamFrames\ParamFrameFile;TabFrames\LaunchExecutableFrame\ParamFrames\ParamFrameInteger;TabFrames\LaunchExecutableFrame\ParamFrames\ParamFrameSimple;TabFrames\LaunchExecutableFrame\ParamFrames\ParamFrameString"/>
+      <OtherUnitFiles Value="MainForm;..\Units;ParameterModListFrame;DirectoryPathFrame;..\Units\StartParam;LaunchFrames\DedicatedServerFrame;Dialogs\StartParamDialogForm;Dialogs;TabFrames\LaunchExecutableFrame;TabFrames;Dialogs\MemoDialogForm;Dialogs\SelectDirectoryDialog;Dialogs\MemoDialog;TabFrames\LaunchExecutableFrame\ParamFrames;TabFrames\LaunchExecutableFrame\ParamFrames\ParamFrameDirectory;TabFrames\LaunchExecutableFrame\ParamFrames\ParamFrameDirectoryList;TabFrames\LaunchExecutableFrame\ParamFrames\ParamFrameFile;TabFrames\LaunchExecutableFrame\ParamFrames\ParamFrameInteger;TabFrames\LaunchExecutableFrame\ParamFrames\ParamFrameSimple;TabFrames\LaunchExecutableFrame\ParamFrames\ParamFrameString;Dialogs\YesNoQuestionDialog"/>
       <UnitOutputDirectory Value="..\~Tmp\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Parsing>

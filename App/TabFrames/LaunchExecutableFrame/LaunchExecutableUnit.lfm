@@ -24,6 +24,7 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
       Width = 110
       Anchors = [akTop, akRight]
       Caption = 'Запустить'
+      Enabled = False
       Flat = True
       Glyph.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
@@ -122,6 +123,7 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
+      OnChange = edExecutableChange
     end
     object sbSelectExecutable: TSpeedButton
       Cursor = crHandPoint
@@ -408,6 +410,7 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
       Width = 110
       Anchors = [akTop, akRight]
       Caption = 'Остановить'
+      Enabled = False
       Flat = True
       Glyph.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
