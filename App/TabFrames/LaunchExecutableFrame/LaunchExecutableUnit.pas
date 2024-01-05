@@ -388,7 +388,7 @@ var
   Fn: String;
   DirSteam, DirTools: String;
 begin
-  //Не искать если уже все найдено
+  //Не искать, если уже все найдено
   if FileExists(Trim(edExecutable.Text)) then
     Exit;
 
@@ -413,7 +413,7 @@ begin
   end;
 
   //Ничего не нашли, спросить пользователя
-  if YesNoQuestionDialogExecute('Вопрос', 'Не удалось автоматически определить путь для "' + Caption + '"' + sLineBreak + 'Указать в ручную?') then
+  if YesNoQuestionDialogExecute('Вопрос', 'Не удалось автоматически определить путь для "' + Caption + '"' + sLineBreak + 'Указать вручную?') then
     sbSelectExecutable.Click;
 end;
 
