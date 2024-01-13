@@ -38,7 +38,9 @@ type
     miTrayExit: TMenuItem;
     PageControl: TPageControl;
     sbLaunch: TScrollBox;
+    sbDirectory: TScrollBox;
     tabLaunch: TTabSheet;
+    tabDirectory: TTabSheet;
     TrayMenu: TPopupMenu;
     TrayIcon: TTrayIcon;
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
