@@ -8,10 +8,10 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, Windows,
   ExtCtrls, ComCtrls,
-  LaunchExecutableUnit;
+  LaunchExecutableUnit, DirectoryUnit, DirectoryItemUnit, YesNoQuestionDialogUnit;
 
 const
-  VERSION = '0.4';
+  VERSION = '0.5';
 
 type
   TMainForm = class(TForm)
@@ -19,7 +19,11 @@ type
     ilMainMenu: TImageList;
     ilTab: TImageList;
     ilTrayLaunch: TImageList;
+    ilTrayDirectory: TImageList;
     MainMenu: TMainMenu;
+    miMainTabDirectoryEraseIncorrect: TMenuItem;
+    miMainTabDirectory: TMenuItem;
+    miTrayDirectory: TMenuItem;
     miMainTabLaunchFindExecutables: TMenuItem;
     miMainSeparator2: TMenuItem;
     miMainTabLaunchCollapseAll: TMenuItem;
@@ -38,7 +42,6 @@ type
     miTrayExit: TMenuItem;
     PageControl: TPageControl;
     sbLaunch: TScrollBox;
-    sbDirectory: TScrollBox;
     tabLaunch: TTabSheet;
     tabDirectory: TTabSheet;
     TrayMenu: TPopupMenu;
@@ -48,6 +51,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure miMainHideClick(Sender: TObject);
     procedure miExitClick(Sender: TObject);
+    procedure miMainTabDirectoryEraseIncorrectClick(Sender: TObject);
     procedure miMainTabLaunchCollapseAllClick(Sender: TObject);
     procedure miMainTabLaunchExpandAllClick(Sender: TObject);
     procedure miMainTabLaunchFindExecutablesClick(Sender: TObject);
@@ -62,6 +66,10 @@ type
     FMainDir: String;
     FSettingsDir: String;
     FLaunchDir: String;
+    FDirectoryDir: String;
+
+    //Закладки
+    FDirectoryFrame: TDirectoryFrame;
 
     procedure Init;
     procedure Done;
@@ -75,12 +83,16 @@ type
     procedure FindExecutables;
     procedure SetLaunchFrameCollapsed(ACollapsed: Boolean);
     procedure OnChangeLaunchContentHeight(Sender: TObject);
+    procedure DeleteIncorrectDirectory;
 
     procedure CreateTrayMenuLaunchItems;
     procedure CorrectTrayMenuLaunchItems;
     procedure miTrayLaunchClick(Sender: TObject);
     procedure miTrayStopClick(Sender: TObject);
 
+    procedure CreateTrayMenuDirectoryItems;
+    procedure DestroyTrayMenuDirectoryItems;
+    procedure miTrayDirectoryClick(Sender: TObject);
   end;
 
 
@@ -92,8 +104,7 @@ implementation
 {$R *.lfm}
 
 uses
-  IniFiles,
-  TabCommonUnit;
+  IniFiles;
 
 const
   CONFIG_FILE_NAME = 'DayZConfig.ini';
@@ -137,6 +148,12 @@ procedure TMainForm.miExitClick(Sender: TObject);
 begin
   FCloseApplication := True;
   Close;
+end;
+
+
+procedure TMainForm.miMainTabDirectoryEraseIncorrectClick(Sender: TObject);
+begin
+  DeleteIncorrectDirectory;
 end;
 
 
@@ -194,6 +211,9 @@ begin
 
   //Поправить кнопки запуска / останова
   CorrectTrayMenuLaunchItems;
+
+  //Подготовить кнопки открытия каталогов
+  CreateTrayMenuDirectoryItems;
 end;
 
 
@@ -201,14 +221,22 @@ procedure TMainForm.Init;
 begin
   Caption := 'DayZ Mod Tool  v' + VERSION;
 
+  TrayIcon.Hint := Caption;
+
   FMainDir := ExtractFilePath(ParamStr(0));
   FSettingsDir := FMainDir + 'Settings\';
   ForceDirectories(FSettingsDir);
   FLaunchDir := FMainDir + 'Tabs\Launch\';
   ForceDirectories(FLaunchDir);
+  FDirectoryDir := FMainDir + 'Tabs\Directory\';
+  ForceDirectories(FDirectoryDir);
 
   //Создать закладки запуска
   CreateLaunchFrame(FLaunchDir + 'List.ini');
+
+  //Закладка с каталогами
+  FDirectoryFrame := TDirectoryFrame.Create(FSettingsDir + 'Directory.ini', FDirectoryDir);
+  FDirectoryFrame.Parent := tabDirectory;
 
   //Создать элементы запуска/останова приложений
   CreateTrayMenuLaunchItems;
@@ -219,6 +247,8 @@ end;
 
 procedure TMainForm.Done;
 begin
+  FDirectoryFrame.Free;
+
   DestroyLaunchFrame;
 
   SaveFormSettings;
@@ -408,6 +438,13 @@ begin
 end;
 
 
+procedure TMainForm.DeleteIncorrectDirectory;
+begin
+  if YesNoQuestionDialogExecute('Вопрос', 'Удалить несуществующие каталоги?') then
+    FDirectoryFrame.DeleteIncorrectDirectory;
+end;
+
+
 procedure TMainForm.CreateTrayMenuLaunchItems;
 
   procedure AddMenu(RootMenu: TMenuItem; Frame: TLaunchExecutableFrame; IconIndex: Integer; Proc: TNotifyEvent);
@@ -482,6 +519,54 @@ begin
 
   Frame := TLaunchExecutableFrame((Sender as TMenuItem).Tag);
   Frame.Stop;
+end;
+
+
+procedure TMainForm.CreateTrayMenuDirectoryItems;
+
+  procedure AddMenu(RootMenu: TMenuItem; Frame: TDirectoryItemFrame; IconIndex: Integer);
+  var
+    MenuItem: TMenuItem;
+  begin
+    MenuItem := TMenuItem.Create(RootMenu);
+    MenuItem.Caption := Frame.Caption;
+    MenuItem.Enabled := Frame.IsPathCorrect;
+    MenuItem.ImageIndex := IconIndex;
+    MenuItem.OnClick := @miTrayDirectoryClick;
+    MenuItem.Tag := PtrUInt(Frame);
+
+    RootMenu.Add(MenuItem);
+  end;
+
+var
+  i: Integer;
+begin
+  DestroyTrayMenuDirectoryItems;
+  ilTrayDirectory.Clear;
+
+  for i := 0 to Length(FDirectoryFrame.Frames) - 1 do
+  begin
+    ilTrayDirectory.AddIcon(FDirectoryFrame.Frames[i].Icon);
+    AddMenu(miTrayDirectory, FDirectoryFrame.Frames[i], i);
+  end;
+end;
+
+
+procedure TMainForm.DestroyTrayMenuDirectoryItems;
+begin
+  miTrayDirectory.Clear;
+end;
+
+
+procedure TMainForm.miTrayDirectoryClick(Sender: TObject);
+var
+  Frame: TDirectoryItemFrame;
+begin
+  if not (Sender is TMenuItem) then
+    Exit;
+
+  Frame := TDirectoryItemFrame((Sender as TMenuItem).Tag);
+  Frame.OpenDirectory;
 end;
 
 
