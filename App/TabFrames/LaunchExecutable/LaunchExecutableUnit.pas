@@ -7,10 +7,10 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Dialogs, ExtCtrls, Buttons,
   StdCtrls, Graphics, IniFiles,
-  TabCommonUnit, StartParamArray;
+  StartParamArray;
 
 type
-  TLaunchExecutableFrame = class(TTabCommonFrame)
+  TLaunchExecutableFrame = class(TFrame)
     btnClearJournal: TSpeedButton;
     btnExecutableOpenDirectory: TSpeedButton;
     btnStop: TSpeedButton;
@@ -43,6 +43,8 @@ type
     procedure sbSelectExecutableClick(Sender: TObject);
     procedure btnCollapseClick(Sender: TObject);
   private
+    FCaption: String;
+    FIcon: TIcon;
     FItems: TStartParamArray;
     FParameterFile: String;
     FSettingsFile: String;
@@ -64,6 +66,7 @@ type
     procedure OnChangeContentHeight(Sender: TObject);
     procedure DoHeightChange;
 
+    procedure SetIcon(AIcon: TIcon);
     procedure SetCollapsed(ACollapsed: Boolean);
     procedure SetHighlight(AHighlight: Boolean);
     procedure SetValue(AValue: String);
@@ -76,6 +79,8 @@ type
     procedure FindExecutable;
     function  ExecatableEnable: Boolean;
 
+    property Icon: TIcon read FIcon write SetIcon;
+    property Caption: String read FCaption write FCaption;
     property Items: TStartParamArray read FItems;
     property ParameterFile: String read FParameterFile;
     property SettingsFile: String read FSettingsFile;
@@ -343,7 +348,11 @@ end;
 
 constructor TLaunchExecutableFrame.Create(const ACaption: string; AIcon: TIcon; const ParameterFile: String; const SettingsFile: String; RelativeFileName: String);
 begin
-  inherited Create(ACaption, AIcon);
+  inherited Create(nil);
+  FCaption := ACaption;
+  FIcon := TIcon.Create;
+  FIcon.Assign(AIcon);
+
   DoubleBuffered := True;
 
   FParameterFile := ParameterFile;
@@ -367,6 +376,7 @@ begin
 
   ClearInterface;
 
+  FIcon.Free;
   inherited Destroy;
 end;
 
@@ -525,6 +535,12 @@ procedure TLaunchExecutableFrame.DoHeightChange;
 begin
   if Assigned(FOnHeightChange) then
     FOnHeightChange(Self);
+end;
+
+
+procedure TLaunchExecutableFrame.SetIcon(AIcon: TIcon);
+begin
+  FIcon.Assign(AIcon);
 end;
 
 
