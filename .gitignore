@@ -1,3 +1,5 @@
 ~Tmp
 App/*.lps
 Doc
+/Bin/Settings
+/Bin/DayZModTool.exe
