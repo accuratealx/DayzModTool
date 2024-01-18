@@ -84,7 +84,7 @@ end;
 
 function TStartParamDirectory.GetCommandLine: String;
 begin
-  Result := inherited GetCommandLine + '="' + FValue + '"';
+  Result := '"' + inherited GetCommandLine + '=' + FValue + '"';
 end;
 
 

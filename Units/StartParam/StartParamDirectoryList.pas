@@ -295,7 +295,7 @@ begin
   else
     APrefix := '';
 
-  Result := inherited GetCommandLine + '="' + FDirectoryList.GetCommandLine(APrefix) + '"';
+  Result := '"' + inherited GetCommandLine + '=' + FDirectoryList.GetCommandLine(APrefix) + '"';
 end;
 
 
