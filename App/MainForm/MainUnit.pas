@@ -21,6 +21,9 @@ type
     ilTrayLaunch: TImageList;
     ilTrayDirectory: TImageList;
     MainMenu: TMainMenu;
+    miMainSeparator3: TMenuItem;
+    miMainTabDirectoryEraseAll: TMenuItem;
+    miMainTabDirectoryAddDefault: TMenuItem;
     miMainTabDirectoryEraseIncorrect: TMenuItem;
     miMainTabDirectory: TMenuItem;
     miTrayDirectory: TMenuItem;
@@ -51,6 +54,8 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure miMainHideClick(Sender: TObject);
     procedure miExitClick(Sender: TObject);
+    procedure miMainTabDirectoryAddDefaultClick(Sender: TObject);
+    procedure miMainTabDirectoryEraseAllClick(Sender: TObject);
     procedure miMainTabDirectoryEraseIncorrectClick(Sender: TObject);
     procedure miMainTabLaunchCollapseAllClick(Sender: TObject);
     procedure miMainTabLaunchExpandAllClick(Sender: TObject);
@@ -148,6 +153,18 @@ procedure TMainForm.miExitClick(Sender: TObject);
 begin
   FCloseApplication := True;
   Close;
+end;
+
+
+procedure TMainForm.miMainTabDirectoryAddDefaultClick(Sender: TObject);
+begin
+  FDirectoryFrame.AddStandartDirectory;
+end;
+
+
+procedure TMainForm.miMainTabDirectoryEraseAllClick(Sender: TObject);
+begin
+  FDirectoryFrame.DeleteAll;
 end;
 
 

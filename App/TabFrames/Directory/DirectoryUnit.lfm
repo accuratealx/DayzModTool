@@ -4,6 +4,7 @@ inherited DirectoryFrame: TDirectoryFrame
   Align = alClient
   ClientHeight = 120
   ClientWidth = 345
+  OnClick = FrameClick
   DesignLeft = 564
   DesignTop = 285
   object pnlTools: TPanel[0]

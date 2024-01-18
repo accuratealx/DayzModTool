@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, Buttons, IniFiles,
-  DirectoryItemUnit;
+  SteamUtils, DirectoryItemUnit;
 
 type
   TDirectoryFrame = class(TFrame)
@@ -38,6 +38,7 @@ type
 
     function  GetSelectedDirectoryFrame: TDirectoryItemFrame;
     function  GetDirectoryFrameIndex(Frame: TDirectoryItemFrame): Integer;
+    function  IsDirectoryFrameExist(APath: String): Boolean;
     procedure CorrectToolButtons;
 
     procedure SaveSettings(const FileName: String);
@@ -50,7 +51,8 @@ type
     destructor  Destroy; override;
 
     procedure DeleteIncorrectDirectory;
-    //procedure AddStandartDirectory;
+    procedure AddStandartDirectory;
+    procedure DeleteAll;
 
     property Frames: TDirectoryItemFrameArray read FFrames;
   end;
@@ -254,15 +256,12 @@ end;
 
 procedure TDirectoryFrame.ArrangeDirectoryFrames;
 var
-  i, c, Y: Integer;
+  i, Y: Integer;
   Frame: TDirectoryItemFrame;
 begin
-  c := Length(FFrames) - 1;
-
-  //Y := pnlTools.Height;
   Y := 0;
 
-  for i := 0 to c do
+  for i := 0 to Length(FFrames) - 1 do
   begin
     Frame := FFrames[i];
 
@@ -270,7 +269,7 @@ begin
     Frame.Parent := sbContent;
     Frame.Left := 0;
     Frame.Top := Y;
-    Frame.Width := ClientWidth;
+    Frame.Width := sbContent.ClientWidth;
 
     Inc(Y, Frame.Height);
   end;
@@ -333,6 +332,20 @@ begin
   begin
     if FFrames[i] = Frame then
       Exit(i);
+  end;
+end;
+
+
+function TDirectoryFrame.IsDirectoryFrameExist(APath: String): Boolean;
+var
+  i: Integer;
+begin
+  Result := False;
+
+  for i := 0 to Length(FFrames) - 1 do
+  begin
+    if LowerCase(ExcludeTrailingBackslash(FFrames[i].Path)) = LowerCase(ExcludeTrailingBackslash(APath)) then
+      Exit(True);
   end;
 end;
 
@@ -471,6 +484,71 @@ begin
 
   //Сохранить настройки
   SaveSettings(FSettingsFile);
+end;
+
+
+procedure TDirectoryFrame.AddStandartDirectory;
+
+  function GetPathFromString(const Path: String): String;
+  var
+    List: TStringList;
+  begin
+    Result := '';
+    List := TStringList.Create;
+    List.LineBreak := ';;;';
+    List.Text := Path;
+    if List.Count > 1 then
+      Result := List[1];
+    List.Free;
+  end;
+
+var
+  List: TStringList;
+  i: Integer;
+  Frame: TDirectoryItemFrame;
+begin
+  List := TStringList.Create;
+
+  //Получить список каталогов
+  GetSteamDayZDirectoryList(List);
+
+  for i := 0 to List.Count - 1 do
+  begin
+    //Пропуск существующих
+    if IsDirectoryFrameExist(GetPathFromString(List.Strings[i])) then
+      Continue;
+
+    //Создать элемент каталога
+    Frame := TDirectoryItemFrame.Create(FIconDirectory, List.Strings[i]);
+    Frame.OnSelect := @OnItemSelect;
+
+    //Добавить в массив
+    AddDirectoryFrame(Frame);
+  end;
+
+  //Сохранить настройки
+  SaveSettings(FSettingsFile);
+
+  //Упорядочить фреймы
+  ArrangeDirectoryFrames;
+
+  List.Free;
+end;
+
+
+procedure TDirectoryFrame.DeleteAll;
+begin
+  if YesNoQuestionDialogExecute('Вопрос', 'Удалить все каталоги? Действие необратимо.') then
+  begin
+    //Удалить все каталоги
+    ClearDirectoryFrames;
+
+    //Сохранить настройки
+    SaveSettings(FSettingsFile);
+
+    //Поправить панель кнопок
+    CorrectToolButtons;
+  end;
 end;
 
 
