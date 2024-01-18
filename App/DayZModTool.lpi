@@ -48,6 +48,40 @@
           </Linking>
         </CompilerOptions>
       </Item>
+      <Item Name="Release_x32">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="..\Bin\DayZModTool_x32"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <OtherUnitFiles Value="MainForm;..\Units;ParameterModListFrame;DirectoryPathFrame;..\Units\StartParam;LaunchFrames\DedicatedServerFrame;Dialogs\StartParamDialogForm;Dialogs;Dialogs\MemoDialogForm;Dialogs\SelectDirectoryDialog;Dialogs\MemoDialog;Dialogs\YesNoQuestionDialog;TabFrames\Directory;TabFrames\LaunchExecutable;TabFrames\LaunchExecutable\ParamFrames;TabFrames\LaunchExecutable\ParamFrames\ParamFrameDirectory;TabFrames\LaunchExecutable\ParamFrames\ParamFrameDirectoryList;TabFrames\LaunchExecutable\ParamFrames\ParamFrameFile;TabFrames\LaunchExecutable\ParamFrames\ParamFrameInteger;TabFrames\LaunchExecutable\ParamFrames\ParamFrameSimple;TabFrames\LaunchExecutable\ParamFrames\ParamFrameString;TabFrames\Directory\DirectoryItem;Dialogs\IconSelectorDialog;Dialogs\PathEditorDialog;Dialogs\DirectoryEditorDialog"/>
+            <UnitOutputDirectory Value="..\~Tmp\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <CodeGeneration>
+            <SmartLinkUnit Value="True"/>
+            <TargetCPU Value="i386"/>
+            <TargetOS Value="win32"/>
+            <Optimizations>
+              <OptimizationLevel Value="3"/>
+            </Optimizations>
+          </CodeGeneration>
+          <Linking>
+            <Debugging>
+              <GenerateDebugInfo Value="False"/>
+              <RunWithoutDebug Value="True"/>
+            </Debugging>
+            <LinkSmart Value="True"/>
+            <Options>
+              <Win32>
+                <GraphicApplication Value="True"/>
+              </Win32>
+            </Options>
+          </Linking>
+        </CompilerOptions>
+      </Item>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
