@@ -4,10 +4,13 @@ unit SteamUtils;
 
 interface
 
+uses
+  Classes;
 
-function GetSteamInstallPathFromRegistry: String;
-function GetDayZToolsInstallPathFromRegistry: String;
 
+function  GetSteamInstallPathFromRegistry: String;
+function  GetDayZToolsInstallPathFromRegistry: String;
+procedure GetSteamDayZDirectoryList(List: TStringList);
 
 implementation
 
@@ -59,6 +62,44 @@ begin
   finally
     R.Free;
   end;
+end;
+
+
+//Формат списка [Заголовок];[Путь]
+procedure GetSteamDayZDirectoryList(List: TStringList);
+
+  procedure AddToResult(const Caption, Path: String; const Icon: String = ''; Force: Boolean = False);
+  const
+    SEPARATOR = ';;;';
+  begin
+    if Force or DirectoryExists(Path) then
+      List.Add(Caption + SEPARATOR + Path + SEPARATOR + Icon);
+  end;
+
+var
+  SteamPath, DayZToolsPath: String;
+begin
+  List.Clear;
+
+  SteamPath := GetSteamInstallPathFromRegistry;
+  DayZToolsPath := GetDayZToolsInstallPathFromRegistry;
+
+  //Каталоги стим
+  if DirectoryExists(SteamPath) then
+  begin
+    AddToResult('DayZ клиент', SteamPath + 'DayZ', 'Launch.Client.ico');
+    AddToResult('DayZ сервер', SteamPath + 'DayZServer', 'Launch.DedicatedServer.ico');
+  end;
+
+  //Кататлоги Dayz Tools
+  if DirectoryExists(DayZToolsPath) then
+  begin
+    AddToResult('DayZ утилиты', DayZToolsPath + 'Bin', 'Launch.DayZTools.ico');
+    AddToResult('DayZ журналы утилит', DayZToolsPath + 'Bin\Logs', 'Folder.Page.ico');
+  end;
+
+  //Папка логов DayZ
+  AddToResult('DayZ журналы', GetEnvironmentVariable('USERPROFILE') + '\AppData\Local\DayZ', 'Folder.Page.ico', True);
 end;
 
 
