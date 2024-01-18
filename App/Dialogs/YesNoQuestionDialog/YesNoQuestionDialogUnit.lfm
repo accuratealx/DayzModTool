@@ -1,10 +1,12 @@
 inherited YesNoQuestionDialogForm: TYesNoQuestionDialogForm
-  Height = 105
+  Height = 80
   Width = 470
-  ClientHeight = 105
+  BorderStyle = bsSingle
+  ClientHeight = 80
   ClientWidth = 470
+  Constraints.MinWidth = 270
   inherited pnlButton: TPanel
-    Top = 60
+    Top = 35
     Width = 470
     ClientWidth = 470
     OnResize = pnlButtonResize
@@ -100,18 +102,23 @@ inherited YesNoQuestionDialogForm: TYesNoQuestionDialogForm
     end
   end
   inherited pnlContent: TPanel
-    Height = 60
+    Height = 35
     Width = 470
-    ClientHeight = 60
+    ClientHeight = 35
     ClientWidth = 470
     object lblText: TLabel[0]
       Left = 10
-      Height = 40
+      Height = 15
       Top = 10
-      Width = 450
+      Width = 43
       Alignment = taCenter
-      Anchors = [akTop, akLeft, akRight]
       AutoSize = False
+      Caption = 'Привет'
+      Font.CharSet = RUSSIAN_CHARSET
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentFont = False
       WordWrap = True
     end
   end

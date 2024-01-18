@@ -5,7 +5,7 @@ unit YesNoQuestionDialogUnit;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons, StdCtrls, Math,
   DialogCommonUnit;
 
 type
@@ -17,6 +17,7 @@ type
     procedure btnYesClick(Sender: TObject);
     procedure pnlButtonResize(Sender: TObject);
   private
+    procedure GetTextSize(const Str: String; out AWidth, AHeight: Integer);
     procedure PrepareInterface(const ACaption, AText: String);
   public
 
@@ -54,6 +55,34 @@ begin
   btnNo.Left := btnYes.Left + btnYes.Width + SPACE;
 end;
 
+
+procedure TYesNoQuestionDialogForm.GetTextSize(const Str: String; out AWidth, AHeight: Integer);
+var
+  List: TStringList;
+  tw, th, i: Integer;
+begin
+  AWidth := 0;
+  AHeight := 0;
+
+  th := lblText.Canvas.GetTextHeight('W');
+
+  List := TStringList.Create;
+  List.LineBreak := sLineBreak;
+  List.Text := Str;
+
+  for i := 0 to List.Count - 1 do
+  begin
+    tw := lblText.Canvas.GetTextWidth(List.Strings[i]);
+    if tw > AWidth then
+      AWidth := tw;
+  end;
+
+  AHeight := th * List.Count;
+
+  List.Free;
+end;
+
+
 procedure TYesNoQuestionDialogForm.btnYesClick(Sender: TObject);
 begin
   Tag := 1;
@@ -68,9 +97,28 @@ end;
 
 
 procedure TYesNoQuestionDialogForm.PrepareInterface(const ACaption, AText: String);
+const
+  SPACE = 10;
+var
+  W, H: Integer;
 begin
   Caption := ACaption;
+
+  //Размеры текста
+  GetTextSize(AText, W, H);
+
+  //Ширина диалога
+  Width := Max(btnYes.Width + btnNo.Width + SPACE * 3, W + SPACE * 4);
+
+  //Высота диалога
+  Height := pnlButton.Height + H + SPACE * 2;
+
+  //Настроить текст
   lblText.Caption := AText;
+  lblText.Left := (ClientWidth - W) div 2;
+  lblText.Top := 10;
+  lblText.Width := W;
+  lblText.Height := H;
 end;
 
 
