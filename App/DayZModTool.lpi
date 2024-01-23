@@ -25,7 +25,7 @@
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <OtherUnitFiles Value="MainForm;..\Units;ParameterModListFrame;DirectoryPathFrame;..\Units\StartParam;LaunchFrames\DedicatedServerFrame;Dialogs\StartParamDialogForm;Dialogs;Dialogs\MemoDialogForm;Dialogs\SelectDirectoryDialog;Dialogs\MemoDialog;Dialogs\YesNoQuestionDialog;TabFrames\Directory;TabFrames\LaunchExecutable;TabFrames\LaunchExecutable\ParamFrames;TabFrames\LaunchExecutable\ParamFrames\ParamFrameDirectory;TabFrames\LaunchExecutable\ParamFrames\ParamFrameDirectoryList;TabFrames\LaunchExecutable\ParamFrames\ParamFrameFile;TabFrames\LaunchExecutable\ParamFrames\ParamFrameInteger;TabFrames\LaunchExecutable\ParamFrames\ParamFrameSimple;TabFrames\LaunchExecutable\ParamFrames\ParamFrameString;TabFrames\Directory\DirectoryItem;Dialogs\IconSelectorDialog;Dialogs\PathEditorDialog;Dialogs\DirectoryEditorDialog"/>
+            <OtherUnitFiles Value="MainForm;..\Units;ParameterModListFrame;DirectoryPathFrame;..\Units\StartParam;LaunchFrames\DedicatedServerFrame;Dialogs\StartParamDialogForm;Dialogs;Dialogs\MemoDialogForm;Dialogs\SelectDirectoryDialog;Dialogs\MemoDialog;Dialogs\YesNoQuestionDialog;TabFrames\Directory;TabFrames\Launch;TabFrames\Launch\ParamFrames;TabFrames\Launch\ParamFrames\ParamFrameDirectory;TabFrames\Launch\ParamFrames\ParamFrameDirectoryList;TabFrames\Launch\ParamFrames\ParamFrameFile;TabFrames\Launch\ParamFrames\ParamFrameInteger;TabFrames\Launch\ParamFrames\ParamFrameSimple;TabFrames\Launch\ParamFrames\ParamFrameString;TabFrames\Directory\DirectoryItem;Dialogs\IconSelectorDialog;Dialogs\PathEditorDialog;Dialogs\DirectoryEditorDialog"/>
             <UnitOutputDirectory Value="..\~Tmp\$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <CodeGeneration>
@@ -57,7 +57,7 @@
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <OtherUnitFiles Value="MainForm;..\Units;ParameterModListFrame;DirectoryPathFrame;..\Units\StartParam;LaunchFrames\DedicatedServerFrame;Dialogs\StartParamDialogForm;Dialogs;Dialogs\MemoDialogForm;Dialogs\SelectDirectoryDialog;Dialogs\MemoDialog;Dialogs\YesNoQuestionDialog;TabFrames\Directory;TabFrames\LaunchExecutable;TabFrames\LaunchExecutable\ParamFrames;TabFrames\LaunchExecutable\ParamFrames\ParamFrameDirectory;TabFrames\LaunchExecutable\ParamFrames\ParamFrameDirectoryList;TabFrames\LaunchExecutable\ParamFrames\ParamFrameFile;TabFrames\LaunchExecutable\ParamFrames\ParamFrameInteger;TabFrames\LaunchExecutable\ParamFrames\ParamFrameSimple;TabFrames\LaunchExecutable\ParamFrames\ParamFrameString;TabFrames\Directory\DirectoryItem;Dialogs\IconSelectorDialog;Dialogs\PathEditorDialog;Dialogs\DirectoryEditorDialog"/>
+            <OtherUnitFiles Value="MainForm;..\Units;ParameterModListFrame;DirectoryPathFrame;..\Units\StartParam;LaunchFrames\DedicatedServerFrame;Dialogs\StartParamDialogForm;Dialogs;Dialogs\MemoDialogForm;Dialogs\SelectDirectoryDialog;Dialogs\MemoDialog;Dialogs\YesNoQuestionDialog;TabFrames\Directory;TabFrames\Launch;TabFrames\Launch\ParamFrames;TabFrames\Launch\ParamFrames\ParamFrameDirectory;TabFrames\Launch\ParamFrames\ParamFrameDirectoryList;TabFrames\Launch\ParamFrames\ParamFrameFile;TabFrames\Launch\ParamFrames\ParamFrameInteger;TabFrames\Launch\ParamFrames\ParamFrameSimple;TabFrames\Launch\ParamFrames\ParamFrameString;TabFrames\Directory\DirectoryItem;Dialogs\IconSelectorDialog;Dialogs\PathEditorDialog;Dialogs\DirectoryEditorDialog"/>
             <UnitOutputDirectory Value="..\~Tmp\$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <CodeGeneration>
@@ -191,56 +191,66 @@
         <ResourceBaseClass Value="Frame"/>
       </Unit>
       <Unit>
-        <Filename Value="TabFrames\LaunchExecutable\LaunchExecutableUnit.pas"/>
+        <Filename Value="TabFrames\Launch\LaunchUnit.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="LaunchExecutableFrame"/>
+        <ComponentName Value="LaunchFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
       </Unit>
       <Unit>
-        <Filename Value="TabFrames\LaunchExecutable\ParamFrames\ParamFrameCommonUnit.pas"/>
+        <Filename Value="TabFrames\Launch\ParamFrames\ParamFrameCommonUnit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ParamFrameCommonFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
       </Unit>
       <Unit>
-        <Filename Value="TabFrames\LaunchExecutable\ParamFrames\ParamFrameDirectory\ParamFrameDirectoryUnit.pas"/>
+        <Filename Value="TabFrames\Launch\ParamFrames\ParamFrameDirectory\ParamFrameDirectoryUnit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ParamFrameDirectoryFrame"/>
-      </Unit>
-      <Unit>
-        <Filename Value="TabFrames\LaunchExecutable\ParamFrames\ParamFrameDirectoryList\ParamFrameDirectoryListModEditorUnit.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="ParamFrameDirectoryListModEditorFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
       </Unit>
       <Unit>
-        <Filename Value="TabFrames\LaunchExecutable\ParamFrames\ParamFrameDirectoryList\ParamFrameDirectoryListUnit.pas"/>
+        <Filename Value="TabFrames\Launch\ParamFrames\ParamFrameDirectoryList\ParamFrameDirectoryListModEditorUnit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ParamFrameDirectoryListModEditorFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="TabFrames\Launch\ParamFrames\ParamFrameDirectoryList\ParamFrameDirectoryListUnit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ParamFrameDirectoryListFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
       </Unit>
       <Unit>
-        <Filename Value="TabFrames\LaunchExecutable\ParamFrames\ParamFrameFile\ParamFrameFileUnit.pas"/>
+        <Filename Value="TabFrames\Launch\ParamFrames\ParamFrameFile\ParamFrameFileUnit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ParamFrameFileFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
       </Unit>
       <Unit>
-        <Filename Value="TabFrames\LaunchExecutable\ParamFrames\ParamFrameInteger\ParamFrameIntegerUnit.pas"/>
+        <Filename Value="TabFrames\Launch\ParamFrames\ParamFrameInteger\ParamFrameIntegerUnit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ParamFrameIntegerFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
       </Unit>
       <Unit>
-        <Filename Value="TabFrames\LaunchExecutable\ParamFrames\ParamFrameSimple\ParamFrameSimpleUnit.pas"/>
+        <Filename Value="TabFrames\Launch\ParamFrames\ParamFrameSimple\ParamFrameSimpleUnit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ParamFrameSimpleFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
       </Unit>
       <Unit>
-        <Filename Value="TabFrames\LaunchExecutable\ParamFrames\ParamFrameString\ParamFrameStringUnit.pas"/>
+        <Filename Value="TabFrames\Launch\ParamFrames\ParamFrameString\ParamFrameStringUnit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ParamFrameStringFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
       </Unit>
       <Unit>
@@ -257,6 +267,14 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit>
+      <Unit>
+        <Filename Value="Dialogs\DialogParameters.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\Units\Language.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -267,7 +285,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="MainForm;..\Units;ParameterModListFrame;DirectoryPathFrame;..\Units\StartParam;LaunchFrames\DedicatedServerFrame;Dialogs\StartParamDialogForm;Dialogs;Dialogs\MemoDialogForm;Dialogs\SelectDirectoryDialog;Dialogs\MemoDialog;Dialogs\YesNoQuestionDialog;TabFrames\Directory;TabFrames\LaunchExecutable;TabFrames\LaunchExecutable\ParamFrames;TabFrames\LaunchExecutable\ParamFrames\ParamFrameDirectory;TabFrames\LaunchExecutable\ParamFrames\ParamFrameDirectoryList;TabFrames\LaunchExecutable\ParamFrames\ParamFrameFile;TabFrames\LaunchExecutable\ParamFrames\ParamFrameInteger;TabFrames\LaunchExecutable\ParamFrames\ParamFrameSimple;TabFrames\LaunchExecutable\ParamFrames\ParamFrameString;TabFrames\Directory\DirectoryItem;Dialogs\IconSelectorDialog;Dialogs\PathEditorDialog;Dialogs\DirectoryEditorDialog"/>
+      <OtherUnitFiles Value="MainForm;..\Units;ParameterModListFrame;DirectoryPathFrame;..\Units\StartParam;LaunchFrames\DedicatedServerFrame;Dialogs\StartParamDialogForm;Dialogs;Dialogs\MemoDialogForm;Dialogs\SelectDirectoryDialog;Dialogs\MemoDialog;Dialogs\YesNoQuestionDialog;TabFrames\Directory;TabFrames\Launch;TabFrames\Launch\ParamFrames;TabFrames\Launch\ParamFrames\ParamFrameDirectory;TabFrames\Launch\ParamFrames\ParamFrameDirectoryList;TabFrames\Launch\ParamFrames\ParamFrameFile;TabFrames\Launch\ParamFrames\ParamFrameInteger;TabFrames\Launch\ParamFrames\ParamFrameSimple;TabFrames\Launch\ParamFrames\ParamFrameString;TabFrames\Directory\DirectoryItem;Dialogs\IconSelectorDialog;Dialogs\PathEditorDialog;Dialogs\DirectoryEditorDialog"/>
       <UnitOutputDirectory Value="..\~Tmp\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Parsing>
