@@ -3,6 +3,7 @@ inherited SelectDirectoryDialogForm: TSelectDirectoryDialogForm
   Height = 500
   Top = 241
   Width = 470
+  Caption = 'Выбор каталога'
   ClientHeight = 500
   ClientWidth = 470
   Constraints.MinHeight = 200

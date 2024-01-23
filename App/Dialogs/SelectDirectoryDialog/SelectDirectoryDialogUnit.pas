@@ -5,8 +5,9 @@ unit SelectDirectoryDialogUnit;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ShellCtrls, Buttons,
-  StdCtrls, DialogCommonUnit;
+  SysUtils, Controls, Graphics, Dialogs, ShellCtrls, Buttons, StdCtrls,
+  Language,
+  DialogCommonUnit;
 
 type
   TSelectDirectoryDialogForm = class(TDialogCommonForm)
@@ -19,33 +20,54 @@ type
     procedure FormResize(Sender: TObject);
     procedure stvDirectoryTreeClick(Sender: TObject);
   private
-    procedure PrepareInterface(ACaption, APath: String);
+    const
+      PREFIX_DIALOG = 'Dialogs.SelectDirectory.';
+  protected
+    procedure PrepareInterface; override;
+    procedure SetLanguage; override;
   end;
 
 
-function SelectDirectoryDialogExecute(ACaption: String; var APath: String): Boolean;
+function SelectDirectoryDialogExecute(Language: TLanguage; var Path: String): Boolean;
 
 
 implementation
 
 {$R *.lfm}
 
+uses
+  DialogParameters;
 
-function SelectDirectoryDialogExecute(ACaption: String; var APath: String): Boolean;
+type
+  TSelectDirectoryDialogParameters = class(TDialogParameters)
+    Path: String;
+  end;
+
+
+function SelectDirectoryDialogExecute(Language: TLanguage; var Path: String): Boolean;
+var
+  Params: TSelectDirectoryDialogParameters;
 begin
-  with TSelectDirectoryDialogForm.Create(nil) do
-  begin
-    Result := False;
-    PrepareInterface(ACaption, APath);
-    ShowModal;
-
-    if Tag = 1 then
+  Params := TSelectDirectoryDialogParameters.Create;
+  Params.Language := Language;
+  Params.Path := Path;
+  try
+    with TSelectDirectoryDialogForm.Create(Params) do
     begin
-      Result := True;
-      APath := stvDirectoryTree.Path;
+      Result := False;
+      ShowModal;
+
+      if Tag = 1 then
+      begin
+        Result := True;
+        Path := stvDirectoryTree.Path;
+      end;
+
+      Free;
     end;
 
-    Free;
+  finally
+    Params.Free;
   end;
 end;
 
@@ -82,17 +104,28 @@ begin
 end;
 
 
-procedure TSelectDirectoryDialogForm.PrepareInterface(ACaption, APath: String);
+procedure TSelectDirectoryDialogForm.PrepareInterface;
+var
+  Params: TSelectDirectoryDialogParameters;
 begin
   stvDirectoryTree.DoubleBuffered := True;
-  Caption := ACaption;
 
-  if DirectoryExists(APath) then
+  Params := FParameters as TSelectDirectoryDialogParameters;
+
+  if DirectoryExists(Params.Path) then
   begin
-    stvDirectoryTree.Path := APath;
-    edCurrentPath.Text := APath;
+    stvDirectoryTree.Path := Params.Path;
+    edCurrentPath.Text := Params.Path;
     btnSelect.Enabled := True;
   end;
+end;
+
+
+procedure TSelectDirectoryDialogForm.SetLanguage;
+begin
+  Caption := FParameters.Language.GetLocalizedString(PREFIX_DIALOG + 'Caption', 'Выбор каталога');
+  btnSelect.Caption := FParameters.Language.GetLocalizedString(PREFIX_DIALOG + 'Select', 'Выбрать');
+  btnClose.Caption := FParameters.Language.GetLocalizedString(PREFIX_DIALOG + 'Close', 'Закрыть');
 end;
 
 

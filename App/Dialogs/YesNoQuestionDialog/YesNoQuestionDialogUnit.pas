@@ -6,6 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons, StdCtrls, Math,
+  Language,
   DialogCommonUnit;
 
 type
@@ -17,29 +18,49 @@ type
     procedure btnYesClick(Sender: TObject);
     procedure pnlButtonResize(Sender: TObject);
   private
+    const
+      PREFIX_DIALOG = 'Dialogs.YesNo.';
+  private
     procedure GetTextSize(const Str: String; out AWidth, AHeight: Integer);
-    procedure PrepareInterface(const ACaption, AText: String);
-  public
-
+  protected
+    procedure PrepareInterface; override;
+    procedure SetLanguage; override;
   end;
 
 
-function YesNoQuestionDialogExecute(const ACaption, AText: String): Boolean;
+function YesNoQuestionDialogExecute(Language: TLanguage; const Text: String): Boolean;
 
 
 implementation
 
 {$R *.lfm}
 
+uses
+  DialogParameters;
 
-function YesNoQuestionDialogExecute(const ACaption, AText: String): Boolean;
+type
+  TYesNoQuestionDialogParameters = class(TDialogParameters)
+    Text: String;
+  end;
+
+
+function YesNoQuestionDialogExecute(Language: TLanguage; const Text: String): Boolean;
+var
+  Params: TYesNoQuestionDialogParameters;
 begin
-  with TYesNoQuestionDialogForm.Create(nil) do
-  begin
-    PrepareInterface(ACaption, AText);
-    ShowModal;
-    Result := (Tag = 1);
-    Free;
+  Params := TYesNoQuestionDialogParameters.Create;
+  Params.Language := Language;
+  Params.Text := Text;
+  try
+    with TYesNoQuestionDialogForm.Create(Params) do
+    begin
+      ShowModal;
+      Result := (Tag = 1);
+      Free;
+    end;
+
+  finally
+    Params.Free;
   end;
 end;
 
@@ -96,16 +117,17 @@ begin
 end;
 
 
-procedure TYesNoQuestionDialogForm.PrepareInterface(const ACaption, AText: String);
+procedure TYesNoQuestionDialogForm.PrepareInterface;
 const
   SPACE = 10;
 var
   W, H: Integer;
+  Params: TYesNoQuestionDialogParameters;
 begin
-  Caption := ACaption;
+  Params := FParameters as TYesNoQuestionDialogParameters;
 
   //Размеры текста
-  GetTextSize(AText, W, H);
+  GetTextSize(Params.Text, W, H);
 
   //Ширина диалога
   Width := Max(btnYes.Width + btnNo.Width + SPACE * 3, W + SPACE * 4);
@@ -114,11 +136,19 @@ begin
   Height := pnlButton.Height + H + SPACE * 2;
 
   //Настроить текст
-  lblText.Caption := AText;
+  lblText.Caption := Params.Text;
   lblText.Left := (ClientWidth - W) div 2;
   lblText.Top := 10;
   lblText.Width := W;
   lblText.Height := H;
+end;
+
+
+procedure TYesNoQuestionDialogForm.SetLanguage;
+begin
+  Caption := FParameters.Language.GetLocalizedString(PREFIX_DIALOG + 'Caption', 'Вопрос');
+  btnYes.Caption := FParameters.Language.GetLocalizedString(PREFIX_DIALOG + 'Yes', 'Да');
+  btnNo.Caption := FParameters.Language.GetLocalizedString(PREFIX_DIALOG + 'No', 'Нет');
 end;
 
 

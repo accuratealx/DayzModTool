@@ -5,8 +5,9 @@ unit IconSelectorDialogUnit;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
-  ComCtrls, DialogCommonUnit;
+  SysUtils, Controls, Graphics, Dialogs, Buttons, ComCtrls,
+  Language,
+  DialogCommonUnit;
 
 type
   TIconSelectorDialogForm = class(TDialogCommonForm)
@@ -20,18 +21,21 @@ type
     procedure lvIconsClick(Sender: TObject);
     procedure lvIconsDblClick(Sender: TObject);
   private
-    FIconDirectory: String;
+    const
+      PREFIX_DIALOG = 'Dialogs.IconSelector.';
+  private
     FSelectedIconName: String;
 
     procedure LoadIconToListView;
     procedure CorrectSelectButton;
     procedure SelectIconItem(AName: String);
-  public
-    constructor Create(const IconDirectory: String; const SelectedIcon: String = ''); reintroduce;
+  protected
+    procedure PrepareInterface; override;
+    procedure SetLanguage; override;
   end;
 
 
-function IconSelectorDialogExecute(const IconDirectory: String; var SelectedIcon: String): Boolean;
+function IconSelectorDialogExecute(Language: TLanguage; const IconDirectory: String; var SelectedIcon: String): Boolean;
 
 
 implementation
@@ -39,18 +43,36 @@ implementation
 {$R *.lfm}
 
 uses
-  sgeStringList, sgeFileUtils;
+  sgeStringList, sgeFileUtils,
+  DialogParameters;
+
+type
+  TIconSelectorDialogParameters = class(TDialogParameters)
+    IconDirectory: String;
+    SelectedIcon: String;
+  end;
 
 
-function IconSelectorDialogExecute(const IconDirectory: String; var SelectedIcon: String): Boolean;
+function IconSelectorDialogExecute(Language: TLanguage; const IconDirectory: String; var SelectedIcon: String): Boolean;
+var
+  Params: TIconSelectorDialogParameters;
 begin
-  with TIconSelectorDialogForm.Create(IconDirectory, SelectedIcon) do
-  begin
-    ShowModal;
-    Result := (Tag = 1);
-    if Tag = 1 then
-      SelectedIcon := FSelectedIconName;
-    Free;
+  Params := TIconSelectorDialogParameters.Create;
+  Params.Language := Language;
+  Params.IconDirectory := IconDirectory;
+  Params.SelectedIcon := SelectedIcon;
+  try
+    with TIconSelectorDialogForm.Create(Params) do
+    begin
+      ShowModal;
+      Result := (Tag = 1);
+      if Tag = 1 then
+        SelectedIcon := FSelectedIconName;
+      Free;
+    end;
+
+  finally
+    Params.Free;
   end;
 end;
 
@@ -107,7 +129,10 @@ var
   Item: TListItem;
   AIcon: TIcon;
   Fn: String;
+  Params: TIconSelectorDialogParameters;
 begin
+  Params := FParameters as TIconSelectorDialogParameters;
+
   List := TsgeStringList.Create;
   AIcon := TIcon.Create;
   try
@@ -116,7 +141,7 @@ begin
     lvIcons.Clear;
 
     //Найти все иконки в каталоге
-    sgeFindFilesInFolderByExt(FIconDirectory, List, 'ico');
+    sgeFindFilesInFolderByExt(Params.IconDirectory, List, 'ico');
 
     //Упорядочить
     List.Sort;
@@ -124,7 +149,7 @@ begin
     for i := 0 to List.Count - 1 do
     begin
       //Полный путь к иконке
-      Fn := FIconDirectory + List.Part[i];
+      Fn := Params.IconDirectory + List.Part[i];
 
       //Загрузить иконку
       AIcon.LoadFromFile(Fn);
@@ -167,15 +192,23 @@ begin
 end;
 
 
-constructor TIconSelectorDialogForm.Create(const IconDirectory: String; const SelectedIcon: String);
+procedure TIconSelectorDialogForm.PrepareInterface;
+var
+  Params: TIconSelectorDialogParameters;
 begin
-  inherited Create(nil);
-
-  FIconDirectory := IncludeTrailingBackslash(IconDirectory);
-  FSelectedIconName := SelectedIcon;
+  Params := FParameters as TIconSelectorDialogParameters;
+  FSelectedIconName := Params.SelectedIcon;
 
   LoadIconToListView;
   SelectIconItem(FSelectedIconName);
+end;
+
+
+procedure TIconSelectorDialogForm.SetLanguage;
+begin
+  Caption := FParameters.Language.GetLocalizedString(PREFIX_DIALOG + 'Caption', 'Выбор иконки');
+  btnSelect.Caption := FParameters.Language.GetLocalizedString(PREFIX_DIALOG + 'Select', 'Выбрать');
+  btnClose.Caption := FParameters.Language.GetLocalizedString(PREFIX_DIALOG + 'Close', 'Закрыть');
 end;
 
 

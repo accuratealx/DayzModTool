@@ -62,7 +62,7 @@ inherited DirectoryEditorDialogForm: TDirectoryEditorDialogForm
       Height = 25
       Top = 10
       Width = 120
-      Caption = 'Закрыть'
+      Caption = 'Отмена'
       Glyph.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
         2000000000000004000064000000640000000000000000000000000000000000
@@ -265,10 +265,10 @@ inherited DirectoryEditorDialogForm: TDirectoryEditorDialogForm
       ParentFont = False
     end
     object edCaption: TEdit[2]
-      Left = 125
+      Left = 145
       Height = 23
       Top = 10
-      Width = 365
+      Width = 345
       Anchors = [akTop, akLeft, akRight]
       TabOrder = 0
       OnChange = edEditChange
@@ -283,10 +283,10 @@ inherited DirectoryEditorDialogForm: TDirectoryEditorDialogForm
       ParentFont = False
     end
     object edPath: TEdit[4]
-      Left = 125
+      Left = 145
       Height = 23
       Top = 43
-      Width = 337
+      Width = 317
       Anchors = [akTop, akLeft, akRight]
       TabOrder = 1
       OnChange = edEditChange

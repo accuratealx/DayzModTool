@@ -5,7 +5,8 @@ unit MemoDialogUnit;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons,
+  Classes, SysUtils, Controls, Graphics, Dialogs, StdCtrls, Buttons,
+  Language,
   DialogCommonUnit;
 
 type
@@ -17,14 +18,15 @@ type
     procedure btnCopyContentClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
   private
-    FContent: String;
-    procedure PrepareInterface(const ACaption: String; const AContent: String);
-  public
-    constructor Create(const ACaption: String; const AContent: String); reintroduce;
+    const
+      PREFIX_DIALOG = 'Dialogs.Memo.';
+  protected
+    procedure PrepareInterface; override;
+    procedure SetLanguage; override;
   end;
 
 
-procedure MemoDialogExecute(const Caption: String; const Content: String);
+procedure MemoDialogExecute(Language: TLanguage; const Caption: String; const Content: String);
 
 
 implementation
@@ -32,15 +34,33 @@ implementation
 {$R *.lfm}
 
 uses
-  Clipbrd;
+  Clipbrd,
+  DialogParameters;
+
+type
+  TMemoDialogParameters = class(TDialogParameters)
+    Caption: String;
+    Content: String;
+  end;
 
 
-procedure MemoDialogExecute(const Caption: String; const Content: String);
+procedure MemoDialogExecute(Language: TLanguage; const Caption: String; const Content: String);
+var
+  Params: TMemoDialogParameters;
 begin
-  with TMemoDialogForm.Create(Caption, Content) do
-  begin
-    ShowModal;
-    Free;
+  Params := TMemoDialogParameters.Create;
+  Params.Language := Language;
+  Params.Caption := Caption;
+  Params.Content := Content;
+  try
+    with TMemoDialogForm.Create(Params) do
+    begin
+      ShowModal;
+      Free;
+    end;
+
+  finally
+    Params.Free;
   end;
 end;
 
@@ -59,23 +79,25 @@ end;
 
 procedure TMemoDialogForm.btnCopyContentClick(Sender: TObject);
 begin
-  Clipboard.AsText := FContent;
+  Clipboard.AsText := mContent.Text;
 end;
 
 
-procedure TMemoDialogForm.PrepareInterface(const ACaption: String; const AContent: String);
+procedure TMemoDialogForm.PrepareInterface;
+var
+  Param: TMemoDialogParameters;
 begin
-  Caption := ACaption;
-  mContent.Text := AContent;
+  Param := FParameters as TMemoDialogParameters;
+
+  Caption := Param.Caption;
+  mContent.Text := Param.Content;
 end;
 
 
-constructor TMemoDialogForm.Create(const ACaption: String; const AContent: String);
+procedure TMemoDialogForm.SetLanguage;
 begin
-  inherited Create(nil);
-
-  FContent := AContent;
-  PrepareInterface(ACaption, AContent);
+  btnClose.Caption := FParameters.Language.GetLocalizedString(PREFIX_DIALOG + 'Close', 'Закрыть');
+  btnCopyContent.Hint := FParameters.Language.GetLocalizedString(PREFIX_DIALOG + 'CopyContent', 'Скопировать текст в буфер обмена');
 end;
 
 

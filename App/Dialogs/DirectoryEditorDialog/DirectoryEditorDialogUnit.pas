@@ -5,8 +5,8 @@ unit DirectoryEditorDialogUnit;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons, ExtCtrls,
-  StdCtrls,
+  Classes, SysUtils, Controls, Graphics, Dialogs, Buttons, ExtCtrls, StdCtrls,
+  Language,
   DialogCommonUnit, SelectDirectoryDialogUnit, IconSelectorDialogUnit;
 
 type
@@ -31,41 +31,72 @@ type
     procedure FormResize(Sender: TObject);
     procedure imgIconClick(Sender: TObject);
   private
+    const
+      PARAM_PREFIX = 'Dialogs.DirectoryEditor.';
+  private
     FMode: TPathEditorMode;
-    FIconDirectory: String;
     FIconFileName: String;
+
+    function  GetIconDirectory: String;
 
     procedure SetMode(AMode: TPathEditorMode);
     procedure SetIconByFileName(AFileName: String);
-  public
-    constructor Create(AMode: TPathEditorMode; const AIconDirectory, ACaption, APath, AIconFileName: String); reintroduce;
+  protected
+    procedure PrepareInterface; override;
+    procedure SetLanguage; override;
   end;
 
 
-function DirectoryEditorDialogExecute(AMode: TPathEditorMode; const AIconDirectory: String; var ACaption, APath, AIconFileName: String): Boolean;
+function DirectoryEditorDialogExecute(Language: TLanguage; Mode: TPathEditorMode; const IconDirectory: String; var ACaption, APath, AIconFileName: String): Boolean;
 
 
 implementation
 
 {$R *.lfm}
 
+uses
+  DialogParameters;
 
-function DirectoryEditorDialogExecute(AMode: TPathEditorMode; const AIconDirectory: String; var ACaption, APath, AIconFileName: String): Boolean;
+type
+  TDirectoryEditorDialogParameters = class(TDialogParameters)
+    Mode: TPathEditorMode;
+    IconDirectory: String;
+    Caption: String;
+    Path: String;
+    IconFileName: String;
+  end;
+
+
+function DirectoryEditorDialogExecute(Language: TLanguage; Mode: TPathEditorMode; const IconDirectory: String; var ACaption, APath, AIconFileName: String): Boolean;
+var
+  Params: TDirectoryEditorDialogParameters;
 begin
-  with TDirectoryEditorDialogForm.Create(AMode, AIconDirectory, ACaption, APath, AIconFileName) do
-  begin
-    Result := False;
-    ShowModal;
-
-    if Tag = 1 then
+  Params := TDirectoryEditorDialogParameters.Create;
+  Params.Language := Language;
+  Params.Mode := Mode;
+  Params.IconDirectory := IconDirectory;
+  Params.Caption := ACaption;
+  Params.Path := APath;
+  Params.IconFileName := AIconFileName;
+  try
+    with TDirectoryEditorDialogForm.Create(Params) do
     begin
-      Result := True;
-      ACaption := Trim(edCaption.Text);
-      APath := ExcludeTrailingBackslash(Trim(edPath.Text));
-      AIconFileName := FIconFileName;
+      Result := False;
+      ShowModal;
+
+      if Tag = 1 then
+      begin
+        Result := True;
+        ACaption := Trim(edCaption.Text);
+        APath := ExcludeTrailingBackslash(Trim(edPath.Text));
+        AIconFileName := FIconFileName;
+      end;
+
+      Free;
     end;
 
-    Free;
+  finally
+    Params.Free;
   end;
 end;
 
@@ -89,10 +120,8 @@ var
 begin
   Path := edPath.Text;
 
-  if SelectDirectoryDialogExecute('Выберите каталог', Path) then
-  begin
+  if SelectDirectoryDialogExecute(FParameters.Language, Path) then
     edPath.Text := Path;
-  end;
 end;
 
 
@@ -120,8 +149,14 @@ var
 begin
   IconName := FIconFileName;
 
-  if IconSelectorDialogExecute(FIconDirectory, IconName) then
+  if IconSelectorDialogExecute(FParameters.Language, GetIconDirectory, IconName) then
     SetIconByFileName(IconName);
+end;
+
+
+function TDirectoryEditorDialogForm.GetIconDirectory: String;
+begin
+  Result := (FParameters as TDirectoryEditorDialogParameters).IconDirectory;
 end;
 
 
@@ -133,10 +168,10 @@ begin
 
   case FMode of
     pemNew:
-      s := 'Добавить';
+      s := FParameters.Language.GetLocalizedString(PARAM_PREFIX + 'Add', 'Добавить');
 
     pemEdit:
-      s := 'Изменить';
+      s := FParameters.Language.GetLocalizedString(PARAM_PREFIX + 'Edit', 'Изменить');
 
     else
       s := '';
@@ -152,33 +187,42 @@ procedure TDirectoryEditorDialogForm.SetIconByFileName(AFileName: String);
 var
   AIcon: TIcon;
 begin
-  if FileExists(FIconDirectory + AFileName) then
+  if FileExists(GetIconDirectory + AFileName) then
   begin
     FIconFileName := AFileName;
 
     AIcon := TIcon.Create;
     try
-      AIcon.LoadFromFile(FIconDirectory + FIconFileName);
+      AIcon.LoadFromFile(GetIconDirectory + FIconFileName);
       imgIcon.Picture.Assign(AIcon);
 
     finally
       AIcon.Free;
     end;
   end;
-
 end;
 
 
-constructor TDirectoryEditorDialogForm.Create(AMode: TPathEditorMode; const AIconDirectory, ACaption, APath, AIconFileName: String);
+procedure TDirectoryEditorDialogForm.PrepareInterface;
+var
+  Params: TDirectoryEditorDialogParameters;
 begin
-  inherited Create(nil);
+  Params := FParameters as TDirectoryEditorDialogParameters;
 
-  FIconDirectory := AIconDirectory;
+  SetMode(Params.Mode);
+  SetIconByFileName(Params.IconFileName);
+  edCaption.Text := Params.Caption;
+  edPath.Text := Params.Path;
+end;
 
-  SetMode(AMode);
-  SetIconByFileName(AIconFileName);
-  edCaption.Text := ACaption;
-  edPath.Text := APath;
+
+procedure TDirectoryEditorDialogForm.SetLanguage;
+begin
+  btnCancel.Caption := FParameters.Language.GetLocalizedString(PARAM_PREFIX + 'Cancel', 'Отмена');
+  lblCaption.Caption := FParameters.Language.GetLocalizedString(PARAM_PREFIX + 'Caption', 'Название');
+  lblPath.Caption := FParameters.Language.GetLocalizedString(PARAM_PREFIX + 'Directory', 'Каталог');
+  btnSelectDirectory.Hint := FParameters.Language.GetLocalizedString(PARAM_PREFIX + 'SelectDirectory', 'Выбрать каталог');
+  imgIcon.Hint := FParameters.Language.GetLocalizedString(PARAM_PREFIX + 'ChangeIcon', 'Изменить иконку');
 end;
 
 
