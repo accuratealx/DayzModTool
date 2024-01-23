@@ -8,7 +8,8 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, Windows,
   ExtCtrls, ComCtrls,
-  LaunchExecutableUnit, DirectoryUnit, DirectoryItemUnit, YesNoQuestionDialogUnit;
+  Language,
+  LaunchUnit, DirectoryUnit, DirectoryItemUnit;
 
 const
   VERSION = '0.5';
@@ -21,6 +22,7 @@ type
     ilTrayLaunch: TImageList;
     ilTrayDirectory: TImageList;
     MainMenu: TMainMenu;
+    miTrayHide: TMenuItem;
     miMainSeparator3: TMenuItem;
     miMainTabDirectoryEraseAll: TMenuItem;
     miMainTabDirectoryAddDefault: TMenuItem;
@@ -40,7 +42,7 @@ type
     miMainSeparator1: TMenuItem;
     miMainExit: TMenuItem;
     miMainSystem: TMenuItem;
-    miTrayShowHide: TMenuItem;
+    miTrayShow: TMenuItem;
     miTraySeparator1: TMenuItem;
     miTrayExit: TMenuItem;
     PageControl: TPageControl;
@@ -60,29 +62,51 @@ type
     procedure miMainTabLaunchCollapseAllClick(Sender: TObject);
     procedure miMainTabLaunchExpandAllClick(Sender: TObject);
     procedure miMainTabLaunchFindExecutablesClick(Sender: TObject);
-    procedure miTrayShowHideClick(Sender: TObject);
+    procedure miTrayHideClick(Sender: TObject);
+    procedure miTrayShowClick(Sender: TObject);
     procedure sbLaunchResize(Sender: TObject);
     procedure TrayIconDblClick(Sender: TObject);
     procedure TrayMenuPopup(Sender: TObject);
+  private
+    const
+      CONFIG_FILE_NAME = 'DayZConfig.ini';
+      CONFIG_SECTION_MAIN_FORM = 'MainForm';
+      CONFIG_SECTION_SYSTEM = 'System';
+      CONFIG_PARAM_LEFT = 'Left';
+      CONFIG_PARAM_TOP = 'Top';
+      CONFIG_PARAM_WIDTH = 'Width';
+      CONFIG_PARAM_HEIGHT = 'Height';
+      CONFIG_PARAM_VISIBLE = 'Visible';
+      CONFIG_PARAM_TAB_INDEX = 'TabIndex';
+      CONFIG_PARAM_LANGUAGE = 'Language';
   private
     FCloseApplication: Boolean;
 
     //Каталоги
     FMainDir: String;
     FSettingsDir: String;
+    FLanguageDir: String;
     FLaunchDir: String;
     FDirectoryDir: String;
+
+    //Язык
+    FCurrentLanguage: String;
+    FLanguage: TLanguage;
 
     //Закладки
     FDirectoryFrame: TDirectoryFrame;
 
     procedure Init;
     procedure Done;
-    procedure SaveFormSettings;
-    procedure LoadFormSettings;
+    procedure SaveSettings;
+    procedure LoadSettings;
+
+    procedure LoadLanguage(LanguageName: String);
+    procedure ApplyLanguage;
 
     function  GetLaunchFrameList: TLaunchExecutableFrameList;
     procedure CreateLaunchFrame(const SettingsFile: String);
+    procedure ChangeLaunchFrameLanguage;
     procedure DestroyLaunchFrame;
     procedure ArrangeLaunchTabItems;
     procedure FindExecutables;
@@ -110,16 +134,6 @@ implementation
 
 uses
   IniFiles;
-
-const
-  CONFIG_FILE_NAME = 'DayZConfig.ini';
-  CONFIG_SECTION_MAIN_FORM = 'MainForm';
-  CONFIG_PARAM_LEFT = 'Left';
-  CONFIG_PARAM_TOP = 'Top';
-  CONFIG_PARAM_WIDTH = 'Width';
-  CONFIG_PARAM_HEIGHT = 'Height';
-  CONFIG_PARAM_VISIBLE = 'Visible';
-  CONFIG_PARAM_TAB_INDEX = 'TabIndex';
 
 
 procedure TMainForm.FormCreate(Sender: TObject);
@@ -192,12 +206,15 @@ begin
 end;
 
 
-procedure TMainForm.miTrayShowHideClick(Sender: TObject);
+procedure TMainForm.miTrayHideClick(Sender: TObject);
 begin
-  if MainForm.Visible then
-    Hide
-  else
-    Show;
+  Hide;
+end;
+
+
+procedure TMainForm.miTrayShowClick(Sender: TObject);
+begin
+  Show;
 end;
 
 
@@ -209,22 +226,18 @@ end;
 
 procedure TMainForm.TrayIconDblClick(Sender: TObject);
 begin
-  miTrayShowHide.Click;
+  if MainForm.Visible then
+    miTrayHide.Click
+  else
+    miTrayShow.Click;
 end;
 
 
 procedure TMainForm.TrayMenuPopup(Sender: TObject);
 begin
-  if MainForm.Visible then
-  begin
-    miTrayShowHide.Caption := 'Скрыть';
-    miTrayShowHide.ImageIndex := 1;
-  end
-  else
-  begin
-    miTrayShowHide.Caption := 'Показать';
-    miTrayShowHide.ImageIndex := 2;
-  end;
+  //Показать / Скрыть
+  miTrayShow.Visible := not MainForm.Visible;
+  miTrayHide.Visible := MainForm.Visible;
 
   //Поправить кнопки запуска / останова
   CorrectTrayMenuLaunchItems;
@@ -237,14 +250,23 @@ end;
 procedure TMainForm.Init;
 begin
   Caption := 'DayZ Mod Tool  v' + VERSION;
-
   TrayIcon.Hint := Caption;
 
+  //Объекты
+  FLanguage := TLanguage.Create;
+
+  //Каталоги
   FMainDir := ExtractFilePath(ParamStr(0));
+
   FSettingsDir := FMainDir + 'Settings\';
   ForceDirectories(FSettingsDir);
+
+  FLanguageDir := FMainDir + 'Languages\';
+  ForceDirectories(FLanguageDir);
+
   FLaunchDir := FMainDir + 'Tabs\Launch\';
   ForceDirectories(FLaunchDir);
+
   FDirectoryDir := FMainDir + 'Tabs\Directory\';
   ForceDirectories(FDirectoryDir);
 
@@ -258,7 +280,14 @@ begin
   //Создать элементы запуска/останова приложений
   CreateTrayMenuLaunchItems;
 
-  LoadFormSettings;
+  //Прочитать параметры
+  LoadSettings;
+
+  //Загрузить язык
+  LoadLanguage(FCurrentLanguage);
+
+  //Применить язык
+  ApplyLanguage;
 end;
 
 
@@ -268,16 +297,19 @@ begin
 
   DestroyLaunchFrame;
 
-  SaveFormSettings;
+  SaveSettings;
+
+  FLanguage.Free;
 end;
 
 
-procedure TMainForm.SaveFormSettings;
+procedure TMainForm.SaveSettings;
 var
   Ini: TIniFile;
 begin
   Ini := TIniFile.Create(FSettingsDir + CONFIG_FILE_NAME);
   try
+    //Форма
     Ini.WriteInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_TOP, Self.Top);
     Ini.WriteInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_LEFT, Self.Left);
     Ini.WriteInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_WIDTH, Self.Width);
@@ -285,18 +317,22 @@ begin
     Ini.WriteBool(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_VISIBLE, IsWindowVisible(Handle));
     Ini.WriteInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_TAB_INDEX, PageControl.TabIndex);
 
+    //Язык
+    Ini.WriteString(CONFIG_SECTION_SYSTEM, CONFIG_PARAM_LANGUAGE, FCurrentLanguage);
+
   finally
     Ini.Free;
   end;
 end;
 
 
-procedure TMainForm.LoadFormSettings;
+procedure TMainForm.LoadSettings;
 var
   Ini: TIniFile;
 begin
   Ini := TIniFile.Create(FSettingsDir + CONFIG_FILE_NAME);
   try
+    //Форма
     Self.Top := Ini.ReadInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_TOP, 100);
     Self.Left := Ini.ReadInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_LEFT, 300);
     Self.Width := Ini.ReadInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_WIDTH, Self.Width);
@@ -304,9 +340,54 @@ begin
     Application.ShowMainForm := Ini.ReadBool(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_VISIBLE, True);
     PageControl.TabIndex := Ini.ReadInteger(CONFIG_SECTION_MAIN_FORM, CONFIG_PARAM_TAB_INDEX, 0);
 
+    //Язык
+    FCurrentLanguage := Ini.ReadString(CONFIG_SECTION_SYSTEM, CONFIG_PARAM_LANGUAGE, 'Русский');
+
   finally
     Ini.Free;
   end;
+end;
+
+
+procedure TMainForm.LoadLanguage(LanguageName: String);
+var
+  Fn: String;
+begin
+  Fn := FLanguageDir + LanguageName + '.Language';
+  if FileExists(Fn) then
+    FLanguage.LoadFromFile(Fn);
+end;
+
+
+procedure TMainForm.ApplyLanguage;
+
+  procedure TranslateMenu(RootItem: TMenuItem; Prefix: String = '');
+  var
+    i: Integer;
+  begin
+    //Переводим себя
+    RootItem.Caption := FLanguage.GetLocalizedString(Prefix + RootItem.Name, RootItem.Caption);
+
+    //Перводим детей
+    for i := 0 to RootItem.Count - 1 do
+      TranslateMenu(RootItem.Items[i], Prefix);
+  end;
+
+const
+  PREFIX_TAB_CAPTION = 'MainForm.TabCaption.';
+
+begin
+  //Меню
+  TranslateMenu(MainMenu.Items, 'MainForm.MainMenu.');
+  TranslateMenu(TrayMenu.Items, 'MainForm.TrayMenu.');
+
+  //Закладки
+  tabLaunch.Caption := FLanguage.GetLocalizedString(PREFIX_TAB_CAPTION + 'Launch', tabLaunch.Caption);
+  tabDirectory.Caption := FLanguage.GetLocalizedString(PREFIX_TAB_CAPTION + 'Directory', tabDirectory.Caption);
+
+  //Закладки
+  ChangeLaunchFrameLanguage;
+  FDirectoryFrame.ChangeLanguage(FLanguage);
 end;
 
 
@@ -319,11 +400,11 @@ begin
   //Просмотрим все закладки
   for i := 0 to sbLaunch.ControlCount - 1 do
   begin
-    if sbLaunch.Controls[i] is TLaunchExecutableFrame then
+    if sbLaunch.Controls[i] is TLaunchFrame then
     begin
       c := Length(Result);
       SetLength(Result, c + 1);
-      Result[c] := sbLaunch.Controls[i] as TLaunchExecutableFrame;
+      Result[c] := sbLaunch.Controls[i] as TLaunchFrame;
     end;
   end;
 end;
@@ -335,7 +416,7 @@ var
   SectionList: TStringList;
   i: Integer;
   FrameCaption, FrameParams, FrameSettings, FrameIconName, FrameRelativeFilename: String;
-  Frame: TLaunchExecutableFrame;
+  Frame: TLaunchFrame;
   FrameIcon: TIcon;
 begin
   F := TIniFile.Create(SettingsFile);
@@ -371,7 +452,7 @@ begin
       end;
 
       //Создать фрейм
-      Frame := TLaunchExecutableFrame.Create(FrameCaption, FrameIcon, FrameParams, FrameSettings, FrameRelativeFilename);
+      Frame := TLaunchFrame.Create(FrameCaption, FrameIcon, FrameParams, FrameSettings, FrameRelativeFilename);
 
       //Настроить выделение
       Frame.Higlight := not Odd(i);
@@ -391,14 +472,26 @@ begin
 end;
 
 
+procedure TMainForm.ChangeLaunchFrameLanguage;
+var
+  FrameList: TLaunchExecutableFrameList;
+  i: Integer;
+begin
+  FrameList := GetLaunchFrameList;
+
+  for i := 0 to Length(FrameList) - 1 do
+    FrameList[i].ChangeLanguage(FLanguage);
+end;
+
+
 procedure TMainForm.DestroyLaunchFrame;
 var
   i: Integer;
 begin
   for i := sbLaunch.ControlCount - 1 downto 0 do
   begin
-    if sbLaunch.Controls[i] is TLaunchExecutableFrame then
-      (sbLaunch.Controls[i] as TLaunchExecutableFrame).Free;
+    if sbLaunch.Controls[i] is TLaunchFrame then
+      (sbLaunch.Controls[i] as TLaunchFrame).Free;
   end;
 end;
 
@@ -406,16 +499,16 @@ end;
 procedure TMainForm.ArrangeLaunchTabItems;
 var
   i, Y: Integer;
-  Frame: TLaunchExecutableFrame;
+  Frame: TLaunchFrame;
 begin
   Y := 0;
 
   for i := 0 to sbLaunch.ControlCount - 1 do
   begin
-    if not (sbLaunch.Controls[i] is TLaunchExecutableFrame) then
+    if not (sbLaunch.Controls[i] is TLaunchFrame) then
       Continue;
 
-    Frame := sbLaunch.Controls[i] as TLaunchExecutableFrame;
+    Frame := sbLaunch.Controls[i] as TLaunchFrame;
     Frame.Left := 0;
     Frame.Width := sbLaunch.ClientWidth;
     Frame.Top := Y;
@@ -457,14 +550,13 @@ end;
 
 procedure TMainForm.DeleteIncorrectDirectory;
 begin
-  if YesNoQuestionDialogExecute('Вопрос', 'Удалить несуществующие каталоги?') then
-    FDirectoryFrame.DeleteIncorrectDirectory;
+  FDirectoryFrame.DeleteIncorrectDirectory;
 end;
 
 
 procedure TMainForm.CreateTrayMenuLaunchItems;
 
-  procedure AddMenu(RootMenu: TMenuItem; Frame: TLaunchExecutableFrame; IconIndex: Integer; Proc: TNotifyEvent);
+  procedure AddMenu(RootMenu: TMenuItem; Frame: TLaunchFrame; IconIndex: Integer; Proc: TNotifyEvent);
   var
     MenuItem: TMenuItem;
   begin
@@ -499,12 +591,12 @@ procedure TMainForm.CorrectTrayMenuLaunchItems;
 
   procedure SetMenuItemsEnabled(Root: TMenuItem);
   var
-    Frame: TLaunchExecutableFrame;
+    Frame: TLaunchFrame;
     i: Integer;
   begin
     for i := 0 to Root.Count - 1 do
     begin
-      Frame := TLaunchExecutableFrame(Root.Items[i].Tag);
+      Frame := TLaunchFrame(Root.Items[i].Tag);
       Root.Items[i].Enabled := Frame.ExecatableEnable;
     end;
   end;
@@ -517,24 +609,24 @@ end;
 
 procedure TMainForm.miTrayLaunchClick(Sender: TObject);
 var
-  Frame: TLaunchExecutableFrame;
+  Frame: TLaunchFrame;
 begin
   if not (Sender is TMenuItem) then
     Exit;
 
-  Frame := TLaunchExecutableFrame((Sender as TMenuItem).Tag);
+  Frame := TLaunchFrame((Sender as TMenuItem).Tag);
   Frame.Launch;
 end;
 
 
 procedure TMainForm.miTrayStopClick(Sender: TObject);
 var
-  Frame: TLaunchExecutableFrame;
+  Frame: TLaunchFrame;
 begin
   if not (Sender is TMenuItem) then
     Exit;
 
-  Frame := TLaunchExecutableFrame((Sender as TMenuItem).Tag);
+  Frame := TLaunchFrame((Sender as TMenuItem).Tag);
   Frame.Stop;
 end;
 
