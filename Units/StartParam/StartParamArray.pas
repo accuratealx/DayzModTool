@@ -6,7 +6,7 @@ interface
 
 uses
   SysUtils,
-  sgeTemplateCollection,
+  sgeTemplateCollection, sgeSimpleParameters,
   StartParamSimple;
 
 type
@@ -33,7 +33,7 @@ implementation
 
 uses
   Classes,
-  sgeSimpleContainer, sgeSimpleParameters,
+  sgeSimpleContainer,
   StartParamInteger, StartParamString, StartParamDirectory, StartParamFile, StartParamDirectoryList;
 
 
