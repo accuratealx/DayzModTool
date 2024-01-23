@@ -7,6 +7,7 @@ interface
 uses
   Classes, SysUtils, Controls, Graphics, Dialogs, StdCtrls, Buttons,
   StartParamSimple, StartParamDirectoryList,
+  Language,
   ParamFrameSimpleUnit, ParamFrameDirectoryListModEditorUnit;
 
 type
@@ -34,6 +35,8 @@ type
     constructor Create(AItem: TStartParamSimple); reintroduce;
     destructor  Destroy; override;
 
+    procedure ChangeLanguage(Language: TLanguage); override;
+
     property OnHeightChange: TNotifyEvent read FOnHeightChange write FOnHeightChange;
   end;
 
@@ -43,7 +46,8 @@ implementation
 {$R *.lfm}
 
 uses
-  DayZUtils, SelectDirectoryDialogUnit;
+  DayZUtils,
+  SelectDirectoryDialogUnit;
 
 
 procedure TParamFrameDirectoryListFrame.btnSelectDirectoryClick(Sender: TObject);
@@ -51,7 +55,7 @@ var
   Dir: String;
 begin
   Dir := edValue.Text;
-  if SelectDirectoryDialogExecute('Выберите каталог', Dir) then
+  if SelectDirectoryDialogExecute(FLanguage, Dir) then
     SetValue(Dir);
 end;
 
@@ -128,6 +132,25 @@ begin
   FModList.Free;
 
   inherited Destroy;
+end;
+
+
+procedure TParamFrameDirectoryListFrame.ChangeLanguage(Language: TLanguage);
+var
+  s: String;
+begin
+  inherited ChangeLanguage(Language);
+
+  //Подсказки кнопок
+  btnOpenDirectory.Hint := Language.GetLocalizedString(PREFIX_PARAM + 'OpenDirectory', 'Открыть каталог в проводнике');
+  btnSelectDirectory.Hint := Language.GetLocalizedString(PREFIX_PARAM + 'SelectDirectory', 'Выбрать каталог');
+  btnClearValue.Hint := Language.GetLocalizedString(PREFIX_PARAM + 'ClearValue', 'Очистить значение');
+
+  //Полный путь
+  cbFullPath.Caption := Language.GetLocalizedString(PREFIX_PARAM + 'FullPath', 'Полный путь');
+
+  //Список модов
+  FModList.ChangeLanguage(FLanguage);
 end;
 
 

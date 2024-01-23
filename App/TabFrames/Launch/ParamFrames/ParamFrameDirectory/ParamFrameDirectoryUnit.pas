@@ -7,6 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons,
   StartParamSimple, StartParamDirectory,
+  Language,
   ParamFrameSimpleUnit;
 
 type
@@ -23,7 +24,7 @@ type
   protected
     procedure PrepareInterface(AItem: TStartParamSimple); override;
   public
-
+    procedure ChangeLanguage(Language: TLanguage); override;
   end;
 
 
@@ -32,7 +33,8 @@ implementation
 {$R *.lfm}
 
 uses
-  DayZUtils, SelectDirectoryDialogUnit;
+  DayZUtils,
+  SelectDirectoryDialogUnit;
 
 
 procedure TParamFrameDirectoryFrame.btnSelectDirectoryClick(Sender: TObject);
@@ -40,7 +42,7 @@ var
   Dir: String;
 begin
   Dir := ExtractFilePath(edValue.Text);
-  if SelectDirectoryDialogExecute('Выберите каталог', Dir) then
+  if SelectDirectoryDialogExecute(FLanguage, Dir) then
     SetValue(Dir);
 end;
 
@@ -73,6 +75,16 @@ begin
   inherited PrepareInterface(AItem);
 
   edValue.Text := (AItem as TStartParamDirectory).Value;
+end;
+
+
+procedure TParamFrameDirectoryFrame.ChangeLanguage(Language: TLanguage);
+begin
+  inherited ChangeLanguage(Language);
+
+  btnOpenDirectory.Hint := Language.GetLocalizedString(PREFIX_PARAM + 'OpenDirectory', 'Открыть каталог в проводнике');
+  btnSelectDirectory.Hint := Language.GetLocalizedString(PREFIX_PARAM + 'SelectDirectory', 'Выбрать каталог');
+  btnClearValue.Hint := Language.GetLocalizedString(PREFIX_PARAM + 'ClearValue', 'Очистить значение');
 end;
 
 

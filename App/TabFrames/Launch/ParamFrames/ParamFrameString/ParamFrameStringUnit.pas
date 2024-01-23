@@ -5,7 +5,7 @@ unit ParamFrameStringUnit;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  SysUtils, Dialogs, StdCtrls,
   StartParamSimple, StartParamString,
   ParamFrameSimpleUnit;
 

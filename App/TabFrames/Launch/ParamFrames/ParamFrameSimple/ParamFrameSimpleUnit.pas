@@ -5,7 +5,8 @@ unit ParamFrameSimpleUnit;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons,
+  Classes, SysUtils, Forms, Controls, Dialogs, StdCtrls, Buttons,
+  Language,
   StartParamSimple,
   ParamFrameCommonUnit;
 
@@ -16,13 +17,18 @@ type
     procedure btnDefaultClick(Sender: TObject);
     procedure cbParamNameClick(Sender: TObject);
   protected
+    const
+      PREFIX_PARAM = 'TabLaunch.Param.';
+  protected
     FItem: TStartParamSimple;
+    FLanguage: TLanguage;
 
     procedure PrepareInterface(AItem: TStartParamSimple); virtual;
   public
     constructor Create(AItem: TStartParamSimple); reintroduce;
 
     procedure UpdateInterface; virtual;
+    procedure ChangeLanguage(Language: TLanguage); virtual;
 
     property Item: TStartParamSimple read FItem;
   end;
@@ -68,6 +74,15 @@ end;
 procedure TParamFrameSimpleFrame.UpdateInterface;
 begin
   PrepareInterface(FItem);
+end;
+
+
+procedure TParamFrameSimpleFrame.ChangeLanguage(Language: TLanguage);
+begin
+  //Запомнить ссылку на словарь
+  FLanguage := Language;
+
+  btnDefault.Hint := Language.GetLocalizedString(PREFIX_PARAM + 'DefaultValue', 'Установить значение по умолчанию');
 end;
 
 

@@ -1,4 +1,4 @@
-unit LaunchExecutableUnit;
+unit LaunchUnit;
 
 {$mode ObjFPC}{$H+}
 
@@ -7,11 +7,12 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Dialogs, ExtCtrls, Buttons,
   StdCtrls, Graphics, IniFiles,
+  Language,
   StartParamArray;
 
 type
-  TLaunchExecutableFrame = class(TFrame)
-    btnClearJournal: TSpeedButton;
+  TLaunchFrame = class(TFrame)
+    btnClearJournalDir: TSpeedButton;
     btnExecutableOpenDirectory: TSpeedButton;
     btnStop: TSpeedButton;
     btnOpenJournalDirectory: TSpeedButton;
@@ -25,23 +26,34 @@ type
     lblTitle: TLabel;
     OpenDialog: TOpenDialog;
     pnlCollapse: TPanel;
-    sbSelectJournalDirectory: TSpeedButton;
+    btnSelectJournalDirectory: TSpeedButton;
     ContentScrollBox: TScrollBox;
     pnlContent: TPanel;
     pnlButton: TPanel;
     btnLaunch: TSpeedButton;
     btnShowCommandLine: TSpeedButton;
-    sbSelectExecutable: TSpeedButton;
-    procedure btnClearJournalClick(Sender: TObject);
+    btnSelectExecutable: TSpeedButton;
+    procedure btnClearJournalDirClick(Sender: TObject);
     procedure btnLaunchClick(Sender: TObject);
     procedure btnExecutableOpenDirectoryClick(Sender: TObject);
     procedure btnOpenJournalDirectoryClick(Sender: TObject);
     procedure btnShowCommandLineClick(Sender: TObject);
     procedure btnStopClick(Sender: TObject);
     procedure edExecutableChange(Sender: TObject);
-    procedure sbSelectJournalDirectoryClick(Sender: TObject);
-    procedure sbSelectExecutableClick(Sender: TObject);
+    procedure btnSelectJournalDirectoryClick(Sender: TObject);
+    procedure btnSelectExecutableClick(Sender: TObject);
     procedure btnCollapseClick(Sender: TObject);
+  private
+    const
+      SECTION_PARAMS = 'Params';
+      SECTION_EXECUTABLE = 'Executable';
+      PARAM_APP = 'Application';
+      PARAM_CMD_LINE = 'CmdLine';
+      PARAM_ERASE_JOURNAL = 'EraseJournalBeforeRun';
+      PARAM_ERASE_JOURNAL_DIRECTORY = 'JournalDirectory';
+      PARAM_COLLAPSED = 'Collapsed';
+
+      PREFIX_TAB_LAUNCH = 'TabLaunch.';
   private
     FCaption: String;
     FIcon: TIcon;
@@ -52,6 +64,7 @@ type
     FCollapsed: Boolean;
     FHiglight: Boolean;
     FOnHeightChange: TNotifyEvent;
+    FLanguage: TLanguage;
 
     procedure ClearInterface;
     procedure PrepareInterface(Items: TStartParamArray);
@@ -65,6 +78,7 @@ type
 
     procedure OnChangeContentHeight(Sender: TObject);
     procedure DoHeightChange;
+    procedure ClearLogDirectory;
 
     procedure SetIcon(AIcon: TIcon);
     procedure SetCollapsed(ACollapsed: Boolean);
@@ -78,6 +92,7 @@ type
     procedure Stop;
     procedure FindExecutable;
     function  ExecatableEnable: Boolean;
+    procedure ChangeLanguage(Language: TLanguage);
 
     property Icon: TIcon read FIcon write SetIcon;
     property Caption: String read FCaption write FCaption;
@@ -90,7 +105,7 @@ type
     property OnHeightChange: TNotifyEvent read FOnHeightChange write FOnHeightChange;
   end;
 
-  TLaunchExecutableFrameList = array of TLaunchExecutableFrame;
+  TLaunchExecutableFrameList = array of TLaunchFrame;
 
 
 implementation
@@ -105,17 +120,8 @@ uses
   ParamFrameSimpleUnit, ParamFrameIntegerUnit, ParamFrameStringUnit,
   ParamFrameDirectoryUnit, ParamFrameFileUnit, ParamFrameDirectoryListUnit;
 
-const
-  SECTION_PARAMS = 'Params';
-  SECTION_EXECUTABLE = 'Executable';
-  PARAM_APP = 'Application';
-  PARAM_CMD_LINE = 'CmdLine';
-  PARAM_ERASE_JOURNAL = 'EraseJournalBeforeRun';
-  PARAM_ERASE_JOURNAL_DIRECTORY = 'JournalDirectory';
-  PARAM_COLLAPSED = 'Collapsed';
 
-
-procedure TLaunchExecutableFrame.btnShowCommandLineClick(Sender: TObject);
+procedure TLaunchFrame.btnShowCommandLineClick(Sender: TObject);
 var
   ParamStr, Cmd, Fn: String;
 begin
@@ -139,11 +145,15 @@ begin
   end;
 
   //Показать диалог
-  MemoDialogExecute('Параметры запуска',  ParamStr);
+  MemoDialogExecute(
+    FLanguage,
+    FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'MemoCaption', 'Параметры запуска'),
+    ParamStr
+  );
 end;
 
 
-procedure TLaunchExecutableFrame.btnStopClick(Sender: TObject);
+procedure TLaunchFrame.btnStopClick(Sender: TObject);
 var
   Fn: String;
 begin
@@ -153,34 +163,29 @@ begin
 end;
 
 
-procedure TLaunchExecutableFrame.edExecutableChange(Sender: TObject);
+procedure TLaunchFrame.edExecutableChange(Sender: TObject);
 begin
   SetValue(edExecutable.Text);
 end;
 
 
-procedure TLaunchExecutableFrame.btnLaunchClick(Sender: TObject);
-var
-  Dir: String;
+procedure TLaunchFrame.btnLaunchClick(Sender: TObject);
 begin
-  Dir := Trim(edJournalDir.Text);
-
   //Удалить содержимое каталога
-  if cbEraseJournalDirBeforeRun.Checked and (Dir <> '') then
-    DeleteFolderToRecycle(Dir);
+  ClearLogDirectory;
 
   //Launch application
   ExecuteFile(Trim(edExecutable.Text), GetCommandLine);
 end;
 
 
-procedure TLaunchExecutableFrame.btnClearJournalClick(Sender: TObject);
+procedure TLaunchFrame.btnClearJournalDirClick(Sender: TObject);
 begin
-  edJournalDir.Text := '';
+  ClearLogDirectory;
 end;
 
 
-procedure TLaunchExecutableFrame.btnExecutableOpenDirectoryClick(Sender: TObject);
+procedure TLaunchFrame.btnExecutableOpenDirectoryClick(Sender: TObject);
 var
   Dir: String;
 begin
@@ -190,7 +195,7 @@ begin
 end;
 
 
-procedure TLaunchExecutableFrame.btnOpenJournalDirectoryClick(Sender: TObject);
+procedure TLaunchFrame.btnOpenJournalDirectoryClick(Sender: TObject);
 var
   Dir: String;
 begin
@@ -200,20 +205,18 @@ begin
 end;
 
 
-procedure TLaunchExecutableFrame.sbSelectJournalDirectoryClick(Sender: TObject);
+procedure TLaunchFrame.btnSelectJournalDirectoryClick(Sender: TObject);
 var
   Dir: String;
 begin
   Dir := edJournalDir.Text;
 
-  if SelectDirectoryDialogExecute('Выберите каталог', Dir) then
-  begin
+  if SelectDirectoryDialogExecute(FLanguage, Dir) then
     edJournalDir.Text := Dir;
-  end;
 end;
 
 
-procedure TLaunchExecutableFrame.sbSelectExecutableClick(Sender: TObject);
+procedure TLaunchFrame.btnSelectExecutableClick(Sender: TObject);
 var
   Dir, Fn: String;
 begin
@@ -227,13 +230,13 @@ begin
 end;
 
 
-procedure TLaunchExecutableFrame.btnCollapseClick(Sender: TObject);
+procedure TLaunchFrame.btnCollapseClick(Sender: TObject);
 begin
   Collapsed := not Collapsed;
 end;
 
 
-procedure TLaunchExecutableFrame.ClearInterface;
+procedure TLaunchFrame.ClearInterface;
 var
   i: Integer;
 begin
@@ -242,7 +245,7 @@ begin
 end;
 
 
-procedure TLaunchExecutableFrame.PrepareInterface(Items: TStartParamArray);
+procedure TLaunchFrame.PrepareInterface(Items: TStartParamArray);
 var
   i: Integer;
   Item: TStartParamSimple;
@@ -301,7 +304,7 @@ begin
 end;
 
 
-procedure TLaunchExecutableFrame.ArrangeContentPanelItems;
+procedure TLaunchFrame.ArrangeContentPanelItems;
 var
   FrameItem: TParamFrameCommonFrame;
   i, Y: Integer;
@@ -326,13 +329,13 @@ begin
 end;
 
 
-function TLaunchExecutableFrame.GetTotalFrameHeight: Integer;
+function TLaunchFrame.GetTotalFrameHeight: Integer;
 begin
   Result := pnlButton.Height + pnlContent.Height;
 end;
 
 
-function TLaunchExecutableFrame.GetCommandLine: String;
+function TLaunchFrame.GetCommandLine: String;
 var
   Cmd: String;
 begin
@@ -346,7 +349,7 @@ begin
 end;
 
 
-constructor TLaunchExecutableFrame.Create(const ACaption: string; AIcon: TIcon; const ParameterFile: String; const SettingsFile: String; RelativeFileName: String);
+constructor TLaunchFrame.Create(const ACaption: string; AIcon: TIcon; const ParameterFile: String; const SettingsFile: String; RelativeFileName: String);
 begin
   inherited Create(nil);
   FCaption := ACaption;
@@ -368,7 +371,7 @@ begin
 end;
 
 
-destructor TLaunchExecutableFrame.Destroy;
+destructor TLaunchFrame.Destroy;
 begin
   SaveSettings(FSettingsFile);
 
@@ -381,19 +384,21 @@ begin
 end;
 
 
-procedure TLaunchExecutableFrame.Launch;
+procedure TLaunchFrame.Launch;
 begin
   btnLaunch.Click;
 end;
 
 
-procedure TLaunchExecutableFrame.Stop;
+procedure TLaunchFrame.Stop;
 begin
   btnStop.Click;
 end;
 
 
-procedure TLaunchExecutableFrame.FindExecutable;
+procedure TLaunchFrame.FindExecutable;
+const
+  PREFIX = 'TabLaunch.';
 var
   Fn: String;
   DirSteam, DirTools: String;
@@ -423,18 +428,50 @@ begin
   end;
 
   //Ничего не нашли, спросить пользователя
-  if YesNoQuestionDialogExecute('Вопрос', 'Не удалось автоматически определить путь для "' + Caption + '"' + sLineBreak + 'Указать вручную?') then
-    sbSelectExecutable.Click;
+  if YesNoQuestionDialogExecute(
+    FLanguage,
+    Format(FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'CantDeterminePath', 'Не удалось автоматически определить путь для "%s"%sУказать вручную?'), [Caption, sLineBreak])
+  ) then
+    btnSelectExecutable.Click;
 end;
 
 
-function TLaunchExecutableFrame.ExecatableEnable: Boolean;
+function TLaunchFrame.ExecatableEnable: Boolean;
 begin
   Result := btnLaunch.Enabled;
 end;
 
 
-procedure TLaunchExecutableFrame.SaveSettings(const FileName: String);
+procedure TLaunchFrame.ChangeLanguage(Language: TLanguage);
+var
+  i: Integer;
+begin
+  FLanguage := Language;
+
+  btnLaunch.Caption := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'Launch', 'Запустить');
+  btnStop.Caption := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'Stop', 'Остановить');
+  btnShowCommandLine.Hint := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'ShowCommandLine', 'Показать параметры запуска');
+  btnExecutableOpenDirectory.Hint := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'ExecutableOpenDirectory', 'Открыть каталог в проводнике');
+  btnSelectExecutable.Hint := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'SelectExecutable', 'Выбрать файл для запуска');
+  btnOpenJournalDirectory.Hint := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'OpenJournalDirectory', 'Открыть каталог в проводнике');
+  btnSelectJournalDirectory.Hint := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'SelectJournalDirectory', 'Выбрать каталог журналов');
+  btnClearJournalDir.Hint := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'ClearJournalDir', 'Очистить каталог');
+  edExecutable.Hint := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'Executable', 'Файл для запуска');
+  edAdditionalCommandLine.Hint := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'AdditionalCommandLine', 'Дополнительные параметры запуска');
+  edJournalDir.Hint := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'JournalDir', 'Каталог с журналами');
+  cbEraseJournalDirBeforeRun.Caption := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'EraseJournalDirBeforeRun', 'Очищать каталог перед запуском');
+  OpenDialog.Filter := Format('%s (*.exe)|*.exe', [FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'Applications', 'Приложения')]);
+
+  //Перевести редакторы параметров
+  for i := 0 to pnlContent.ControlCount - 1 do
+  begin
+    if pnlContent.Controls[i] is TParamFrameSimpleFrame then
+      (pnlContent.Controls[i] as TParamFrameSimpleFrame).ChangeLanguage(FLanguage);
+  end;
+end;
+
+
+procedure TLaunchFrame.SaveSettings(const FileName: String);
 var
   F: TIniFile;
   i: Integer;
@@ -462,7 +499,7 @@ begin
 end;
 
 
-procedure TLaunchExecutableFrame.LoadSettings(const FileName: String);
+procedure TLaunchFrame.LoadSettings(const FileName: String);
 var
   F: TIniFile;
   i: Integer;
@@ -502,7 +539,7 @@ begin
 end;
 
 
-procedure TLaunchExecutableFrame.LoadItemsSettings(const FileName: String);
+procedure TLaunchFrame.LoadItemsSettings(const FileName: String);
 var
   F: TIniFile;
   i: Integer;
@@ -518,7 +555,7 @@ begin
 end;
 
 
-procedure TLaunchExecutableFrame.OnChangeContentHeight(Sender: TObject);
+procedure TLaunchFrame.OnChangeContentHeight(Sender: TObject);
 begin
   //Поправить элементы внутри
   ArrangeContentPanelItems;
@@ -531,20 +568,32 @@ begin
 end;
 
 
-procedure TLaunchExecutableFrame.DoHeightChange;
+procedure TLaunchFrame.DoHeightChange;
 begin
   if Assigned(FOnHeightChange) then
     FOnHeightChange(Self);
 end;
 
 
-procedure TLaunchExecutableFrame.SetIcon(AIcon: TIcon);
+procedure TLaunchFrame.ClearLogDirectory;
+var
+  Dir: String;
+begin
+  Dir := Trim(edJournalDir.Text);
+
+  //Удалить содержимое каталога
+  if Dir <> '' then
+    DeleteFolderToRecycle(Dir);
+end;
+
+
+procedure TLaunchFrame.SetIcon(AIcon: TIcon);
 begin
   FIcon.Assign(AIcon);
 end;
 
 
-procedure TLaunchExecutableFrame.SetCollapsed(ACollapsed: Boolean);
+procedure TLaunchFrame.SetCollapsed(ACollapsed: Boolean);
 begin
   if FCollapsed = ACollapsed then
     Exit;
@@ -567,7 +616,7 @@ begin
 end;
 
 
-procedure TLaunchExecutableFrame.SetHighlight(AHighlight: Boolean);
+procedure TLaunchFrame.SetHighlight(AHighlight: Boolean);
 begin
   if FHiglight = AHighlight then
     Exit;
@@ -585,7 +634,7 @@ begin
 end;
 
 
-procedure TLaunchExecutableFrame.SetValue(AValue: String);
+procedure TLaunchFrame.SetValue(AValue: String);
 var
   IsEnable: Boolean;
 begin
@@ -599,4 +648,5 @@ end;
 
 
 end.
+
 

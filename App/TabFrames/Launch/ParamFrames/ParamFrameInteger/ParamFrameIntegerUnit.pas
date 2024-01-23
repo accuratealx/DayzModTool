@@ -5,7 +5,7 @@ unit ParamFrameIntegerUnit;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Spin, Buttons,
+  Classes, SysUtils, Dialogs, Spin,
   StartParamSimple, StartParamInteger,
   ParamFrameSimpleUnit, Types;
 

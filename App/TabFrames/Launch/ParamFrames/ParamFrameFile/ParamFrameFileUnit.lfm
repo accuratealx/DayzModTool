@@ -161,6 +161,7 @@ inherited ParamFrameFileFrame: TParamFrameFileFrame
     end
   end
   object OpenDialog: TOpenDialog[1]
+    Title = ''
     Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofForceShowHidden, ofViewDetail]
     Left = 230
     Top = 65531

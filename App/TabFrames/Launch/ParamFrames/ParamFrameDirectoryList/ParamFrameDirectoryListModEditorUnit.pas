@@ -5,7 +5,8 @@ unit ParamFrameDirectoryListModEditorUnit;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, ExtCtrls, Buttons, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Buttons, StdCtrls,
+  Language,
   StartParamDirectoryList;
 
 type
@@ -14,6 +15,9 @@ type
     btnUnselectAll: TSpeedButton;
     procedure btnSelectAllClick(Sender: TObject);
     procedure btnUnselectAllClick(Sender: TObject);
+  private
+    const
+      PREFIX_PARAM = 'TabLaunch.Param.';
   private
     FItems: TStartParamDirectoryListItemArray;
     FCheckBoxList: array of TCheckBox;
@@ -29,6 +33,8 @@ type
     destructor  Destroy; override;
 
     procedure UpdateInterface;
+
+    procedure ChangeLanguage(Language: TLanguage);
 
     property Items: TStartParamDirectoryListItemArray read FItems;
   end;
@@ -165,6 +171,13 @@ procedure TParamFrameDirectoryListModEditorFrame.UpdateInterface;
 begin
   CreateCheckBoxList(FItems);
   CorrectFrameHeight;
+end;
+
+
+procedure TParamFrameDirectoryListModEditorFrame.ChangeLanguage(Language: TLanguage);
+begin
+  btnSelectAll.Hint := Language.GetLocalizedString(PREFIX_PARAM + 'SelectAll', 'Выбрать все элементы');
+  btnUnselectAll.Hint := Language.GetLocalizedString(PREFIX_PARAM + 'UnselectAll', 'Снять выбор со всех элементов');
 end;
 
 

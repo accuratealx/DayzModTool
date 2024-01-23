@@ -5,8 +5,9 @@ unit ParamFrameFileUnit;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons,
+  Classes, SysUtils, Forms, Dialogs, StdCtrls, Buttons,
   StartParamSimple, StartParamFile,
+  Language,
   ParamFrameSimpleUnit;
 
 type
@@ -24,7 +25,7 @@ type
   protected
     procedure PrepareInterface(AItem: TStartParamSimple); override;
   public
-
+    procedure ChangeLanguage(Language: TLanguage); override;
   end;
 
 
@@ -78,6 +79,16 @@ begin
   inherited PrepareInterface(AItem);
 
   edValue.Text := (AItem as TStartParamFile).Value;
+end;
+
+
+procedure TParamFrameFileFrame.ChangeLanguage(Language: TLanguage);
+begin
+  inherited ChangeLanguage(Language);
+
+  btnOpenDirectory.Hint := Language.GetLocalizedString(PREFIX_PARAM + 'OpenDirectory', 'Открыть каталог в проводнике');
+  btnSelectFile.Hint := Language.GetLocalizedString(PREFIX_PARAM + 'SelectFile', 'Выбрать файл');
+  btnClearValue.Hint := Language.GetLocalizedString(PREFIX_PARAM + 'ClearValue', 'Очистить значение');
 end;
 
 

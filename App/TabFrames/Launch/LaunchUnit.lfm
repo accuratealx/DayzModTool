@@ -1,11 +1,14 @@
-inherited LaunchExecutableFrame: TLaunchExecutableFrame
+object LaunchFrame: TLaunchFrame
+  Left = 0
   Height = 276
+  Top = 0
   Width = 600
   ClientHeight = 276
   ClientWidth = 600
+  TabOrder = 0
   DesignLeft = 574
   DesignTop = 253
-  object pnlButton: TPanel[0]
+  object pnlButton: TPanel
     Left = 0
     Height = 134
     Top = 0
@@ -68,7 +71,7 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
       Cursor = crHandPoint
       Left = 565
       Height = 25
-      Hint = 'Параметры запуска'
+      Hint = 'Показать параметры запуска'
       Top = 10
       Width = 25
       Anchors = [akTop, akRight]
@@ -125,7 +128,7 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
       TabOrder = 0
       OnChange = edExecutableChange
     end
-    object sbSelectExecutable: TSpeedButton
+    object btnSelectExecutable: TSpeedButton
       Cursor = crHandPoint
       Left = 567
       Height = 23
@@ -170,7 +173,7 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
         93AC989592FF989491FF989391FF989391FF989391FF979391FF979391FF9793
         91FF979391FF979391FF979391FF989592FF989593AC9A979500
       }
-      OnClick = sbSelectExecutableClick
+      OnClick = btnSelectExecutableClick
       ShowHint = True
       ParentShowHint = False
     end
@@ -344,7 +347,7 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
       ShowHint = True
       ParentShowHint = False
     end
-    object sbSelectJournalDirectory: TSpeedButton
+    object btnSelectJournalDirectory: TSpeedButton
       Cursor = crHandPoint
       Left = 544
       Height = 23
@@ -389,7 +392,7 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
         D0FF3A92CFFF3A92CFFF3D94D0FF4197D1E44398D22B4498D2324498D2334498
         D2334498D2334499D2334499D337459AD300469AD300469AD300
       }
-      OnClick = sbSelectJournalDirectoryClick
+      OnClick = btnSelectJournalDirectoryClick
       ShowHint = True
       ParentShowHint = False
     end
@@ -450,11 +453,11 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
       }
       OnClick = btnStopClick
     end
-    object btnClearJournal: TSpeedButton
+    object btnClearJournalDir: TSpeedButton
       Cursor = crHandPoint
       Left = 567
       Height = 23
-      Hint = 'Очистить значение'
+      Hint = 'Очистить каталог'
       Top = 101
       Width = 23
       Anchors = [akTop, akRight]
@@ -495,12 +498,12 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
         0000000000003040C4FF3040C4FF000000000000000000000000000000000000
         0000000000003040C4FF3040C4FF0000000000000000FFFFFF00
       }
-      OnClick = btnClearJournalClick
+      OnClick = btnClearJournalDirClick
       ShowHint = True
       ParentShowHint = False
     end
   end
-  object pnlContent: TPanel[1]
+  object pnlContent: TPanel
     Left = 0
     Height = 70
     Top = 134
@@ -510,13 +513,13 @@ inherited LaunchExecutableFrame: TLaunchExecutableFrame
     ParentBackground = False
     TabOrder = 1
   end
-  object OpenDialog: TOpenDialog[2]
-    Filter = 'Программы (*.exe)|*.exe'
+  object OpenDialog: TOpenDialog
+    Filter = '*.exe|*.exe'
     Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofForceShowHidden, ofViewDetail]
     Left = 110
     Top = 140
   end
-  object ilCollapse: TImageList[3]
+  object ilCollapse: TImageList
     Left = 30
     Top = 140
     Bitmap = {
