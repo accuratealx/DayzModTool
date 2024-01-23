@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, Buttons, IniFiles,
-  SteamUtils, DirectoryItemUnit;
+  Language, SteamUtils,
+  DirectoryItemUnit;
 
 type
   TDirectoryFrame = class(TFrame)
@@ -26,9 +27,15 @@ type
     procedure btnUpClick(Sender: TObject);
     procedure FrameClick(Sender: TObject);
   private
+    const
+      SECTION_DIRECTORY = 'Directory';
+
+      PREFIX_TAB_DIRECTORY = 'TabDirectory.';
+  private
     FIconDirectory: String;
     FSettingsFile: String;
     FFrames: TDirectoryItemFrameArray;
+    FLanguage: TLanguage;
 
     procedure AddDirectoryFrame(AFrame: TDirectoryItemFrame);
     procedure ClearDirectoryFrames;
@@ -54,6 +61,8 @@ type
     procedure AddStandartDirectory;
     procedure DeleteAll;
 
+    procedure ChangeLanguage(Language: TLanguage);
+
     property Frames: TDirectoryItemFrameArray read FFrames;
   end;
 
@@ -64,9 +73,6 @@ implementation
 
 uses
   YesNoQuestionDialogUnit, DirectoryEditorDialogUnit;
-
-const
-  SECTION_DIRECTORY = 'Directory';
 
 
 procedure TDirectoryFrame.FrameClick(Sender: TObject);
@@ -141,7 +147,7 @@ begin
   APAth := Item.Path;
   AIconFileName := Item.IconName;
 
-  if DirectoryEditorDialogExecute(pemEdit, FIconDirectory, ACaption, APath, AIconFileName) then
+  if DirectoryEditorDialogExecute(FLanguage, pemEdit, FIconDirectory, ACaption, APath, AIconFileName) then
   begin
     //Поправить
     Item.Caption := ACaption;
@@ -181,7 +187,10 @@ begin
   //Выделенный фрейм
   Frame := GetSelectedDirectoryFrame;
 
-  if YesNoQuestionDialogExecute('Вопрос', Format('Удалить из списка каталог %s"%s"?', [sLineBreak, Frame.Caption])) then
+  if YesNoQuestionDialogExecute(
+    FLanguage,
+    Format(FLanguage.GetLocalizedString(PREFIX_TAB_DIRECTORY + 'DeleteCurrent', 'Удалить каталог "%s" из списка?'), [Frame.Caption])
+  ) then
   begin
     //индекс выделенного фрейма
     Index := GetDirectoryFrameIndex(Frame);
@@ -207,11 +216,11 @@ var
   Frame: TDirectoryItemFrame;
 begin
   //Подготовить параметры
-  ACaption := 'Новый каталог';
+  ACaption := FLanguage.GetLocalizedString(PREFIX_TAB_DIRECTORY + 'NewItemName', 'Новый каталог');
   APAth := '';
   AIconFileName := '';
 
-  if DirectoryEditorDialogExecute(pemNew, FIconDirectory, ACaption, APath, AIconFileName) then
+  if DirectoryEditorDialogExecute(FLanguage, pemNew, FIconDirectory, ACaption, APath, AIconFileName) then
   begin
     //Создать элемент каталога
     Frame := TDirectoryItemFrame.Create(FIconDirectory, ACaption, APath, AIconFileName);
@@ -470,20 +479,26 @@ procedure TDirectoryFrame.DeleteIncorrectDirectory;
 var
   i: Integer;
 begin
-  for i := Length(FFrames) - 1 downto 0 do
+  if YesNoQuestionDialogExecute(
+    FLanguage,
+    FLanguage.GetLocalizedString(PREFIX_TAB_DIRECTORY + 'DeleteIncorrect', 'Удалить несуществующие каталоги? Действие необратимо.')
+  ) then
   begin
-    if not FFrames[i].IsPathCorrect then
-      DeleteDirectoryFrameByIndex(i);
+    for i := Length(FFrames) - 1 downto 0 do
+    begin
+      if not FFrames[i].IsPathCorrect then
+        DeleteDirectoryFrameByIndex(i);
+    end;
+
+    //Упорядочить фреймы
+    ArrangeDirectoryFrames;
+
+    //Поправить панель кнопок
+    CorrectToolButtons;
+
+    //Сохранить настройки
+    SaveSettings(FSettingsFile);
   end;
-
-  //Упорядочить фреймы
-  ArrangeDirectoryFrames;
-
-  //Поправить панель кнопок
-  CorrectToolButtons;
-
-  //Сохранить настройки
-  SaveSettings(FSettingsFile);
 end;
 
 
@@ -538,7 +553,10 @@ end;
 
 procedure TDirectoryFrame.DeleteAll;
 begin
-  if YesNoQuestionDialogExecute('Вопрос', 'Удалить все каталоги? Действие необратимо.') then
+  if YesNoQuestionDialogExecute(
+    FLanguage,
+    FLanguage.GetLocalizedString(PREFIX_TAB_DIRECTORY + 'DeleteAll', 'Удалить все каталоги? Действие необратимо.')
+  ) then
   begin
     //Удалить все каталоги
     ClearDirectoryFrames;
@@ -549,6 +567,20 @@ begin
     //Поправить панель кнопок
     CorrectToolButtons;
   end;
+end;
+
+
+procedure TDirectoryFrame.ChangeLanguage(Language: TLanguage);
+begin
+  FLanguage := Language;
+
+  //Пеервод
+  btnAdd.Caption := FLanguage.GetLocalizedString(PREFIX_TAB_DIRECTORY + 'Add', 'Добавить');
+  btnEdit.Hint := FLanguage.GetLocalizedString(PREFIX_TAB_DIRECTORY + 'Edit', 'Изменить');
+  btnUp.Hint := FLanguage.GetLocalizedString(PREFIX_TAB_DIRECTORY + 'Up', 'Вверх');
+  btnDown.Hint := FLanguage.GetLocalizedString(PREFIX_TAB_DIRECTORY + 'Down', 'Вниз');
+  btnDelete.Hint := FLanguage.GetLocalizedString(PREFIX_TAB_DIRECTORY + 'Delete', 'Удалить');
+  btnExplore.Hint := FLanguage.GetLocalizedString(PREFIX_TAB_DIRECTORY + 'OpenDirectory', 'Открыть в проводнике');
 end;
 
 

@@ -1,13 +1,16 @@
-inherited DirectoryFrame: TDirectoryFrame
+object DirectoryFrame: TDirectoryFrame
+  Left = 0
   Height = 120
+  Top = 0
   Width = 345
   Align = alClient
   ClientHeight = 120
   ClientWidth = 345
   OnClick = FrameClick
+  TabOrder = 0
   DesignLeft = 564
   DesignTop = 285
-  object pnlTools: TPanel[0]
+  object pnlTools: TPanel
     Left = 0
     Height = 35
     Top = 0
@@ -310,7 +313,7 @@ inherited DirectoryFrame: TDirectoryFrame
       ParentShowHint = False
     end
   end
-  object sbContent: TScrollBox[1]
+  object sbContent: TScrollBox
     Left = 0
     Height = 85
     Top = 35
