@@ -400,8 +400,6 @@ end;
 
 
 procedure TLaunchFrame.FindExecutable;
-const
-  PREFIX = 'TabLaunch.';
 var
   Fn: String;
   DirSteam, DirTools: String;

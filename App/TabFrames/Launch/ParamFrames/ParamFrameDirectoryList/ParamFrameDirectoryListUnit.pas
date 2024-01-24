@@ -136,8 +136,6 @@ end;
 
 
 procedure TParamFrameDirectoryListFrame.ChangeLanguage(Language: TLanguage);
-var
-  s: String;
 begin
   inherited ChangeLanguage(Language);
 
