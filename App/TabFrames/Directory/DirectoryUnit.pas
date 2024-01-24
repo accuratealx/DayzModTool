@@ -537,6 +537,9 @@ begin
     Frame := TDirectoryItemFrame.Create(FIconDirectory, List.Strings[i]);
     Frame.OnSelect := @OnItemSelect;
 
+    //Проверить перевод
+    Frame.Caption := FLanguage.GetLocalizedString(PREFIX_TAB_DIRECTORY + 'DirectoryName.' + Frame.Caption, Frame.Caption);
+
     //Добавить в массив
     AddDirectoryFrame(Frame);
   end;
