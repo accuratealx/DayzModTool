@@ -61,6 +61,7 @@ type
     FParameterFile: String;
     FSettingsFile: String;
     FRelativeFileName: String;
+    FLocaleID: String;
     FCollapsed: Boolean;
     FHiglight: Boolean;
     FOnHeightChange: TNotifyEvent;
@@ -85,7 +86,7 @@ type
     procedure SetHighlight(AHighlight: Boolean);
     procedure SetValue(AValue: String);
   public
-    constructor Create(const ACaption: string; AIcon: TIcon; const ParameterFile: String; const SettingsFile: String; RelativeFileName: String); reintroduce;
+    constructor Create(const ACaption: string; AIcon: TIcon; const ParameterFile: String; const SettingsFile: String; RelativeFileName: String; LocaleID: String); reintroduce;
     destructor Destroy; override;
 
     procedure Launch;
@@ -100,6 +101,7 @@ type
     property ParameterFile: String read FParameterFile;
     property SettingsFile: String read FSettingsFile;
     property RelativeFileName: String read FRelativeFileName write FRelativeFileName;
+    property LocaleID: String read FLocaleID write FLocaleID;
     property Collapsed: Boolean read FCollapsed write SetCollapsed;
     property Higlight: Boolean read FHiglight write SetHighlight;
     property OnHeightChange: TNotifyEvent read FOnHeightChange write FOnHeightChange;
@@ -349,7 +351,7 @@ begin
 end;
 
 
-constructor TLaunchFrame.Create(const ACaption: string; AIcon: TIcon; const ParameterFile: String; const SettingsFile: String; RelativeFileName: String);
+constructor TLaunchFrame.Create(const ACaption: string; AIcon: TIcon; const ParameterFile: String; const SettingsFile: String; RelativeFileName: String; LocaleID: String);
 begin
   inherited Create(nil);
   FCaption := ACaption;
@@ -361,6 +363,7 @@ begin
   FParameterFile := ParameterFile;
   FSettingsFile := SettingsFile;
   FRelativeFileName := RelativeFileName;
+  FLocaleID := LocaleID;
 
   FItems := TStartParamArray.Create;
   FItems.LoadFromFile(FParameterFile);
@@ -448,6 +451,7 @@ var
 begin
   FLanguage := Language;
 
+  lblTitle.Caption := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'Application.' + FLocaleID, FCaption);
   btnLaunch.Caption := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'Launch', 'Запустить');
   btnStop.Caption := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'Stop', 'Остановить');
   btnShowCommandLine.Hint := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'ShowCommandLine', 'Показать параметры запуска');
