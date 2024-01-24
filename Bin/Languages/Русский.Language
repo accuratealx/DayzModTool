@@ -1,0 +1,31 @@
+# DayZ Mod Tool language file
+
+#Language info
+Info.AppVersion = 0.6
+Info.FileVersion = 1.0
+Info.Autor = accuratealx@gmail.com
+Info.Date = 23.02.2024
+Info.Comment =
+
+#MainMenu
+MainForm.MainMenu.miMainSystem = Система
+MainForm.MainMenu.miMainHide = Свернуть
+MainForm.MainMenu.miMainExit = Выйти
+MainForm.MainMenu.miMainTabs = Закладки
+MainForm.MainMenu.miMainLanguage = Язык
+MainForm.MainMenu.miMainTabLaunch = Запуск программ
+MainForm.MainMenu.miMainTabLaunchExpandAll = Развернуть все
+MainForm.MainMenu.miMainTabLaunchCollapseAll = Свернуть все
+MainForm.MainMenu.miMainTabLaunchFindExecutables = Найти приложения
+MainForm.MainMenu.miMainTabDirectory = Каталоги
+MainForm.MainMenu.miMainTabDirectoryAddDefault = Добавить стандартные
+MainForm.MainMenu.miMainTabDirectoryEraseAll = Удалить все
+MainForm.MainMenu.miMainTabDirectoryEraseIncorrect = Удалить несуществующие
+
+#TrayMenu
+MainForm.TrayMenu.miTrayShow = Показать
+MainForm.TrayMenu.miTrayHide = Скрыть
+MainForm.TrayMenu.miTrayLaunch = Запустить
+MainForm.TrayMenu.miTrayStop = Остановить
+MainForm.TrayMenu.miTrayDirectory = Каталоги
+MainForm.TrayMenu.miTrayExit = Выйти
