@@ -1,0 +1,111 @@
+# DayZ Mod Tool language file
+
+#Language info
+Info.AppVersion = 0.6
+Info.FileVersion = 1.0
+Info.Autor = accuratealx@gmail.com
+Info.Date = 21.02.2024
+Info.Comment =
+
+#MainMenu
+MainForm.MainMenu.miMainSystem = System
+MainForm.MainMenu.miMainHide = Minimize
+MainForm.MainMenu.miMainExit = Exit
+MainForm.MainMenu.miMainTabs = Tabs
+MainForm.MainMenu.miMainLanguage = Language
+MainForm.MainMenu.miMainTabLaunch = Launch
+MainForm.MainMenu.miMainTabLaunchExpandAll = Expand all
+MainForm.MainMenu.miMainTabLaunchCollapseAll = Collapse all
+MainForm.MainMenu.miMainTabLaunchFindExecutables = Find applications
+MainForm.MainMenu.miMainTabDirectory = Directory
+MainForm.MainMenu.miMainTabDirectoryAddDefault = Add default
+MainForm.MainMenu.miMainTabDirectoryEraseAll = Erase all
+MainForm.MainMenu.miMainTabDirectoryEraseIncorrect = Erase incorrect
+
+#TrayMenu
+MainForm.TrayMenu.miTrayShow = Show
+MainForm.TrayMenu.miTrayHide = Minimize
+MainForm.TrayMenu.miTrayLaunch = Launch
+MainForm.TrayMenu.miTrayStop = Terminate
+MainForm.TrayMenu.miTrayDirectory = Directory
+MainForm.TrayMenu.miTrayExit = Exit
+
+#Tab captions
+MainForm.TabCaption.Launch = Launch
+MainForm.TabCaption.Directory = Directory
+
+#Dialogs
+Dialogs.YesNo.Caption = Question
+Dialogs.YesNo.Yes = Yes
+Dialogs.YesNo.No = No
+Dialogs.SelectDirectory.Caption = Select directory
+Dialogs.SelectDirectory.Select = Select
+Dialogs.SelectDirectory.Close = Close
+Dialogs.Memo.Close = Close
+Dialogs.Memo.CopyContent = Copy contetnt to clipboard
+Dialogs.IconSelector.Caption = Select icon
+Dialogs.IconSelector.Select = Select
+Dialogs.IconSelector.Close = Close
+Dialogs.DirectoryEditor.Cancel = Cancel
+Dialogs.DirectoryEditor.Caption = Caption
+Dialogs.DirectoryEditor.Directory = Directory
+Dialogs.DirectoryEditor.SelectDirectory = Select directory
+Dialogs.DirectoryEditor.ChangeIcon = Change icon
+Dialogs.DirectoryEditor.Add = Add
+Dialogs.DirectoryEditor.Edit = Edit
+
+#Tab Launch
+TabLaunch.Launch = Launch
+TabLaunch.Stop = Terminate
+TabLaunch.ShowCommandLine = Command line
+TabLaunch.ExecutableOpenDirectory = Open directory
+TabLaunch.SelectExecutable = Select application
+TabLaunch.OpenJournalDirectory = Open log directory
+TabLaunch.SelectJournalDirectory = Select log directory
+TabLaunch.ClearJournalDir = Clear log directory
+TabLaunch.Executable = Application file
+TabLaunch.AdditionalCommandLine = Additional command line
+TabLaunch.JournalDir = Log directory
+TabLaunch.EraseJournalDirBeforeRun = Erase log directory before launch
+TabLaunch.MemoCaption = Command line
+TabLaunch.Applications = Applications
+TabLaunch.CantDeterminePath = Failed to autodetect path for "%s"%sSelect manually?
+TabLaunch.Param.DefaultValue = Set default value
+TabLaunch.Param.OpenDirectory = Open directory
+TabLaunch.Param.SelectFile = Select file
+TabLaunch.Param.ClearValue = Clear value
+TabLaunch.Param.SelectDirectory = Select directory
+TabLaunch.Param.FullPath = Full path
+TabLaunch.Param.SelectAll = Select all
+TabLaunch.Param.UnselectAll = Unselect all
+
+#Tab Directory
+TabDirectory.Add = Add
+TabDirectory.Edit = Edit
+TabDirectory.Up = Up
+TabDirectory.Down = Down
+TabDirectory.Delete = Delete
+TabDirectory.OpenDirectory = Open directory
+TabDirectory.NewItemName = New directory
+TabDirectory.DeleteAll = Erase all directories? Action cannot be undone.
+TabDirectory.DeleteIncorrect = Erase non-existent directories?
+TabDirectory.DeleteCurrent = Remove directory "%s" from the list?
+
+#Launch Applications
+TabLaunch.Application.DayZServer = DayZ Server
+TabLaunch.Application.DayZclient = DayZ Client
+TabLaunch.Application.Workbench = Workbench
+TabLaunch.Application.TerrainBuilder = Terrain Builder
+TabLaunch.Application.TerrainProcessor = Terrain Processor
+TabLaunch.Application.ObjectBuilder = Object Builder
+TabLaunch.Application.AddonBuilder = Addon Builder
+TabLaunch.Application.Publisher = Publisher
+TabLaunch.Application.EconomicsEditor = Economics Editor
+TabLaunch.Application.TextureViewer = Texture Viewer
+
+#Directory names
+TabDirectory.DirectoryName.DayZ клиент = DayZ Client
+TabDirectory.DirectoryName.DayZ сервер = DayZ Server
+TabDirectory.DirectoryName.DayZ утилиты = DayZ Utilities
+TabDirectory.DirectoryName.DayZ журналы утилит = DayZ Utility Logs
+TabDirectory.DirectoryName.DayZ журналы = DayZ Logs
