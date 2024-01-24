@@ -8,11 +8,12 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, Windows,
   ExtCtrls, ComCtrls,
+  sgeStringList,
   Language,
   LaunchUnit, DirectoryUnit, DirectoryItemUnit;
 
 const
-  VERSION = '0.5';
+  VERSION = '0.6';
 
 type
   TMainForm = class(TForm)
@@ -21,7 +22,9 @@ type
     ilTab: TImageList;
     ilTrayLaunch: TImageList;
     ilTrayDirectory: TImageList;
+    ilLanguages: TImageList;
     MainMenu: TMainMenu;
+    miMainLanguage: TMenuItem;
     miTrayHide: TMenuItem;
     miMainSeparator3: TMenuItem;
     miMainTabDirectoryEraseAll: TMenuItem;
@@ -92,6 +95,7 @@ type
     //Язык
     FCurrentLanguage: String;
     FLanguage: TLanguage;
+    FLanguageFileList: TsgeStringList;
 
     //Закладки
     FDirectoryFrame: TDirectoryFrame;
@@ -103,6 +107,8 @@ type
 
     procedure LoadLanguage(LanguageName: String);
     procedure ApplyLanguage;
+    procedure CreateLanguageFileList;
+    procedure ChangeLanguage(LanguageName: String);
 
     function  GetLaunchFrameList: TLaunchExecutableFrameList;
     procedure CreateLaunchFrame(const SettingsFile: String);
@@ -122,6 +128,10 @@ type
     procedure CreateTrayMenuDirectoryItems;
     procedure DestroyTrayMenuDirectoryItems;
     procedure miTrayDirectoryClick(Sender: TObject);
+
+    procedure CreateLanguageMenuItems;
+    procedure CorrectLanguageMenuItemSelected;
+    procedure miLanguageMenuItemClick(Sender: TObject);
   end;
 
 
@@ -133,6 +143,7 @@ implementation
 {$R *.lfm}
 
 uses
+  sgeFileUtils,
   IniFiles;
 
 
@@ -254,6 +265,7 @@ begin
 
   //Объекты
   FLanguage := TLanguage.Create;
+  FLanguageFileList := TsgeStringList.Create;
 
   //Каталоги
   FMainDir := ExtractFilePath(ParamStr(0));
@@ -283,6 +295,15 @@ begin
   //Прочитать параметры
   LoadSettings;
 
+  //Получить список файлов с языками
+  CreateLanguageFileList;
+
+  //Поправить пункт перевода
+  miMainLanguage.Visible := (FLanguageFileList.Count > 0);
+
+  //Создать элементы языка
+  CreateLanguageMenuItems;
+
   //Загрузить язык
   LoadLanguage(FCurrentLanguage);
 
@@ -299,6 +320,7 @@ begin
 
   SaveSettings;
 
+  FLanguageFileList.Free;
   FLanguage.Free;
 end;
 
@@ -382,12 +404,33 @@ begin
   TranslateMenu(TrayMenu.Items, 'MainForm.TrayMenu.');
 
   //Закладки
-  tabLaunch.Caption := FLanguage.GetLocalizedString(PREFIX_TAB_CAPTION + 'Launch', tabLaunch.Caption);
-  tabDirectory.Caption := FLanguage.GetLocalizedString(PREFIX_TAB_CAPTION + 'Directory', tabDirectory.Caption);
+  tabLaunch.Caption := FLanguage.GetLocalizedString(PREFIX_TAB_CAPTION + 'Launch', 'Запуск');
+  tabDirectory.Caption := FLanguage.GetLocalizedString(PREFIX_TAB_CAPTION + 'Directory', 'Каталоги');
 
   //Закладки
   ChangeLaunchFrameLanguage;
   FDirectoryFrame.ChangeLanguage(FLanguage);
+end;
+
+
+procedure TMainForm.CreateLanguageFileList;
+begin
+  if DirectoryExists(FLanguageDir) then
+    sgeFindFilesInFolderByExt(FLanguageDir, FLanguageFileList, '.Language');
+end;
+
+
+procedure TMainForm.ChangeLanguage(LanguageName: String);
+begin
+  if LowerCase(FCurrentLanguage) = LowerCase(LanguageName) then
+    Exit;
+
+  FCurrentLanguage := LanguageName;
+  LoadLanguage(FCurrentLanguage);
+  ApplyLanguage;
+
+  //Поправить текущий язык
+  CorrectLanguageMenuItemSelected;
 end;
 
 
@@ -415,7 +458,7 @@ var
   F: TIniFile;
   SectionList: TStringList;
   i: Integer;
-  FrameCaption, FrameParams, FrameSettings, FrameIconName, FrameRelativeFilename: String;
+  FrameCaption, FrameParams, FrameSettings, FrameIconName, FrameRelativeFilename, FrameLocaleID: String;
   Frame: TLaunchFrame;
   FrameIcon: TIcon;
 begin
@@ -436,6 +479,7 @@ begin
       FrameSettings := FSettingsDir + F.ReadString(FrameCaption, 'SettingsFile', '');
       FrameIconName := FLaunchDir + F.ReadString(FrameCaption, 'Icon', '');
       FrameRelativeFilename := F.ReadString(FrameCaption, 'RelativeFileName', '');
+      FrameLocaleID := F.ReadString(FrameCaption, 'LocaleId', '');
 
       //Если нет файла с настройками параметров, то пропуск
       if not FileExists(FrameParams) then
@@ -452,7 +496,7 @@ begin
       end;
 
       //Создать фрейм
-      Frame := TLaunchFrame.Create(FrameCaption, FrameIcon, FrameParams, FrameSettings, FrameRelativeFilename);
+      Frame := TLaunchFrame.Create(FrameCaption, FrameIcon, FrameParams, FrameSettings, FrameRelativeFilename, FrameLocaleID);
 
       //Настроить выделение
       Frame.Higlight := not Odd(i);
@@ -676,6 +720,65 @@ begin
 
   Frame := TDirectoryItemFrame((Sender as TMenuItem).Tag);
   Frame.OpenDirectory;
+end;
+
+
+procedure TMainForm.CreateLanguageMenuItems;
+var
+  i, IconIndex: Integer;
+  Fn, Cpt: String;
+  Item: TMenuItem;
+  Icn: TIcon;
+begin
+  for i := 0 to FLanguageFileList.Count - 1 do
+  begin
+    Cpt := ChangeFileExt(FLanguageFileList.Part[i], '');
+
+    Item := TMenuItem.Create(MainMenu);
+    Item.Caption := Cpt;
+    Item.Tag := i;
+    Item.OnClick := @miLanguageMenuItemClick;
+
+    //Иконка
+    Fn := FLanguageDir + ChangeFileExt(FLanguageFileList.Part[i], '.ico');
+    if FileExists(fn) then
+    begin
+      Icn := TIcon.Create;
+      Icn.LoadFromFile(fn);
+      ilLanguages.AddIcon(Icn);
+      Icn.Free;
+      IconIndex := ilLanguages.Count - 1;
+    end
+    else
+      IconIndex := 0;
+    Item.ImageIndex := IconIndex;
+
+    miMainLanguage.Add(Item);
+  end;
+
+  CorrectLanguageMenuItemSelected;
+end;
+
+
+procedure TMainForm.CorrectLanguageMenuItemSelected;
+var
+  i: Integer;
+  Item: TMenuItem;
+begin
+  for i := 0 to miMainLanguage.Count - 1 do
+  begin
+    Item := miMainLanguage.Items[i];
+    Item.Checked := LowerCase(FCurrentLanguage) = LowerCase(ChangeFileExt(FLanguageFileList.Part[i], ''));
+  end;
+end;
+
+
+procedure TMainForm.miLanguageMenuItemClick(Sender: TObject);
+var
+  LngName: String;
+begin
+  LngName := FLanguageFileList.Part[(Sender as TMenuItem).Tag];
+  ChangeLanguage(ChangeFileExt(LngName, ''));
 end;
 
 
