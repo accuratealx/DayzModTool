@@ -24,6 +24,7 @@
 0. Использовать
 
 ## Возможности:
+- Поддержка языковых переводов
 - Сворачивание утилиты в трей
 - Автоматическое сохранение и загрузка настроек
 - Запуск приложений с выбором параметров
@@ -37,8 +38,13 @@
 - Быстрый доступ к каталогам из трея
 - Автоматический поиск и добавление стандартных каталогов DayZ
 
+## Поддержать автора:
+- Сбербанк 4276 1609 3867 4034
+- Yoomoney 5599 0020 5735 6232
+
 ## Скриншоты:
 ![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshot/Screen001.png)
+![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshot/Screen001a.png)
 ![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshot/Screen002.png)
 ![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshot/Screen003.png)
 ![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshot/Screen004.png)
