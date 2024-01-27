@@ -3,7 +3,7 @@
 ![](https://img.shields.io/github/v/release/accuratealx/DayzModTool)
 ![](https://img.shields.io/github/stars/accuratealx/DayzModTool)
 ![](https://img.shields.io/github/downloads/accuratealx/DayzModTool/total)
-![](https://img.shields.io/github/repo-size/accuratealx/DayzModTool%20)
+![](https://img.shields.io/github/repo-size/accuratealx/DayzModTool)
 ![](https://img.shields.io/github/release-date/accuratealx/DayzModTool)
 ![](https://img.shields.io/github/last-commit/accuratealx/DayzModTool)
 ![](https://img.shields.io/github/languages/top/accuratealx/DayzModTool)
