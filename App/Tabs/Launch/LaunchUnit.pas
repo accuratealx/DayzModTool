@@ -85,6 +85,7 @@ type
     procedure SetCollapsed(ACollapsed: Boolean);
     procedure SetHighlight(AHighlight: Boolean);
     procedure SetValue(AValue: String);
+    function  GetLocaleCaption: String;
   public
     constructor Create(const ACaption: string; AIcon: TIcon; const ParameterFile: String; const SettingsFile: String; RelativeFileName: String; LocaleID: String); reintroduce;
     destructor Destroy; override;
@@ -97,6 +98,7 @@ type
 
     property Icon: TIcon read FIcon write SetIcon;
     property Caption: String read FCaption write FCaption;
+    property LocaleCaption: String read GetLocaleCaption;
     property Items: TStartParamArray read FItems;
     property ParameterFile: String read FParameterFile;
     property SettingsFile: String read FSettingsFile;
@@ -645,6 +647,12 @@ begin
   IsEnable := FileExists(edExecutable.Text);
   btnLaunch.Enabled := IsEnable;
   btnStop.Enabled := IsEnable;
+end;
+
+
+function TLaunchFrame.GetLocaleCaption: String;
+begin
+  Result := lblTitle.Caption;
 end;
 
 
