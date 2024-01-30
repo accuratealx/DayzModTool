@@ -10,10 +10,11 @@ uses
   ExtCtrls, ComCtrls,
   sgeStringList,
   Language,
-  LaunchUnit, DirectoryUnit, DirectoryItemUnit;
+  LaunchUnit, DirectoryUnit, DirectoryItemUnit,
+  WorkDriveUnit;
 
 const
-  VERSION = '0.6';
+  VERSION = '0.7';
 
 type
   TMainForm = class(TForm)
@@ -24,6 +25,9 @@ type
     ilTrayDirectory: TImageList;
     ilLanguages: TImageList;
     MainMenu: TMainMenu;
+    miMainToolsExtractData: TMenuItem;
+    miMainToolsWorkDrive: TMenuItem;
+    miMainTools: TMenuItem;
     miMainLanguage: TMenuItem;
     miTrayHide: TMenuItem;
     miMainSeparator3: TMenuItem;
@@ -65,6 +69,7 @@ type
     procedure miMainTabLaunchCollapseAllClick(Sender: TObject);
     procedure miMainTabLaunchExpandAllClick(Sender: TObject);
     procedure miMainTabLaunchFindExecutablesClick(Sender: TObject);
+    procedure miMainToolsWorkDriveClick(Sender: TObject);
     procedure miTrayHideClick(Sender: TObject);
     procedure miTrayShowClick(Sender: TObject);
     procedure sbLaunchResize(Sender: TObject);
@@ -214,6 +219,12 @@ end;
 procedure TMainForm.miMainTabLaunchFindExecutablesClick(Sender: TObject);
 begin
   FindExecutables;
+end;
+
+
+procedure TMainForm.miMainToolsWorkDriveClick(Sender: TObject);
+begin
+  WorkDriveExecute(FLanguage, FSettingsDir + CONFIG_FILE_NAME);
 end;
 
 
@@ -410,6 +421,9 @@ begin
   //Закладки
   ChangeLaunchFrameLanguage;
   FDirectoryFrame.ChangeLanguage(FLanguage);
+
+  //Пересоздать пункты меню в трее
+  CreateTrayMenuLaunchItems;
 end;
 
 
@@ -605,7 +619,7 @@ procedure TMainForm.CreateTrayMenuLaunchItems;
     MenuItem: TMenuItem;
   begin
     MenuItem := TMenuItem.Create(RootMenu);
-    MenuItem.Caption := Frame.Caption;
+    MenuItem.Caption := Frame.LocaleCaption;
     MenuItem.ImageIndex := IconIndex;
     MenuItem.OnClick := Proc;
     MenuItem.Tag := PtrUInt(Frame);
@@ -617,8 +631,15 @@ var
   FrameList: TLaunchExecutableFrameList;
   c, i, IconIndex: Integer;
 begin
+  //Почистить лишнее
+  miTrayLaunch.Clear;
+  miTrayStop.Clear;
+  ilTrayLaunch.Clear;
+
+  //Получить список фреймов запуска
   FrameList := GetLaunchFrameList;
 
+  //Построить меню
   c := Length(FrameList) - 1;
   for i := 0 to c do
   begin
