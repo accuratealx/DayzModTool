@@ -256,10 +256,8 @@ begin
 
   //Поправим кнопки
   btnMount.Enabled := (MountPath = '') and (PathExist) and (cbLetters.Text <> '');
-  btnUnMount.Enabled := not btnMount.Enabled and (cbLetters.Text <> '');
+  btnUnMount.Enabled := (MountPath <> '') and (cbLetters.Text <> '');
   btnOpenDirectory.Enabled := PathExist;
-  cbLetters.Enabled := btnMount.Enabled;
-  btnSelectDirectory.Enabled := btnMount.Enabled;
 end;
 
 
