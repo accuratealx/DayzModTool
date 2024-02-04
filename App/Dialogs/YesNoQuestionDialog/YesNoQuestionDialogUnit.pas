@@ -20,8 +20,6 @@ type
   private
     const
       PREFIX_DIALOG = 'Dialogs.YesNo.';
-  private
-    procedure GetTextSize(const Str: String; out AWidth, AHeight: Integer);
   protected
     procedure PrepareInterface; override;
     procedure SetLanguage; override;
@@ -36,7 +34,7 @@ implementation
 {$R *.lfm}
 
 uses
-  DialogParameters;
+  DialogUtils, DialogParameters;
 
 type
   TYesNoQuestionDialogParameters = class(TDialogParameters)
@@ -77,33 +75,6 @@ begin
 end;
 
 
-procedure TYesNoQuestionDialogForm.GetTextSize(const Str: String; out AWidth, AHeight: Integer);
-var
-  List: TStringList;
-  tw, th, i: Integer;
-begin
-  AWidth := 0;
-  AHeight := 0;
-
-  th := lblText.Canvas.GetTextHeight('W');
-
-  List := TStringList.Create;
-  List.LineBreak := sLineBreak;
-  List.Text := Str;
-
-  for i := 0 to List.Count - 1 do
-  begin
-    tw := lblText.Canvas.GetTextWidth(List.Strings[i]);
-    if tw > AWidth then
-      AWidth := tw;
-  end;
-
-  AHeight := th * List.Count;
-
-  List.Free;
-end;
-
-
 procedure TYesNoQuestionDialogForm.btnYesClick(Sender: TObject);
 begin
   Tag := 1;
@@ -127,7 +98,7 @@ begin
   Params := FParameters as TYesNoQuestionDialogParameters;
 
   //Размеры текста
-  GetTextSize(Params.Text, W, H);
+  GetTextSize(lblText, Params.Text, W, H);
 
   //Ширина диалога
   Width := Max(btnYes.Width + btnNo.Width + SPACE * 3, W + SPACE * 4);
