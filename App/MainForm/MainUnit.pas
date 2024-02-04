@@ -69,6 +69,7 @@ type
     procedure miMainTabLaunchCollapseAllClick(Sender: TObject);
     procedure miMainTabLaunchExpandAllClick(Sender: TObject);
     procedure miMainTabLaunchFindExecutablesClick(Sender: TObject);
+    procedure miMainToolsExtractDataClick(Sender: TObject);
     procedure miMainToolsWorkDriveClick(Sender: TObject);
     procedure miTrayHideClick(Sender: TObject);
     procedure miTrayShowClick(Sender: TObject);
@@ -87,6 +88,7 @@ type
       CONFIG_PARAM_VISIBLE = 'Visible';
       CONFIG_PARAM_TAB_INDEX = 'TabIndex';
       CONFIG_PARAM_LANGUAGE = 'Language';
+      CONFIG_PARAM_PROJECT_DIRECTORY = 'ProjectDirectory';
   private
     FCloseApplication: Boolean;
 
@@ -149,6 +151,7 @@ implementation
 
 uses
   sgeFileUtils,
+  DataExtractorUnit,
   IniFiles;
 
 
@@ -219,6 +222,12 @@ end;
 procedure TMainForm.miMainTabLaunchFindExecutablesClick(Sender: TObject);
 begin
   FindExecutables;
+end;
+
+
+procedure TMainForm.miMainToolsExtractDataClick(Sender: TObject);
+begin
+  DataExtractorExecute(FLanguage, FSettingsDir + CONFIG_FILE_NAME);
 end;
 
 

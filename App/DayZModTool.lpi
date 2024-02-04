@@ -25,7 +25,7 @@
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <OtherUnitFiles Value="MainForm;..\Units;ParameterModListFrame;DirectoryPathFrame;..\Units\StartParam;LaunchFrames\DedicatedServerFrame;Dialogs\StartParamDialogForm;Dialogs;Dialogs\MemoDialogForm;Dialogs\SelectDirectoryDialog;Dialogs\MemoDialog;Dialogs\YesNoQuestionDialog;Tabs\Directory;Tabs\Launch;Tabs\Launch\ParamFrames;Tabs\Launch\ParamFrames\ParamFrameDirectory;Tabs\Launch\ParamFrames\ParamFrameDirectoryList;Tabs\Launch\ParamFrames\ParamFrameFile;Tabs\Launch\ParamFrames\ParamFrameInteger;Tabs\Launch\ParamFrames\ParamFrameSimple;Tabs\Launch\ParamFrames\ParamFrameString;Tabs\Directory\DirectoryItem;Dialogs\IconSelectorDialog;Dialogs\PathEditorDialog;Dialogs\DirectoryEditorDialog;Tools\WorkDrive"/>
+            <OtherUnitFiles Value="MainForm;..\Units;ParameterModListFrame;DirectoryPathFrame;..\Units\StartParam;LaunchFrames\DedicatedServerFrame;Dialogs\StartParamDialogForm;Dialogs;Dialogs\MemoDialogForm;Dialogs\SelectDirectoryDialog;Dialogs\MemoDialog;Dialogs\YesNoQuestionDialog;Tabs\Directory;Tabs\Launch;Tabs\Launch\ParamFrames;Tabs\Launch\ParamFrames\ParamFrameDirectory;Tabs\Launch\ParamFrames\ParamFrameDirectoryList;Tabs\Launch\ParamFrames\ParamFrameFile;Tabs\Launch\ParamFrames\ParamFrameInteger;Tabs\Launch\ParamFrames\ParamFrameSimple;Tabs\Launch\ParamFrames\ParamFrameString;Tabs\Directory\DirectoryItem;Dialogs\IconSelectorDialog;Dialogs\PathEditorDialog;Dialogs\DirectoryEditorDialog;Tools\WorkDrive;Dialogs\MessageDialog;Tools\DataExtractor"/>
             <UnitOutputDirectory Value="..\~Tmp\$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <CodeGeneration>
@@ -57,7 +57,7 @@
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <OtherUnitFiles Value="MainForm;..\Units;ParameterModListFrame;DirectoryPathFrame;..\Units\StartParam;LaunchFrames\DedicatedServerFrame;Dialogs\StartParamDialogForm;Dialogs;Dialogs\MemoDialogForm;Dialogs\SelectDirectoryDialog;Dialogs\MemoDialog;Dialogs\YesNoQuestionDialog;Tabs\Directory;Tabs\Launch;Tabs\Launch\ParamFrames;Tabs\Launch\ParamFrames\ParamFrameDirectory;Tabs\Launch\ParamFrames\ParamFrameDirectoryList;Tabs\Launch\ParamFrames\ParamFrameFile;Tabs\Launch\ParamFrames\ParamFrameInteger;Tabs\Launch\ParamFrames\ParamFrameSimple;Tabs\Launch\ParamFrames\ParamFrameString;Tabs\Directory\DirectoryItem;Dialogs\IconSelectorDialog;Dialogs\PathEditorDialog;Dialogs\DirectoryEditorDialog;Tools\WorkDrive"/>
+            <OtherUnitFiles Value="MainForm;..\Units;ParameterModListFrame;DirectoryPathFrame;..\Units\StartParam;LaunchFrames\DedicatedServerFrame;Dialogs\StartParamDialogForm;Dialogs;Dialogs\MemoDialogForm;Dialogs\SelectDirectoryDialog;Dialogs\MemoDialog;Dialogs\YesNoQuestionDialog;Tabs\Directory;Tabs\Launch;Tabs\Launch\ParamFrames;Tabs\Launch\ParamFrames\ParamFrameDirectory;Tabs\Launch\ParamFrames\ParamFrameDirectoryList;Tabs\Launch\ParamFrames\ParamFrameFile;Tabs\Launch\ParamFrames\ParamFrameInteger;Tabs\Launch\ParamFrames\ParamFrameSimple;Tabs\Launch\ParamFrames\ParamFrameString;Tabs\Directory\DirectoryItem;Dialogs\IconSelectorDialog;Dialogs\PathEditorDialog;Dialogs\DirectoryEditorDialog;Tools\WorkDrive;Dialogs\MessageDialog;Tools\DataExtractor"/>
             <UnitOutputDirectory Value="..\~Tmp\$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <CodeGeneration>
@@ -286,6 +286,28 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit>
+      <Unit>
+        <Filename Value="Dialogs\MessageDialog\MessageDialogUnit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MessageDialogForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Dialogs\DialogUtils.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Tools\DataExtractor\DataExtractorUnit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="DataExtractorForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Tools\DataExtractor\ExtractWorker.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -296,7 +318,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="MainForm;..\Units;ParameterModListFrame;DirectoryPathFrame;..\Units\StartParam;LaunchFrames\DedicatedServerFrame;Dialogs\StartParamDialogForm;Dialogs;Dialogs\MemoDialogForm;Dialogs\SelectDirectoryDialog;Dialogs\MemoDialog;Dialogs\YesNoQuestionDialog;Tabs\Directory;Tabs\Launch;Tabs\Launch\ParamFrames;Tabs\Launch\ParamFrames\ParamFrameDirectory;Tabs\Launch\ParamFrames\ParamFrameDirectoryList;Tabs\Launch\ParamFrames\ParamFrameFile;Tabs\Launch\ParamFrames\ParamFrameInteger;Tabs\Launch\ParamFrames\ParamFrameSimple;Tabs\Launch\ParamFrames\ParamFrameString;Tabs\Directory\DirectoryItem;Dialogs\IconSelectorDialog;Dialogs\PathEditorDialog;Dialogs\DirectoryEditorDialog;Tools\WorkDrive"/>
+      <OtherUnitFiles Value="MainForm;..\Units;ParameterModListFrame;DirectoryPathFrame;..\Units\StartParam;LaunchFrames\DedicatedServerFrame;Dialogs\StartParamDialogForm;Dialogs;Dialogs\MemoDialogForm;Dialogs\SelectDirectoryDialog;Dialogs\MemoDialog;Dialogs\YesNoQuestionDialog;Tabs\Directory;Tabs\Launch;Tabs\Launch\ParamFrames;Tabs\Launch\ParamFrames\ParamFrameDirectory;Tabs\Launch\ParamFrames\ParamFrameDirectoryList;Tabs\Launch\ParamFrames\ParamFrameFile;Tabs\Launch\ParamFrames\ParamFrameInteger;Tabs\Launch\ParamFrames\ParamFrameSimple;Tabs\Launch\ParamFrames\ParamFrameString;Tabs\Directory\DirectoryItem;Dialogs\IconSelectorDialog;Dialogs\PathEditorDialog;Dialogs\DirectoryEditorDialog;Tools\WorkDrive;Dialogs\MessageDialog;Tools\DataExtractor"/>
       <UnitOutputDirectory Value="..\~Tmp\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Parsing>

@@ -125,8 +125,8 @@ object MainForm: TMainForm
       end
       object miMainToolsExtractData: TMenuItem
         Caption = 'Извлечение данных'
-        Enabled = False
         ImageIndex = 10
+        OnClick = miMainToolsExtractDataClick
       end
     end
     object miMainLanguage: TMenuItem
