@@ -5,6 +5,7 @@ unit DayZUtils;
 interface
 
 
+function  ExecuteFileAndWait(const FileName, Params: String; StartDir: String = ''): Integer;
 procedure OpenFolderInExplorer(const Folder: String);
 procedure DeleteFolderToRecycle(const Folder: String);
 procedure ExecuteFile(const ExeFile: String; const Params: String);
@@ -15,7 +16,39 @@ implementation
 
 uses
   sgeStringList, sgeFileUtils,
-  LazUTF8, SysUtils, JwaTlHelp32, windows, shlobj;
+  LazUTF8, SysUtils, JwaTlHelp32, windows, ShellApi;
+
+
+function ExecuteFileAndWait(const FileName, Params: String; StartDir: String): Integer;
+var
+  Info: TShellExecuteInfo;
+  ExitCode: DWORD;
+begin
+  FillChar(Info, SizeOf(Info), 0);
+  Info.cbSize := SizeOf(TShellExecuteInfo);
+
+  if Trim(StartDir) = '' then
+    StartDir := ExtractFilePath(FileName);
+
+  with Info do
+  begin
+    fMask := SEE_MASK_NOCLOSEPROCESS;
+    lpFile := PChar(FileName);
+    lpParameters := PChar(Params);
+    lpDirectory := PChar(StartDir);
+    nShow := SW_HIDE;
+  end;
+
+  if ShellExecuteExA(@Info) then
+  begin
+    repeat
+      GetExitCodeProcess(Info.hProcess, ExitCode);
+    until (ExitCode <> STILL_ACTIVE);
+    Result := ExitCode;
+  end
+  else
+    Result := -1;
+end;
 
 
 procedure OpenFolderInExplorer(const Folder: String);
