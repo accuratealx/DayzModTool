@@ -88,7 +88,6 @@ type
       CONFIG_PARAM_VISIBLE = 'Visible';
       CONFIG_PARAM_TAB_INDEX = 'TabIndex';
       CONFIG_PARAM_LANGUAGE = 'Language';
-      CONFIG_PARAM_PROJECT_DIRECTORY = 'ProjectDirectory';
   private
     FCloseApplication: Boolean;
 

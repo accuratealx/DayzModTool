@@ -35,7 +35,6 @@ type
   private
     FWorkMode: TWorkMode;
     FExtractor: TExtractWorker;
-    FCurrentExtractStage: TExtractStage;
     FCurrentExtractStageName: String;
 
     function  GetProjectFolder: String;
@@ -296,6 +295,8 @@ procedure TDataExtractorForm.SetButtonCaption(AType: TButtonType);
 var
   s: String;
 begin
+  s := '';
+
   case AType of
     btExtract:
       s := FParameters.Language.GetLocalizedString(PREFIX_TOOLS + 'Extract', 'Распаковать');
