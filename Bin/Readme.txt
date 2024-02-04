@@ -1,4 +1,4 @@
-Dayz Mod Tool v0.6  accuratealx@gmail
+Dayz Mod Tool v0.7  accuratealx@gmail
 
 
 Первый запуск:
