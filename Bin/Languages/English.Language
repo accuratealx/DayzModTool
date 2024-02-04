@@ -1,7 +1,7 @@
 # DayZ Mod Tool language file
 
 #Language info
-Info.AppVersion = 0.6
+Info.AppVersion = 0.7
 Info.FileVersion = 1.0
 Info.Autor = accuratealx@gmail.com
 Info.Date = 21.02.2024
@@ -12,6 +12,9 @@ MainForm.MainMenu.miMainSystem = System
 MainForm.MainMenu.miMainHide = Minimize
 MainForm.MainMenu.miMainExit = Exit
 MainForm.MainMenu.miMainTabs = Tabs
+MainForm.MainMenu.miMainTools = Tools
+MainForm.MainMenu.miMainToolsWorkDrive = Work drive
+MainForm.MainMenu.miMainToolsExtractData = Extract game data
 MainForm.MainMenu.miMainLanguage = Language
 MainForm.MainMenu.miMainTabLaunch = Launch
 MainForm.MainMenu.miMainTabLaunchExpandAll = Expand all
@@ -53,6 +56,8 @@ Dialogs.DirectoryEditor.SelectDirectory = Select directory
 Dialogs.DirectoryEditor.ChangeIcon = Change icon
 Dialogs.DirectoryEditor.Add = Add
 Dialogs.DirectoryEditor.Edit = Edit
+Dialogs.Message.Caption = Message
+Dialogs.Message.Close = Close
 
 #Tab Launch
 TabLaunch.Launch = Launch
@@ -109,3 +114,29 @@ TabDirectory.DirectoryName.DayZ сервер = DayZ Server
 TabDirectory.DirectoryName.DayZ утилиты = DayZ Utilities
 TabDirectory.DirectoryName.DayZ журналы утилит = DayZ Utility Logs
 TabDirectory.DirectoryName.DayZ журналы = DayZ Logs
+
+#Tools WorkDrive
+Tools.WorkDrive.Caption = Work drive
+Tools.WorkDrive.Close = Close
+Tools.WorkDrive.Mount = Mount
+Tools.WorkDrive.Unmount = Unmount
+Tools.WorkDrive.OpenDirectory = Open directory
+Tools.WorkDrive.SelectDirectory = Select directory
+Tools.WorkDrive.DriveLetter = Drive letter
+Tools.WorkDrive.Directory = Directory
+
+#Tools DataExtractor
+Tools.DataExtractor.Caption = Data extractor
+Tools.DataExtractor.Close = Close
+Tools.DataExtractor.Extract = Extract
+Tools.DataExtractor.Stop = Stop
+Tools.DataExtractor.CantFindExtractTool = Unpacking utility not found. Cannot continue%sInstall DayzTools and try again.
+Tools.DataExtractor.CantFindCfgConverterTool = Bin to Cpp conversion utility not found. Cannot continue%sInstall DayzTools and repeat the action.
+Tools.DataExtractor.CantFindGameFolder = The game directory was not found. Specify manually?
+Tools.DataExtractor.CantFindProjectFolder = Project directory not found. Specify manually?
+Tools.DataExtractor.ExtractError = An error occurred while unpacking
+Tools.DataExtractor.ConvertError = An error occurred converting
+Tools.DataExtractor.ExtractPBO = Extract PBO
+Tools.DataExtractor.ConvertBin = Convert Bin -> Cpp
+Tools.DataExtractor.Cancel = Aborted by user
+Tools.DataExtractor.Success = Data successfully extracted
