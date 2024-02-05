@@ -11,7 +11,7 @@
 [История изменений](https://github.com/accuratealx/DayzModTool/raw/master/Bin/ChangeLog.txt)
 
 ## Предисловие:
-Далеко не секрет, что инструменты для создания модификаций DayZ от [Bohemia Interactive](https://www.bohemia.net/) оставляют желать лучшего. Особенно кривой и неудобный **DayZ Tool**. Для его замены и была разработана данная утилита. Дорабатываю по мере необходимости в свободное от работы время. На данный момент реализован не весь функционал.
+Далеко не секрет, что инструменты для создания модификаций DayZ от [Bohemia Interactive](https://www.bohemia.net/) оставляют желать лучшего. Особенно кривой и неудобный **DayZ Tool**. Для его замены и была разработана данная утилита. Дорабатываю по мере необходимости в свободное от работы время. На данный момент реализован весь функционал **DayZ Tool**.
     
 ## Установка:
 1. Скачать архив с последней версией
@@ -37,6 +37,8 @@
 - Настраиваемый список каталогов для быстрого доступа
 - Быстрый доступ к каталогам из трея
 - Автоматический поиск и добавление стандартных каталогов DayZ
+- Монтирование каталога проекта в виртуальный диск
+- Распаковка игровых архивов
 
 ## Зависимости:
 - [Simple Game Engine 2](https://github.com/accuratealx/SimpleGameEngine2)
@@ -46,16 +48,17 @@
 - Yoomoney 5599 0020 5735 6232
 
 ## Скриншоты:
-![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshot/Screen001.png)
-![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshot/Screen001a.png)
-![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshot/Screen002.png)
-![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshot/Screen003.png)
-![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshot/Screen004.png)
-![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshot/Screen005.png)
-![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshot/Screen006.png)
+![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot001.png)
+![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot002.png)
+![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot003.png)
+![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot004.png)
+![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot005.png)
+![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot006.png)
+![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot007.png)
+![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot008.png)
+![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot009.png)
+![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot010.png)
 
-![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshot/ScreenTray001.png)
-![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshot/ScreenTray002.png)
 
 ## Особенности:
 - На данный момент настройки хранятся в каталоге запуска приложения
