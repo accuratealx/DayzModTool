@@ -7,11 +7,12 @@ interface
 uses
   SysUtils, Dialogs, StdCtrls,
   StartParamSimple, StartParamString,
-  ParamFrameSimpleUnit;
+  ParamFrameSimpleUnit, Classes;
 
 type
   TParamFrameStringFrame = class(TParamFrameSimpleFrame)
     edValue: TEdit;
+    procedure edValueChange(Sender: TObject);
   protected
     procedure PrepareInterface(AItem: TStartParamSimple); override;
   public
@@ -22,6 +23,12 @@ type
 implementation
 
 {$R *.lfm}
+
+
+procedure TParamFrameStringFrame.edValueChange(Sender: TObject);
+begin
+  (FItem as TStartParamString).Value := Trim(edValue.Text);
+end;
 
 
 procedure TParamFrameStringFrame.PrepareInterface(AItem: TStartParamSimple);

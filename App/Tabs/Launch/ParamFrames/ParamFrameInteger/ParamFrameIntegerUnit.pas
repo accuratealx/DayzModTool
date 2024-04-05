@@ -12,6 +12,7 @@ uses
 type
   TParamFrameIntegerFrame = class(TParamFrameSimpleFrame)
     seValue: TSpinEdit;
+    procedure seValueChange(Sender: TObject);
     procedure seValueMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
   protected
     procedure PrepareInterface(AItem: TStartParamSimple); override;
@@ -26,6 +27,12 @@ implementation
 procedure TParamFrameIntegerFrame.seValueMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 begin
   Handled := True;
+end;
+
+
+procedure TParamFrameIntegerFrame.seValueChange(Sender: TObject);
+begin
+  (FItem as TStartParamInteger).Value := seValue.Value;
 end;
 
 

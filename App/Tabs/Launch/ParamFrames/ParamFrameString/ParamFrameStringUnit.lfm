@@ -11,6 +11,7 @@ inherited ParamFrameStringFrame: TParamFrameStringFrame
       Width = 312
       Anchors = [akTop, akLeft, akRight]
       TabOrder = 1
+      OnChange = edValueChange
     end
   end
 end
