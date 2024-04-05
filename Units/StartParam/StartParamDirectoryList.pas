@@ -226,9 +226,6 @@ end;
 
 procedure TStartParamDirectoryList.SetValue(AValue: String);
 begin
-  if FValue = AValue then
-    Exit;
-
   FValue := AValue;
 
   LoadModList(FValue);
