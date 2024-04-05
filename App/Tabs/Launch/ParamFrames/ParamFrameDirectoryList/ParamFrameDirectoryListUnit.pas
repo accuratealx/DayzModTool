@@ -13,12 +13,14 @@ uses
 type
   TParamFrameDirectoryListFrame = class(TParamFrameSimpleFrame)
     btnOpenDirectory: TSpeedButton;
+    btnReload: TSpeedButton;
     btnSelectDirectory: TSpeedButton;
     btnClearValue: TSpeedButton;
     cbFullPath: TCheckBox;
     edValue: TEdit;
     procedure btnClearValueClick(Sender: TObject);
     procedure btnOpenDirectoryClick(Sender: TObject);
+    procedure btnReloadClick(Sender: TObject);
     procedure btnSelectDirectoryClick(Sender: TObject);
     procedure cbFullPathClick(Sender: TObject);
   private
@@ -76,6 +78,12 @@ begin
 end;
 
 
+procedure TParamFrameDirectoryListFrame.btnReloadClick(Sender: TObject);
+begin
+  SetValue(edValue.Text);
+end;
+
+
 procedure TParamFrameDirectoryListFrame.cbFullPathClick(Sender: TObject);
 begin
   (FItem as TStartParamDirectoryList).FullPath := cbFullPath.Checked;
@@ -84,6 +92,7 @@ end;
 
 procedure TParamFrameDirectoryListFrame.SetValue(AValue: String);
 begin
+  AValue := Trim(AValue);
   (FItem as TStartParamDirectoryList).Value := AValue;
   edValue.Text := AValue;
   FModList.UpdateInterface;
@@ -143,6 +152,7 @@ begin
   btnOpenDirectory.Hint := Language.GetLocalizedString(PREFIX_PARAM + 'OpenDirectory', 'Открыть каталог в проводнике');
   btnSelectDirectory.Hint := Language.GetLocalizedString(PREFIX_PARAM + 'SelectDirectory', 'Выбрать каталог');
   btnClearValue.Hint := Language.GetLocalizedString(PREFIX_PARAM + 'ClearValue', 'Очистить значение');
+  btnReload.Hint := Language.GetLocalizedString(PREFIX_PARAM + 'ReloadValue', 'Перезагрузить значение');
 
   //Полный путь
   cbFullPath.Caption := Language.GetLocalizedString(PREFIX_PARAM + 'FullPath', 'Полный путь');
