@@ -18,6 +18,9 @@ type
   private
     const
       PREFIX_PARAM = 'TabLaunch.Param.';
+
+      //Костыль! TCheckBox.Height возвращает разную высоту когда wincontrol не виден на экране
+      CHECK_BOX_HEIGHT = 19;
   private
     FItems: TStartParamDirectoryListItemArray;
     FCheckBoxList: array of TCheckBox;
@@ -123,7 +126,7 @@ begin
 
     Add(cb);
 
-    Inc(Y, cb.Height);
+    Inc(Y, CHECK_BOX_HEIGHT);
   end;
 end;
 
@@ -137,7 +140,7 @@ begin
   c := Length(FCheckBoxList);
 
   if c > 0 then
-    ItemHeight := FCheckBoxList[0].Height
+    ItemHeight := CHECK_BOX_HEIGHT
   else
     ItemHeight := 0;
 
