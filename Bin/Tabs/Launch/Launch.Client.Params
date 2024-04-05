@@ -33,10 +33,10 @@ Prefix = -
 }
 
 #password{
-Type = Integer
+Type = String
 Description = Пароль для подключения к серверу
 Prefix = -
-Default = 2302
+Default =
 }
 
 #name{
