@@ -14,7 +14,7 @@ uses
   WorkDriveUnit;
 
 const
-  VERSION = '0.7';
+  VERSION = '0.8';
 
 type
   TMainForm = class(TForm)
@@ -25,6 +25,8 @@ type
     ilTrayDirectory: TImageList;
     ilLanguages: TImageList;
     MainMenu: TMainMenu;
+    miMainInfoDonate: TMenuItem;
+    miMainInfo: TMenuItem;
     miMainToolsExtractData: TMenuItem;
     miMainToolsWorkDrive: TMenuItem;
     miMainTools: TMenuItem;
@@ -63,6 +65,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure miMainHideClick(Sender: TObject);
     procedure miExitClick(Sender: TObject);
+    procedure miMainInfoDonateClick(Sender: TObject);
     procedure miMainTabDirectoryAddDefaultClick(Sender: TObject);
     procedure miMainTabDirectoryEraseAllClick(Sender: TObject);
     procedure miMainTabDirectoryEraseIncorrectClick(Sender: TObject);
@@ -151,7 +154,8 @@ implementation
 uses
   sgeFileUtils,
   DataExtractorUnit,
-  IniFiles;
+  IniFiles,
+  LCLIntf;
 
 
 procedure TMainForm.FormCreate(Sender: TObject);
@@ -185,6 +189,12 @@ procedure TMainForm.miExitClick(Sender: TObject);
 begin
   FCloseApplication := True;
   Close;
+end;
+
+
+procedure TMainForm.miMainInfoDonateClick(Sender: TObject);
+begin
+  OpenURL('https://donation.ntlab.su');
 end;
 
 
