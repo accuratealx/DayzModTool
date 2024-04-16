@@ -1,8 +1,8 @@
 # DayZ Mod Tool language file
 
 #Language info
-Info.AppVersion = 0.7
-Info.FileVersion = 1.0
+Info.AppVersion = 0.8
+Info.FileVersion = 1.1
 Info.Autor = accuratealx@gmail.com
 Info.Date = 21.02.2024
 Info.Comment =
@@ -36,8 +36,9 @@ MainForm.TrayMenu.miTrayDirectory = Directory
 MainForm.TrayMenu.miTrayExit = Exit
 
 #Tab captions
-MainForm.TabCaption.Launch = Launch
-MainForm.TabCaption.Directory = Directory
+MainForm.Tabs.tabLaunch = Launch
+MainForm.Tabs.tabDirectory = Directory
+MainForm.Tabs.tabStringTable = String table
 
 #Dialogs
 Dialogs.YesNo.Caption = Question
@@ -117,6 +118,7 @@ TabDirectory.DirectoryName.DayZ сервер = DayZ Server
 TabDirectory.DirectoryName.DayZ утилиты = DayZ Utilities
 TabDirectory.DirectoryName.DayZ журналы утилит = DayZ Utility Logs
 TabDirectory.DirectoryName.DayZ журналы = DayZ Logs
+TabDirectory.DirectoryName.DayZ настройки клиента = DayZ Client Settings
 
 #Tools WorkDrive
 Tools.WorkDrive.Caption = Work drive

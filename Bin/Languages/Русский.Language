@@ -1,8 +1,8 @@
 # DayZ Mod Tool language file
 
 #Language info
-Info.AppVersion = 0.7
-Info.FileVersion = 1.0
+Info.AppVersion = 0.8
+Info.FileVersion = 1.1
 Info.Autor = accuratealx@gmail.com
 Info.Date = 23.02.2024
 Info.Comment =
@@ -34,3 +34,8 @@ MainForm.TrayMenu.miTrayLaunch = Запустить
 MainForm.TrayMenu.miTrayStop = Остановить
 MainForm.TrayMenu.miTrayDirectory = Каталоги
 MainForm.TrayMenu.miTrayExit = Выйти
+
+#Tab captions
+MainForm.Tabs.tabLaunch = Запуск
+MainForm.Tabs.tabDirectory = Каталоги
+MainForm.Tabs.tabStringTable = Таблица строк
