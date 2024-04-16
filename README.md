@@ -44,8 +44,7 @@
 - [Simple Game Engine 2](https://github.com/accuratealx/SimpleGameEngine2)
 
 ## Поддержать автора:
-- Сбербанк 4276 1609 3867 4034
-- Yoomoney 5599 0020 5735 6232
+- https://donation.ntlab.su
 
 ## Скриншоты:
 ![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot001.png)
