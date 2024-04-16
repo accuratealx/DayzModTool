@@ -1,4 +1,4 @@
-unit LaunchUnit;
+unit LaunchApplicationUnit;
 
 {$mode ObjFPC}{$H+}
 
@@ -11,7 +11,7 @@ uses
   StartParamArray;
 
 type
-  TLaunchFrame = class(TFrame)
+  TLaunchApplicationFrame = class(TFrame)
     btnClearJournalDir: TSpeedButton;
     btnExecutableOpenDirectory: TSpeedButton;
     btnStop: TSpeedButton;
@@ -109,7 +109,7 @@ type
     property OnHeightChange: TNotifyEvent read FOnHeightChange write FOnHeightChange;
   end;
 
-  TLaunchExecutableFrameList = array of TLaunchFrame;
+  TLaunchExecutableFrameList = array of TLaunchApplicationFrame;
 
 
 implementation
@@ -125,7 +125,7 @@ uses
   ParamFrameDirectoryUnit, ParamFrameFileUnit, ParamFrameDirectoryListUnit;
 
 
-procedure TLaunchFrame.btnShowCommandLineClick(Sender: TObject);
+procedure TLaunchApplicationFrame.btnShowCommandLineClick(Sender: TObject);
 var
   ParamStr, Cmd, Fn: String;
 begin
@@ -157,7 +157,7 @@ begin
 end;
 
 
-procedure TLaunchFrame.btnStopClick(Sender: TObject);
+procedure TLaunchApplicationFrame.btnStopClick(Sender: TObject);
 var
   Fn: String;
 begin
@@ -167,13 +167,13 @@ begin
 end;
 
 
-procedure TLaunchFrame.edExecutableChange(Sender: TObject);
+procedure TLaunchApplicationFrame.edExecutableChange(Sender: TObject);
 begin
   SetValue(edExecutable.Text);
 end;
 
 
-procedure TLaunchFrame.btnLaunchClick(Sender: TObject);
+procedure TLaunchApplicationFrame.btnLaunchClick(Sender: TObject);
 begin
   //Удалить содержимое каталога
   ClearLogDirectory;
@@ -183,13 +183,13 @@ begin
 end;
 
 
-procedure TLaunchFrame.btnClearJournalDirClick(Sender: TObject);
+procedure TLaunchApplicationFrame.btnClearJournalDirClick(Sender: TObject);
 begin
   ClearLogDirectory;
 end;
 
 
-procedure TLaunchFrame.btnExecutableOpenDirectoryClick(Sender: TObject);
+procedure TLaunchApplicationFrame.btnExecutableOpenDirectoryClick(Sender: TObject);
 var
   Dir: String;
 begin
@@ -199,7 +199,7 @@ begin
 end;
 
 
-procedure TLaunchFrame.btnOpenJournalDirectoryClick(Sender: TObject);
+procedure TLaunchApplicationFrame.btnOpenJournalDirectoryClick(Sender: TObject);
 var
   Dir: String;
 begin
@@ -209,7 +209,7 @@ begin
 end;
 
 
-procedure TLaunchFrame.btnSelectJournalDirectoryClick(Sender: TObject);
+procedure TLaunchApplicationFrame.btnSelectJournalDirectoryClick(Sender: TObject);
 var
   Dir: String;
 begin
@@ -220,7 +220,7 @@ begin
 end;
 
 
-procedure TLaunchFrame.btnSelectExecutableClick(Sender: TObject);
+procedure TLaunchApplicationFrame.btnSelectExecutableClick(Sender: TObject);
 var
   Dir, Fn: String;
 begin
@@ -234,13 +234,13 @@ begin
 end;
 
 
-procedure TLaunchFrame.btnCollapseClick(Sender: TObject);
+procedure TLaunchApplicationFrame.btnCollapseClick(Sender: TObject);
 begin
   Collapsed := not Collapsed;
 end;
 
 
-procedure TLaunchFrame.ClearInterface;
+procedure TLaunchApplicationFrame.ClearInterface;
 var
   i: Integer;
 begin
@@ -249,7 +249,7 @@ begin
 end;
 
 
-procedure TLaunchFrame.PrepareInterface(Items: TStartParamArray);
+procedure TLaunchApplicationFrame.PrepareInterface(Items: TStartParamArray);
 var
   i: Integer;
   Item: TStartParamSimple;
@@ -308,7 +308,7 @@ begin
 end;
 
 
-procedure TLaunchFrame.ArrangeContentPanelItems;
+procedure TLaunchApplicationFrame.ArrangeContentPanelItems;
 var
   FrameItem: TParamFrameCommonFrame;
   i, Y: Integer;
@@ -333,13 +333,13 @@ begin
 end;
 
 
-function TLaunchFrame.GetTotalFrameHeight: Integer;
+function TLaunchApplicationFrame.GetTotalFrameHeight: Integer;
 begin
   Result := pnlButton.Height + pnlContent.Height;
 end;
 
 
-function TLaunchFrame.GetCommandLine: String;
+function TLaunchApplicationFrame.GetCommandLine: String;
 var
   Cmd: String;
 begin
@@ -353,7 +353,7 @@ begin
 end;
 
 
-constructor TLaunchFrame.Create(const ACaption: string; AIcon: TIcon; const ParameterFile: String; const SettingsFile: String; RelativeFileName: String; LocaleID: String);
+constructor TLaunchApplicationFrame.Create(const ACaption: string; AIcon: TIcon; const ParameterFile: String; const SettingsFile: String; RelativeFileName: String; LocaleID: String);
 begin
   inherited Create(nil);
   FCaption := ACaption;
@@ -376,7 +376,7 @@ begin
 end;
 
 
-destructor TLaunchFrame.Destroy;
+destructor TLaunchApplicationFrame.Destroy;
 begin
   SaveSettings(FSettingsFile);
 
@@ -389,19 +389,19 @@ begin
 end;
 
 
-procedure TLaunchFrame.Launch;
+procedure TLaunchApplicationFrame.Launch;
 begin
   btnLaunch.Click;
 end;
 
 
-procedure TLaunchFrame.Stop;
+procedure TLaunchApplicationFrame.Stop;
 begin
   btnStop.Click;
 end;
 
 
-procedure TLaunchFrame.FindExecutable;
+procedure TLaunchApplicationFrame.FindExecutable;
 var
   Fn: String;
   DirSteam, DirTools: String;
@@ -439,13 +439,13 @@ begin
 end;
 
 
-function TLaunchFrame.ExecatableEnable: Boolean;
+function TLaunchApplicationFrame.ExecatableEnable: Boolean;
 begin
   Result := btnLaunch.Enabled;
 end;
 
 
-procedure TLaunchFrame.ChangeLanguage(Language: TLanguage);
+procedure TLaunchApplicationFrame.ChangeLanguage(Language: TLanguage);
 var
   i: Integer;
 begin
@@ -475,7 +475,7 @@ begin
 end;
 
 
-procedure TLaunchFrame.SaveSettings(const FileName: String);
+procedure TLaunchApplicationFrame.SaveSettings(const FileName: String);
 var
   F: TIniFile;
   i: Integer;
@@ -503,7 +503,7 @@ begin
 end;
 
 
-procedure TLaunchFrame.LoadSettings(const FileName: String);
+procedure TLaunchApplicationFrame.LoadSettings(const FileName: String);
 var
   F: TIniFile;
   i: Integer;
@@ -543,7 +543,7 @@ begin
 end;
 
 
-procedure TLaunchFrame.LoadItemsSettings(const FileName: String);
+procedure TLaunchApplicationFrame.LoadItemsSettings(const FileName: String);
 var
   F: TIniFile;
   i: Integer;
@@ -559,7 +559,7 @@ begin
 end;
 
 
-procedure TLaunchFrame.OnChangeContentHeight(Sender: TObject);
+procedure TLaunchApplicationFrame.OnChangeContentHeight(Sender: TObject);
 begin
   //Поправить элементы внутри
   ArrangeContentPanelItems;
@@ -572,14 +572,14 @@ begin
 end;
 
 
-procedure TLaunchFrame.DoHeightChange;
+procedure TLaunchApplicationFrame.DoHeightChange;
 begin
   if Assigned(FOnHeightChange) then
     FOnHeightChange(Self);
 end;
 
 
-procedure TLaunchFrame.ClearLogDirectory;
+procedure TLaunchApplicationFrame.ClearLogDirectory;
 var
   Dir: String;
 begin
@@ -591,13 +591,13 @@ begin
 end;
 
 
-procedure TLaunchFrame.SetIcon(AIcon: TIcon);
+procedure TLaunchApplicationFrame.SetIcon(AIcon: TIcon);
 begin
   FIcon.Assign(AIcon);
 end;
 
 
-procedure TLaunchFrame.SetCollapsed(ACollapsed: Boolean);
+procedure TLaunchApplicationFrame.SetCollapsed(ACollapsed: Boolean);
 begin
   if FCollapsed = ACollapsed then
     Exit;
@@ -620,7 +620,7 @@ begin
 end;
 
 
-procedure TLaunchFrame.SetHighlight(AHighlight: Boolean);
+procedure TLaunchApplicationFrame.SetHighlight(AHighlight: Boolean);
 begin
   if FHiglight = AHighlight then
     Exit;
@@ -638,7 +638,7 @@ begin
 end;
 
 
-procedure TLaunchFrame.SetValue(AValue: String);
+procedure TLaunchApplicationFrame.SetValue(AValue: String);
 var
   IsEnable: Boolean;
 begin
@@ -650,7 +650,7 @@ begin
 end;
 
 
-function TLaunchFrame.GetLocaleCaption: String;
+function TLaunchApplicationFrame.GetLocaleCaption: String;
 begin
   Result := lblTitle.Caption;
 end;

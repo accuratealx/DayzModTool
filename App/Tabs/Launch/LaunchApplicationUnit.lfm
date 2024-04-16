@@ -1,4 +1,4 @@
-object LaunchFrame: TLaunchFrame
+object LaunchApplicationFrame: TLaunchApplicationFrame
   Left = 0
   Height = 276
   Top = 0
