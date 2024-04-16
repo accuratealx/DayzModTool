@@ -22,7 +22,7 @@ type
     procedure lvIconsDblClick(Sender: TObject);
   private
     const
-      PREFIX_DIALOG = 'Dialogs.IconSelector.';
+      LANGUAGE_PREFIX = 'Dialogs.IconSelector.';
   private
     FSelectedIconName: String;
 
@@ -206,9 +206,9 @@ end;
 
 procedure TIconSelectorDialogForm.SetLanguage;
 begin
-  Caption := FParameters.Language.GetLocalizedString(PREFIX_DIALOG + 'Caption', 'Выбор иконки');
-  btnSelect.Caption := FParameters.Language.GetLocalizedString(PREFIX_DIALOG + 'Select', 'Выбрать');
-  btnClose.Caption := FParameters.Language.GetLocalizedString(PREFIX_DIALOG + 'Close', 'Закрыть');
+  Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Caption', 'Выбор иконки');
+  btnSelect.Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Select', 'Выбрать');
+  btnClose.Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Close', 'Закрыть');
 end;
 
 

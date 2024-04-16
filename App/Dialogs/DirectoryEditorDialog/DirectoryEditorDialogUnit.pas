@@ -32,7 +32,7 @@ type
     procedure imgIconClick(Sender: TObject);
   private
     const
-      PARAM_PREFIX = 'Dialogs.DirectoryEditor.';
+      LANGUAGE_PREFIX = 'Dialogs.DirectoryEditor.';
   private
     FMode: TPathEditorMode;
     FIconFileName: String;
@@ -168,10 +168,10 @@ begin
 
   case FMode of
     pemNew:
-      s := FParameters.Language.GetLocalizedString(PARAM_PREFIX + 'Add', 'Добавить');
+      s := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Add', 'Добавить');
 
     pemEdit:
-      s := FParameters.Language.GetLocalizedString(PARAM_PREFIX + 'Edit', 'Изменить');
+      s := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Edit', 'Изменить');
 
     else
       s := '';
@@ -218,11 +218,11 @@ end;
 
 procedure TDirectoryEditorDialogForm.SetLanguage;
 begin
-  btnCancel.Caption := FParameters.Language.GetLocalizedString(PARAM_PREFIX + 'Cancel', 'Отмена');
-  lblCaption.Caption := FParameters.Language.GetLocalizedString(PARAM_PREFIX + 'Caption', 'Название');
-  lblPath.Caption := FParameters.Language.GetLocalizedString(PARAM_PREFIX + 'Directory', 'Каталог');
-  btnSelectDirectory.Hint := FParameters.Language.GetLocalizedString(PARAM_PREFIX + 'SelectDirectory', 'Выбрать каталог');
-  imgIcon.Hint := FParameters.Language.GetLocalizedString(PARAM_PREFIX + 'ChangeIcon', 'Изменить иконку');
+  btnCancel.Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Cancel', 'Отмена');
+  lblCaption.Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Caption', 'Название');
+  lblPath.Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Directory', 'Каталог');
+  btnSelectDirectory.Hint := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'SelectDirectory', 'Выбрать каталог');
+  imgIcon.Hint := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'ChangeIcon', 'Изменить иконку');
 end;
 
 

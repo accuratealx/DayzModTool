@@ -53,7 +53,7 @@ type
       PARAM_ERASE_JOURNAL_DIRECTORY = 'JournalDirectory';
       PARAM_COLLAPSED = 'Collapsed';
 
-      PREFIX_TAB_LAUNCH = 'TabLaunch.';
+      LANGUAGE_PREFIX = 'TabLaunch.';
   private
     FCaption: String;
     FIcon: TIcon;
@@ -151,7 +151,7 @@ begin
   //Показать диалог
   MemoDialogExecute(
     FLanguage,
-    FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'MemoCaption', 'Параметры запуска'),
+    FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'MemoCaption', 'Параметры запуска'),
     ParamStr
   );
 end;
@@ -433,7 +433,7 @@ begin
   //Ничего не нашли, спросить пользователя
   if YesNoQuestionDialogExecute(
     FLanguage,
-    Format(FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'CantDeterminePath', 'Не удалось автоматически определить путь для "%s"%sУказать вручную?'), [Caption, sLineBreak])
+    Format(FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'CantDeterminePath', 'Не удалось автоматически определить путь для "%s"%sУказать вручную?'), [Caption, sLineBreak])
   ) then
     btnSelectExecutable.Click;
 end;
@@ -451,20 +451,20 @@ var
 begin
   FLanguage := Language;
 
-  lblTitle.Caption := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'Application.' + FLocaleID, FCaption);
-  btnLaunch.Caption := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'Launch', 'Запустить');
-  btnStop.Caption := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'Stop', 'Остановить');
-  btnShowCommandLine.Hint := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'ShowCommandLine', 'Показать параметры запуска');
-  btnExecutableOpenDirectory.Hint := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'ExecutableOpenDirectory', 'Открыть каталог в проводнике');
-  btnSelectExecutable.Hint := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'SelectExecutable', 'Выбрать файл для запуска');
-  btnOpenJournalDirectory.Hint := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'OpenJournalDirectory', 'Открыть каталог в проводнике');
-  btnSelectJournalDirectory.Hint := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'SelectJournalDirectory', 'Выбрать каталог журналов');
-  btnClearJournalDir.Hint := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'ClearJournalDir', 'Очистить каталог');
-  edExecutable.Hint := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'Executable', 'Файл для запуска');
-  edAdditionalCommandLine.Hint := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'AdditionalCommandLine', 'Дополнительные параметры запуска');
-  edJournalDir.Hint := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'JournalDir', 'Каталог с журналами');
-  cbEraseJournalDirBeforeRun.Caption := FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'EraseJournalDirBeforeRun', 'Очищать каталог перед запуском');
-  OpenDialog.Filter := Format('%s (*.exe)|*.exe', [FLanguage.GetLocalizedString(PREFIX_TAB_LAUNCH + 'Applications', 'Приложения')]);
+  lblTitle.Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'Application.' + FLocaleID, FCaption);
+  btnLaunch.Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'Launch', 'Запустить');
+  btnStop.Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'Stop', 'Остановить');
+  btnShowCommandLine.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'ShowCommandLine', 'Показать параметры запуска');
+  btnExecutableOpenDirectory.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'ExecutableOpenDirectory', 'Открыть каталог в проводнике');
+  btnSelectExecutable.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'SelectExecutable', 'Выбрать файл для запуска');
+  btnOpenJournalDirectory.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'OpenJournalDirectory', 'Открыть каталог в проводнике');
+  btnSelectJournalDirectory.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'SelectJournalDirectory', 'Выбрать каталог журналов');
+  btnClearJournalDir.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'ClearJournalDir', 'Очистить каталог');
+  edExecutable.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'Executable', 'Файл для запуска');
+  edAdditionalCommandLine.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'AdditionalCommandLine', 'Дополнительные параметры запуска');
+  edJournalDir.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'JournalDir', 'Каталог с журналами');
+  cbEraseJournalDirBeforeRun.Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'EraseJournalDirBeforeRun', 'Очищать каталог перед запуском');
+  OpenDialog.Filter := Format('%s (*.exe)|*.exe', [FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'Applications', 'Приложения')]);
 
   //Перевести редакторы параметров
   for i := 0 to pnlContent.ControlCount - 1 do

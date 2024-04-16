@@ -1,15 +1,12 @@
-object StringTableFrame: TStringTableFrame
-  Left = 0
+inherited StringTableFrame: TStringTableFrame
   Height = 320
-  Top = 0
   Width = 445
-  Align = alClient
   ClientHeight = 320
   ClientWidth = 445
   TabOrder = 0
   DesignLeft = 661
   DesignTop = 300
-  object pnlTools: TPanel
+  object pnlTools: TPanel[0]
     Left = 0
     Height = 35
     Top = 0
@@ -306,7 +303,7 @@ object StringTableFrame: TStringTableFrame
       ParentShowHint = False
     end
   end
-  object sbContent: TScrollBox
+  object sbContent: TScrollBox[1]
     Left = 0
     Height = 285
     Top = 35

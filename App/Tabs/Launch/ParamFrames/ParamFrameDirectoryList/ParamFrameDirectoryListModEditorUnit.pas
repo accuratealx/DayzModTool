@@ -17,7 +17,7 @@ type
     procedure btnUnselectAllClick(Sender: TObject);
   private
     const
-      PREFIX_PARAM = 'TabLaunch.Param.';
+      LANGUAGE_PREFIX = 'TabLaunch.Param.';
 
       //Костыль! TCheckBox.Height возвращает разную высоту когда wincontrol не виден на экране
       CHECK_BOX_HEIGHT = 19;
@@ -179,8 +179,8 @@ end;
 
 procedure TParamFrameDirectoryListModEditorFrame.ChangeLanguage(Language: TLanguage);
 begin
-  btnSelectAll.Hint := Language.GetLocalizedString(PREFIX_PARAM + 'SelectAll', 'Выбрать все элементы');
-  btnUnselectAll.Hint := Language.GetLocalizedString(PREFIX_PARAM + 'UnselectAll', 'Снять выбор со всех элементов');
+  btnSelectAll.Hint := Language.GetLocalizedString(LANGUAGE_PREFIX + 'SelectAll', 'Выбрать все элементы');
+  btnUnselectAll.Hint := Language.GetLocalizedString(LANGUAGE_PREFIX + 'UnselectAll', 'Снять выбор со всех элементов');
 end;
 
 

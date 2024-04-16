@@ -149,13 +149,13 @@ begin
   inherited ChangeLanguage(Language);
 
   //Подсказки кнопок
-  btnOpenDirectory.Hint := Language.GetLocalizedString(PREFIX_PARAM + 'OpenDirectory', 'Открыть каталог в проводнике');
-  btnSelectDirectory.Hint := Language.GetLocalizedString(PREFIX_PARAM + 'SelectDirectory', 'Выбрать каталог');
-  btnClearValue.Hint := Language.GetLocalizedString(PREFIX_PARAM + 'ClearValue', 'Очистить значение');
-  btnReload.Hint := Language.GetLocalizedString(PREFIX_PARAM + 'ReloadValue', 'Перезагрузить значение');
+  btnOpenDirectory.Hint := Language.GetLocalizedString(LANGUAGE_PREFIX + 'OpenDirectory', 'Открыть каталог в проводнике');
+  btnSelectDirectory.Hint := Language.GetLocalizedString(LANGUAGE_PREFIX + 'SelectDirectory', 'Выбрать каталог');
+  btnClearValue.Hint := Language.GetLocalizedString(LANGUAGE_PREFIX + 'ClearValue', 'Очистить значение');
+  btnReload.Hint := Language.GetLocalizedString(LANGUAGE_PREFIX + 'ReloadValue', 'Перезагрузить значение');
 
   //Полный путь
-  cbFullPath.Caption := Language.GetLocalizedString(PREFIX_PARAM + 'FullPath', 'Полный путь');
+  cbFullPath.Caption := Language.GetLocalizedString(LANGUAGE_PREFIX + 'FullPath', 'Полный путь');
 
   //Список модов
   FModList.ChangeLanguage(FLanguage);

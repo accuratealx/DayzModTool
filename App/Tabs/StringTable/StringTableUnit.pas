@@ -6,10 +6,10 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, ExtCtrls, IniFiles, Buttons,
-  Language;
+  TabParameters, TabCommonUnit;
 
 type
-  TStringTableFrame = class(TFrame)
+  TStringTableFrame = class(TTabCommonFrame)
     btnAdd: TSpeedButton;
     btnDelete: TSpeedButton;
     btnDown: TSpeedButton;
@@ -20,19 +20,19 @@ type
     sbContent: TScrollBox;
   private
     const
-      PREFIX_TAB_STRING_TABLE = 'StringTable.';
+      LANGUAGE_PREFIX = 'StringTable.';
   private
     FSettingsFile: String;
-    FLanguage: TLanguage;
 
     procedure SaveSettings(const FileName: String);
     procedure LoadSettings(const FileName: String);
 
   public
-    constructor Create(const SettingsFile: String); reintroduce;
+    constructor Create(Parameters: TTabParameters); reintroduce;
+
     destructor  Destroy; override;
 
-    procedure ChangeLanguage(Language: TLanguage);
+    procedure ApplyLanguage; override;
 
   end;
 
@@ -67,11 +67,12 @@ begin
 end;
 
 
-constructor TStringTableFrame.Create(const SettingsFile: String);
+constructor TStringTableFrame.Create(Parameters: TTabParameters);
 begin
-  inherited Create(nil);
+  inherited Create(Parameters);
 
-  FSettingsFile := SettingsFile;
+  //Определить файл настроек
+  FSettingsFile := FParams.SettingsDirectory + '\StringTable.ini';
 
   LoadSettings(FSettingsFile);
 end;
@@ -85,10 +86,8 @@ begin
 end;
 
 
-procedure TStringTableFrame.ChangeLanguage(Language: TLanguage);
+procedure TStringTableFrame.ApplyLanguage;
 begin
-  FLanguage := Language;
-
   //Пеервод
   //btnAdd.Caption := FLanguage.GetLocalizedString(PREFIX_TAB_DIRECTORY + 'Add', 'Добавить');
   //btnEdit.Hint := FLanguage.GetLocalizedString(PREFIX_TAB_DIRECTORY + 'Edit', 'Изменить');

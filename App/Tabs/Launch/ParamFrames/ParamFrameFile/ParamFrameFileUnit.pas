@@ -86,9 +86,9 @@ procedure TParamFrameFileFrame.ChangeLanguage(Language: TLanguage);
 begin
   inherited ChangeLanguage(Language);
 
-  btnOpenDirectory.Hint := Language.GetLocalizedString(PREFIX_PARAM + 'OpenDirectory', 'Открыть каталог в проводнике');
-  btnSelectFile.Hint := Language.GetLocalizedString(PREFIX_PARAM + 'SelectFile', 'Выбрать файл');
-  btnClearValue.Hint := Language.GetLocalizedString(PREFIX_PARAM + 'ClearValue', 'Очистить значение');
+  btnOpenDirectory.Hint := Language.GetLocalizedString(LANGUAGE_PREFIX + 'OpenDirectory', 'Открыть каталог в проводнике');
+  btnSelectFile.Hint := Language.GetLocalizedString(LANGUAGE_PREFIX + 'SelectFile', 'Выбрать файл');
+  btnClearValue.Hint := Language.GetLocalizedString(LANGUAGE_PREFIX + 'ClearValue', 'Очистить значение');
 end;
 
 

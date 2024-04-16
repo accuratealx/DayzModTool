@@ -121,6 +121,7 @@ type
 
     procedure CreateTabs(AParams: TTabParameters);
     procedure DestroyTabs;
+    procedure ApplayTabsLanguage;
 
     procedure CreateTrayMenuLaunchItems;
     procedure CorrectTrayMenuLaunchItems;
@@ -429,13 +430,11 @@ begin
   TranslateMenu(MainMenu.Items, 'MainForm.MainMenu.');
   TranslateMenu(TrayMenu.Items, 'MainForm.TrayMenu.');
 
-  //Закладки
+  //Имена закладок
   TranslateTabsCaption;
 
   //Закладки
-  FLaunchFrame.ApplyLanguage;
-  FDirectoryFrame.ChangeLanguage(FLanguage);
-  FStringTableFrame.ChangeLanguage(FLanguage);
+  ApplayTabsLanguage;
 
   //Пересоздать пункты меню в трее
   CreateTrayMenuLaunchItems;
@@ -465,16 +464,16 @@ end;
 
 procedure TMainForm.CreateTabs(AParams: TTabParameters);
 begin
-  //Закладка запуска
+  //Запуска
   FLaunchFrame := TLaunchFrame.Create(AParams);
   FLaunchFrame.Parent := tabLaunch;
 
-  //Закладка с каталогами
+  //Каталогами
   FDirectoryFrame := TDirectoryFrame.Create(AParams);
   FDirectoryFrame.Parent := tabDirectory;
 
-  //Закладка для редактирования строк перевода
-  FStringTableFrame := TStringTableFrame.Create(FSettingsDir + 'StringTable.ini');
+  //Таблица строк
+  FStringTableFrame := TStringTableFrame.Create(AParams);
   FStringTableFrame.Parent := tabStringTable;
 end;
 
@@ -484,6 +483,14 @@ begin
   FStringTableFrame.Free;
   FDirectoryFrame.Free;
   FLaunchFrame.Free;
+end;
+
+
+procedure TMainForm.ApplayTabsLanguage;
+begin
+  FLaunchFrame.ApplyLanguage;
+  FDirectoryFrame.ApplyLanguage;
+  FStringTableFrame.ApplyLanguage;
 end;
 
 

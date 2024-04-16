@@ -21,7 +21,7 @@ type
     procedure FormResize(Sender: TObject);
   private
     const
-      PREFIX_TOOLS = 'Tools.DataExtractor.';
+      LANGUAGE_PREFIX = 'Tools.DataExtractor.';
 
       SECTION_SYSTEM = 'System';
       PARAM_PROJECT_DIRECTORY = 'ProjectDirectory';
@@ -111,7 +111,7 @@ begin
       lblProgressInfo.Visible := False;
       MessageDialogExecute(
         FParameters.Language,
-        FParameters.Language.GetLocalizedString(PREFIX_TOOLS + 'ExtractError', 'Произошла ошибка при рапаковке')
+        FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'ExtractError', 'Произошла ошибка при рапаковке')
       );
     end;
 
@@ -140,7 +140,7 @@ begin
       lblProgressInfo.Visible := False;
       MessageDialogExecute(
         FParameters.Language,
-        FParameters.Language.GetLocalizedString(PREFIX_TOOLS + 'ConvertError', 'Произошла ошибка конвертировании')
+        FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'ConvertError', 'Произошла ошибка конвертировании')
       );
     end;
 
@@ -170,7 +170,7 @@ begin
       lblProgressInfo.Visible := False;
       MessageDialogExecute(
         FParameters.Language,
-        FParameters.Language.GetLocalizedString(PREFIX_TOOLS + 'Success', 'Данные успешно распакованы')
+        FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Success', 'Данные успешно распакованы')
       );
     end;
 
@@ -184,7 +184,7 @@ begin
       lblProgressInfo.Visible := False;
       MessageDialogExecute(
         FParameters.Language,
-        FParameters.Language.GetLocalizedString(PREFIX_TOOLS + 'Cancel', 'Прервано пользователем')
+        FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Cancel', 'Прервано пользователем')
       );
     end;
   end;
@@ -216,7 +216,7 @@ begin
       FParameters.Language,
       Format(
         FParameters.Language.GetLocalizedString(
-          PREFIX_TOOLS + 'CantFindExtractTool',
+          LANGUAGE_PREFIX + 'CantFindExtractTool',
           'Не найдена утилита распаковки. Продолжение невозможно%sУстановите DayzTools и повторите действие.'
         ),
         [sLineBreak]
@@ -233,7 +233,7 @@ begin
       FParameters.Language,
       Format(
         FParameters.Language.GetLocalizedString(
-          PREFIX_TOOLS + 'CantFindCfgConverterTool',
+          LANGUAGE_PREFIX + 'CantFindCfgConverterTool',
           'Не найдена утилита конвертирования Bin в Cpp. Продолжение невозможно%sУстановите DayzTools и повторите действие.'
         ),
         [sLineBreak]
@@ -249,7 +249,7 @@ begin
     case YesNoQuestionDialogExecute(
       FParameters.Language,
       FParameters.Language.GetLocalizedString(
-        PREFIX_TOOLS + 'CantFindGameFolder',
+        LANGUAGE_PREFIX + 'CantFindGameFolder',
         'Не найден каталог с игрой. Укажите в ручную?')
     ) of
       True:
@@ -271,7 +271,7 @@ begin
     case YesNoQuestionDialogExecute(
       FParameters.Language,
       FParameters.Language.GetLocalizedString(
-        PREFIX_TOOLS + 'CantFindProjectFolder',
+        LANGUAGE_PREFIX + 'CantFindProjectFolder',
         'Не найден каталог проекта. Укажите в ручную?')
     ) of
       True:
@@ -299,10 +299,10 @@ begin
 
   case AType of
     btExtract:
-      s := FParameters.Language.GetLocalizedString(PREFIX_TOOLS + 'Extract', 'Распаковать');
+      s := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Extract', 'Распаковать');
 
     btStop:
-      s := FParameters.Language.GetLocalizedString(PREFIX_TOOLS + 'Stop', 'Остановить');
+      s := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Stop', 'Остановить');
   end;
 
   btnExtract.Caption := s;
@@ -313,10 +313,10 @@ procedure TDataExtractorForm.CorrectCurrentStage(AStage: TExtractStage);
 begin
   case AStage of
     esPBO:
-      FCurrentExtractStageName := FParameters.Language.GetLocalizedString(PREFIX_TOOLS + 'ExtractPBO', 'Распаковка PBO');
+      FCurrentExtractStageName := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'ExtractPBO', 'Распаковка PBO');
 
     esBin:
-      FCurrentExtractStageName := FParameters.Language.GetLocalizedString(PREFIX_TOOLS + 'ConvertBin', 'Конвертирование Bin -> Cpp');
+      FCurrentExtractStageName := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'ConvertBin', 'Конвертирование Bin -> Cpp');
   end;
 end;
 
@@ -372,8 +372,8 @@ end;
 
 procedure TDataExtractorForm.SetLanguage;
 begin
-  Caption := FParameters.Language.GetLocalizedString(PREFIX_TOOLS + 'Caption', 'Извлечь данные');
-  btnClose.Caption := FParameters.Language.GetLocalizedString(PREFIX_TOOLS + 'Close', 'Закрыть');
+  Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Caption', 'Извлечь данные');
+  btnClose.Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Close', 'Закрыть');
   SetButtonCaption(btExtract);
 end;
 

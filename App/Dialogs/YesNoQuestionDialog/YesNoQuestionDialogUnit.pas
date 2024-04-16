@@ -19,7 +19,7 @@ type
     procedure pnlButtonResize(Sender: TObject);
   private
     const
-      PREFIX_DIALOG = 'Dialogs.YesNo.';
+      LANGUAGE_PREFIX = 'Dialogs.YesNo.';
   protected
     procedure PrepareInterface; override;
     procedure SetLanguage; override;
@@ -117,9 +117,9 @@ end;
 
 procedure TYesNoQuestionDialogForm.SetLanguage;
 begin
-  Caption := FParameters.Language.GetLocalizedString(PREFIX_DIALOG + 'Caption', 'Вопрос');
-  btnYes.Caption := FParameters.Language.GetLocalizedString(PREFIX_DIALOG + 'Yes', 'Да');
-  btnNo.Caption := FParameters.Language.GetLocalizedString(PREFIX_DIALOG + 'No', 'Нет');
+  Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Caption', 'Вопрос');
+  btnYes.Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Yes', 'Да');
+  btnNo.Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'No', 'Нет');
 end;
 
 

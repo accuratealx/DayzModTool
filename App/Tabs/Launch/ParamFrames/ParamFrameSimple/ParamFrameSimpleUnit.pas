@@ -18,7 +18,7 @@ type
     procedure cbParamNameClick(Sender: TObject);
   protected
     const
-      PREFIX_PARAM = 'TabLaunch.Param.';
+      LANGUAGE_PREFIX = 'TabLaunch.Param.';
   protected
     FItem: TStartParamSimple;
     FLanguage: TLanguage;
@@ -82,7 +82,7 @@ begin
   //Запомнить ссылку на словарь
   FLanguage := Language;
 
-  btnDefault.Hint := Language.GetLocalizedString(PREFIX_PARAM + 'DefaultValue', 'Установить значение по умолчанию');
+  btnDefault.Hint := Language.GetLocalizedString(LANGUAGE_PREFIX + 'DefaultValue', 'Установить значение по умолчанию');
 end;
 
 

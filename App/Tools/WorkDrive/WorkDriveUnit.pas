@@ -29,7 +29,7 @@ type
     procedure FormResize(Sender: TObject);
   private
     const
-      PREFIX_TOOLS = 'Tools.WorkDrive.';
+      LANGUAGE_PREFIX = 'Tools.WorkDrive.';
 
       SECTION_SYSTEM = 'System';
       PARAM_LETTER = 'DriveLetter';
@@ -273,14 +273,14 @@ end;
 
 procedure TWorkDriveForm.SetLanguage;
 begin
-  Caption := FParameters.Language.GetLocalizedString(PREFIX_TOOLS + 'Caption', 'Рабочий каталог');
-  btnClose.Caption := FParameters.Language.GetLocalizedString(PREFIX_TOOLS + 'Close', 'Закрыть');
-  btnMount.Caption := FParameters.Language.GetLocalizedString(PREFIX_TOOLS + 'Mount', 'Привязать');
-  btnUnMount.Caption := FParameters.Language.GetLocalizedString(PREFIX_TOOLS + 'Unmount', 'Отвязать');
-  btnOpenDirectory.Hint := FParameters.Language.GetLocalizedString(PREFIX_TOOLS + 'OpenDirectory', 'Открыть каталог в проводнике');
-  btnSelectDirectory.Hint := FParameters.Language.GetLocalizedString(PREFIX_TOOLS + 'SelectDirectory', 'Выбрать каталог');
-  lblDriveLetter.Caption := FParameters.Language.GetLocalizedString(PREFIX_TOOLS + 'DriveLetter', 'Буква диска');
-  lblDirectory.Caption := FParameters.Language.GetLocalizedString(PREFIX_TOOLS + 'Directory', 'Каталог проекта');
+  Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Caption', 'Рабочий каталог');
+  btnClose.Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Close', 'Закрыть');
+  btnMount.Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Mount', 'Привязать');
+  btnUnMount.Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Unmount', 'Отвязать');
+  btnOpenDirectory.Hint := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'OpenDirectory', 'Открыть каталог в проводнике');
+  btnSelectDirectory.Hint := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'SelectDirectory', 'Выбрать каталог');
+  lblDriveLetter.Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'DriveLetter', 'Буква диска');
+  lblDirectory.Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Directory', 'Каталог проекта');
 end;
 
 

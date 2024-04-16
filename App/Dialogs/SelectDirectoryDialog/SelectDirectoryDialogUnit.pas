@@ -21,7 +21,7 @@ type
     procedure stvDirectoryTreeClick(Sender: TObject);
   private
     const
-      PREFIX_DIALOG = 'Dialogs.SelectDirectory.';
+      LANGUAGE_PREFIX = 'Dialogs.SelectDirectory.';
   protected
     procedure PrepareInterface; override;
     procedure SetLanguage; override;
@@ -123,9 +123,9 @@ end;
 
 procedure TSelectDirectoryDialogForm.SetLanguage;
 begin
-  Caption := FParameters.Language.GetLocalizedString(PREFIX_DIALOG + 'Caption', 'Выбор каталога');
-  btnSelect.Caption := FParameters.Language.GetLocalizedString(PREFIX_DIALOG + 'Select', 'Выбрать');
-  btnClose.Caption := FParameters.Language.GetLocalizedString(PREFIX_DIALOG + 'Close', 'Закрыть');
+  Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Caption', 'Выбор каталога');
+  btnSelect.Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Select', 'Выбрать');
+  btnClose.Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Close', 'Закрыть');
 end;
 
 

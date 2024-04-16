@@ -19,7 +19,7 @@ type
     procedure FormResize(Sender: TObject);
   private
     const
-      PREFIX_DIALOG = 'Dialogs.Memo.';
+      LANGUAGE_PREFIX = 'Dialogs.Memo.';
   protected
     procedure PrepareInterface; override;
     procedure SetLanguage; override;
@@ -96,8 +96,8 @@ end;
 
 procedure TMemoDialogForm.SetLanguage;
 begin
-  btnClose.Caption := FParameters.Language.GetLocalizedString(PREFIX_DIALOG + 'Close', 'Закрыть');
-  btnCopyContent.Hint := FParameters.Language.GetLocalizedString(PREFIX_DIALOG + 'CopyContent', 'Скопировать текст в буфер обмена');
+  btnClose.Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Close', 'Закрыть');
+  btnCopyContent.Hint := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'CopyContent', 'Скопировать текст в буфер обмена');
 end;
 
 

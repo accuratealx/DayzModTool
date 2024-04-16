@@ -16,7 +16,7 @@ type
     procedure FormResize(Sender: TObject);
   private
     const
-      PREFIX_DIALOG = 'Dialogs.Message.';
+      LANGUAGE_PREFIX = 'Dialogs.Message.';
   protected
     procedure PrepareInterface; override;
     procedure SetLanguage; override;
@@ -100,8 +100,8 @@ end;
 
 procedure TMessageDialogForm.SetLanguage;
 begin
-  Caption := FParameters.Language.GetLocalizedString(PREFIX_DIALOG + 'Caption', 'Сообщение');
-  btnClose.Caption := FParameters.Language.GetLocalizedString(PREFIX_DIALOG + 'Close', 'Закрыть');
+  Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Caption', 'Сообщение');
+  btnClose.Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Close', 'Закрыть');
 end;
 
 

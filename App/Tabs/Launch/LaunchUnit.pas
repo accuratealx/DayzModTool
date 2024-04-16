@@ -15,7 +15,7 @@ type
   private
     FItems: TLaunchItemFrameList;
     FDataDir: String;               //Каталог с данными
-    FSettingsDir: String;           //Каатлог с настройками
+    FSettingsDir: String;           //Каталог с настройками
     FLaunchListFile: String;        //Файл настроек приложений
 
     procedure AddLaunchFrame(AFrame: TLaunchItemFrame);
