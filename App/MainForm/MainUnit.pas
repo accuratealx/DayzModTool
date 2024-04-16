@@ -81,8 +81,10 @@ type
   private
     const
       CONFIG_FILE_NAME = 'DayZConfig.ini';
+
       CONFIG_SECTION_MAIN_FORM = 'MainForm';
       CONFIG_SECTION_SYSTEM = 'System';
+
       CONFIG_PARAM_LEFT = 'Left';
       CONFIG_PARAM_TOP = 'Top';
       CONFIG_PARAM_WIDTH = 'Width';
