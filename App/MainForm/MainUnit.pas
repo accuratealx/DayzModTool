@@ -6,11 +6,11 @@ unit MainUnit;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, Windows,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus,
   ExtCtrls, ComCtrls,
   sgeStringList,
   Language,
-  LaunchUnit, DirectoryUnit, DirectoryItemUnit,
+  LaunchApplicationUnit, DirectoryUnit, DirectoryItemUnit, StringTableUnit,
   WorkDriveUnit;
 
 const
@@ -58,6 +58,7 @@ type
     sbLaunch: TScrollBox;
     tabLaunch: TTabSheet;
     tabDirectory: TTabSheet;
+    tabStringTable: TTabSheet;
     TrayMenu: TPopupMenu;
     TrayIcon: TTrayIcon;
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -108,6 +109,7 @@ type
 
     //Закладки
     FDirectoryFrame: TDirectoryFrame;
+    FStringTableFrame: TStringTableFrame;
 
     procedure Init;
     procedure Done;
@@ -309,7 +311,6 @@ begin
   ForceDirectories(FLaunchDir);
 
   FDirectoryDir := FMainDir + 'Tabs\Directory\';
-  ForceDirectories(FDirectoryDir);
 
   //Создать закладки запуска
   CreateLaunchFrame(FLaunchDir + 'List.ini');
@@ -317,6 +318,10 @@ begin
   //Закладка с каталогами
   FDirectoryFrame := TDirectoryFrame.Create(FSettingsDir + 'Directory.ini', FDirectoryDir);
   FDirectoryFrame.Parent := tabDirectory;
+
+  //Закладка для редактирования строк перевода
+  FStringTableFrame := TStringTableFrame.Create(FSettingsDir + 'StringTable.ini');
+  FStringTableFrame.Parent := tabStringTable;
 
   //Создать элементы запуска/останова приложений
   CreateTrayMenuLaunchItems;
@@ -343,6 +348,7 @@ end;
 
 procedure TMainForm.Done;
 begin
+  FStringTableFrame.Free;
   FDirectoryFrame.Free;
 
   DestroyLaunchFrame;
@@ -435,6 +441,7 @@ begin
   //Закладки
   tabLaunch.Caption := FLanguage.GetLocalizedString(PREFIX_TAB_CAPTION + 'Launch', 'Запуск');
   tabDirectory.Caption := FLanguage.GetLocalizedString(PREFIX_TAB_CAPTION + 'Directory', 'Каталоги');
+  tabStringTable.Caption := FLanguage.GetLocalizedString(PREFIX_TAB_CAPTION + 'StringTable', 'Таблица строк');
 
   //Закладки
   ChangeLaunchFrameLanguage;
@@ -475,11 +482,11 @@ begin
   //Просмотрим все закладки
   for i := 0 to sbLaunch.ControlCount - 1 do
   begin
-    if sbLaunch.Controls[i] is TLaunchFrame then
+    if sbLaunch.Controls[i] is TLaunchApplicationFrame then
     begin
       c := Length(Result);
       SetLength(Result, c + 1);
-      Result[c] := sbLaunch.Controls[i] as TLaunchFrame;
+      Result[c] := sbLaunch.Controls[i] as TLaunchApplicationFrame;
     end;
   end;
 end;
@@ -491,7 +498,7 @@ var
   SectionList: TStringList;
   i: Integer;
   FrameCaption, FrameParams, FrameSettings, FrameIconName, FrameRelativeFilename, FrameLocaleID: String;
-  Frame: TLaunchFrame;
+  Frame: TLaunchApplicationFrame;
   FrameIcon: TIcon;
 begin
   F := TIniFile.Create(SettingsFile);
@@ -528,7 +535,7 @@ begin
       end;
 
       //Создать фрейм
-      Frame := TLaunchFrame.Create(FrameCaption, FrameIcon, FrameParams, FrameSettings, FrameRelativeFilename, FrameLocaleID);
+      Frame := TLaunchApplicationFrame.Create(FrameCaption, FrameIcon, FrameParams, FrameSettings, FrameRelativeFilename, FrameLocaleID);
 
       //Настроить выделение
       Frame.Higlight := not Odd(i);
@@ -566,8 +573,8 @@ var
 begin
   for i := sbLaunch.ControlCount - 1 downto 0 do
   begin
-    if sbLaunch.Controls[i] is TLaunchFrame then
-      (sbLaunch.Controls[i] as TLaunchFrame).Free;
+    if sbLaunch.Controls[i] is TLaunchApplicationFrame then
+      (sbLaunch.Controls[i] as TLaunchApplicationFrame).Free;
   end;
 end;
 
@@ -575,16 +582,16 @@ end;
 procedure TMainForm.ArrangeLaunchTabItems;
 var
   i, Y: Integer;
-  Frame: TLaunchFrame;
+  Frame: TLaunchApplicationFrame;
 begin
   Y := 0;
 
   for i := 0 to sbLaunch.ControlCount - 1 do
   begin
-    if not (sbLaunch.Controls[i] is TLaunchFrame) then
+    if not (sbLaunch.Controls[i] is TLaunchApplicationFrame) then
       Continue;
 
-    Frame := sbLaunch.Controls[i] as TLaunchFrame;
+    Frame := sbLaunch.Controls[i] as TLaunchApplicationFrame;
     Frame.Left := 0;
     Frame.Width := sbLaunch.ClientWidth;
     Frame.Top := Y;
@@ -632,7 +639,7 @@ end;
 
 procedure TMainForm.CreateTrayMenuLaunchItems;
 
-  procedure AddMenu(RootMenu: TMenuItem; Frame: TLaunchFrame; IconIndex: Integer; Proc: TNotifyEvent);
+  procedure AddMenu(RootMenu: TMenuItem; Frame: TLaunchApplicationFrame; IconIndex: Integer; Proc: TNotifyEvent);
   var
     MenuItem: TMenuItem;
   begin
@@ -674,12 +681,12 @@ procedure TMainForm.CorrectTrayMenuLaunchItems;
 
   procedure SetMenuItemsEnabled(Root: TMenuItem);
   var
-    Frame: TLaunchFrame;
+    Frame: TLaunchApplicationFrame;
     i: Integer;
   begin
     for i := 0 to Root.Count - 1 do
     begin
-      Frame := TLaunchFrame(Root.Items[i].Tag);
+      Frame := TLaunchApplicationFrame(Root.Items[i].Tag);
       Root.Items[i].Enabled := Frame.ExecatableEnable;
     end;
   end;
@@ -692,24 +699,24 @@ end;
 
 procedure TMainForm.miTrayLaunchClick(Sender: TObject);
 var
-  Frame: TLaunchFrame;
+  Frame: TLaunchApplicationFrame;
 begin
   if not (Sender is TMenuItem) then
     Exit;
 
-  Frame := TLaunchFrame((Sender as TMenuItem).Tag);
+  Frame := TLaunchApplicationFrame((Sender as TMenuItem).Tag);
   Frame.Launch;
 end;
 
 
 procedure TMainForm.miTrayStopClick(Sender: TObject);
 var
-  Frame: TLaunchFrame;
+  Frame: TLaunchApplicationFrame;
 begin
   if not (Sender is TMenuItem) then
     Exit;
 
-  Frame := TLaunchFrame((Sender as TMenuItem).Tag);
+  Frame := TLaunchApplicationFrame((Sender as TMenuItem).Tag);
   Frame.Stop;
 end;
 
