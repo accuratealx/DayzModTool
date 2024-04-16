@@ -1,0 +1,10 @@
+object TabCommonFrame: TTabCommonFrame
+  Left = 0
+  Height = 240
+  Top = 0
+  Width = 320
+  Align = alClient
+  LCLVersion = '3.2.0.0'
+  DesignLeft = 557
+  DesignTop = 263
+end

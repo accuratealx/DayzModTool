@@ -1,0 +1,21 @@
+inherited LaunchFrame: TLaunchFrame
+  TabOrder = 0
+  DesignLeft = 767
+  DesignTop = 285
+  object sbLaunch: TScrollBox[0]
+    Left = 0
+    Height = 240
+    Top = 0
+    Width = 320
+    HorzScrollBar.Increment = 30
+    HorzScrollBar.Page = 1
+    HorzScrollBar.Tracking = True
+    VertScrollBar.Increment = 30
+    VertScrollBar.Page = 1
+    VertScrollBar.Tracking = True
+    Align = alClient
+    BorderStyle = bsNone
+    TabOrder = 0
+    OnResize = sbLaunchResize
+  end
+end

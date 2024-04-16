@@ -191,9 +191,9 @@
         <ResourceBaseClass Value="Frame"/>
       </Unit>
       <Unit>
-        <Filename Value="Tabs\Launch\LaunchApplicationUnit.pas"/>
+        <Filename Value="Tabs\Launch\LaunchItemUnit.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="LaunchApplicationFrame"/>
+        <ComponentName Value="LaunchItemFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
       </Unit>
@@ -319,6 +319,17 @@
         <Filename Value="Tabs\TabCommonUnit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="TabCommonFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Tabs\TabParameters.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Tabs\Launch\LaunchUnit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="LaunchFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
       </Unit>
     </Units>

@@ -16,6 +16,7 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   protected
     FParameters: TDialogParameters;
+
     procedure PrepareInterface; virtual;
     procedure SetLanguage; virtual;
   public

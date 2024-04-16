@@ -24,25 +24,7 @@ object MainForm: TMainForm
     TabOrder = 0
     object tabLaunch: TTabSheet
       Caption = 'Запуск программ'
-      ClientHeight = 572
-      ClientWidth = 542
       ImageIndex = 0
-      object sbLaunch: TScrollBox
-        Left = 0
-        Height = 572
-        Top = 0
-        Width = 542
-        HorzScrollBar.Increment = 30
-        HorzScrollBar.Page = 1
-        HorzScrollBar.Tracking = True
-        VertScrollBar.Increment = 30
-        VertScrollBar.Page = 1
-        VertScrollBar.Tracking = True
-        Align = alClient
-        BorderStyle = bsNone
-        TabOrder = 0
-        OnResize = sbLaunchResize
-      end
     end
     object tabDirectory: TTabSheet
       Caption = 'Каталоги'

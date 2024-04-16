@@ -9,8 +9,8 @@ uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus,
   ExtCtrls, ComCtrls,
   sgeStringList,
-  Language,
-  LaunchApplicationUnit, DirectoryUnit, DirectoryItemUnit, StringTableUnit,
+  Language, TabParameters,
+  LaunchUnit, LaunchItemUnit, DirectoryUnit, DirectoryItemUnit, StringTableUnit,
   WorkDriveUnit;
 
 const
@@ -55,7 +55,6 @@ type
     miTraySeparator1: TMenuItem;
     miTrayExit: TMenuItem;
     PageControl: TPageControl;
-    sbLaunch: TScrollBox;
     tabLaunch: TTabSheet;
     tabDirectory: TTabSheet;
     tabStringTable: TTabSheet;
@@ -77,7 +76,6 @@ type
     procedure miMainToolsWorkDriveClick(Sender: TObject);
     procedure miTrayHideClick(Sender: TObject);
     procedure miTrayShowClick(Sender: TObject);
-    procedure sbLaunchResize(Sender: TObject);
     procedure TrayIconDblClick(Sender: TObject);
     procedure TrayMenuPopup(Sender: TObject);
   private
@@ -96,11 +94,9 @@ type
     FCloseApplication: Boolean;
 
     //Каталоги
-    FMainDir: String;
-    FSettingsDir: String;
-    FLanguageDir: String;
-    FLaunchDir: String;
-    FDirectoryDir: String;
+    FMainDir: String;       //Каталог запуска приложения
+    FSettingsDir: String;   //Каталог настроек
+    FLanguageDir: String;   //Каталог языков
 
     //Язык
     FCurrentLanguage: String;
@@ -108,6 +104,8 @@ type
     FLanguageFileList: TsgeStringList;
 
     //Закладки
+    FTabParams: TTabParameters;
+    FLaunchFrame: TLaunchFrame;
     FDirectoryFrame: TDirectoryFrame;
     FStringTableFrame: TStringTableFrame;
 
@@ -121,15 +119,8 @@ type
     procedure CreateLanguageFileList;
     procedure ChangeLanguage(LanguageName: String);
 
-    function  GetLaunchFrameList: TLaunchExecutableFrameList;
-    procedure CreateLaunchFrame(const SettingsFile: String);
-    procedure ChangeLaunchFrameLanguage;
-    procedure DestroyLaunchFrame;
-    procedure ArrangeLaunchTabItems;
-    procedure FindExecutables;
-    procedure SetLaunchFrameCollapsed(ACollapsed: Boolean);
-    procedure OnChangeLaunchContentHeight(Sender: TObject);
-    procedure DeleteIncorrectDirectory;
+    procedure CreateTabs(AParams: TTabParameters);
+    procedure DestroyTabs;
 
     procedure CreateTrayMenuLaunchItems;
     procedure CorrectTrayMenuLaunchItems;
@@ -214,25 +205,25 @@ end;
 
 procedure TMainForm.miMainTabDirectoryEraseIncorrectClick(Sender: TObject);
 begin
-  DeleteIncorrectDirectory;
+  FDirectoryFrame.DeleteIncorrectDirectory;
 end;
 
 
 procedure TMainForm.miMainTabLaunchCollapseAllClick(Sender: TObject);
 begin
-  SetLaunchFrameCollapsed(True);
+  FLaunchFrame.SetCollapset(True);
 end;
 
 
 procedure TMainForm.miMainTabLaunchExpandAllClick(Sender: TObject);
 begin
-  SetLaunchFrameCollapsed(False);
+  FLaunchFrame.SetCollapset(False);
 end;
 
 
 procedure TMainForm.miMainTabLaunchFindExecutablesClick(Sender: TObject);
 begin
-  FindExecutables;
+  FLaunchFrame.FindExecutables;
 end;
 
 
@@ -257,12 +248,6 @@ end;
 procedure TMainForm.miTrayShowClick(Sender: TObject);
 begin
   Show;
-end;
-
-
-procedure TMainForm.sbLaunchResize(Sender: TObject);
-begin
-  ArrangeLaunchTabItems;
 end;
 
 
@@ -301,27 +286,20 @@ begin
   //Каталоги
   FMainDir := ExtractFilePath(ParamStr(0));
 
-  FSettingsDir := FMainDir + 'Settings\';
+  FSettingsDir := FMainDir + 'Settings\'; //TODO: Заменить на AppData
   ForceDirectories(FSettingsDir);
 
   FLanguageDir := FMainDir + 'Languages\';
   ForceDirectories(FLanguageDir);
 
-  FLaunchDir := FMainDir + 'Tabs\Launch\';
-  ForceDirectories(FLaunchDir);
+  //Параметры закладок
+  FTabParams := TTabParameters.Create;
+  FTabParams.Language := FLanguage;
+  FTabParams.DataDirectory := FMainDir + 'Tabs\';
+  FTabParams.SettingsDirectory := FSettingsDir;
 
-  FDirectoryDir := FMainDir + 'Tabs\Directory\';
-
-  //Создать закладки запуска
-  CreateLaunchFrame(FLaunchDir + 'List.ini');
-
-  //Закладка с каталогами
-  FDirectoryFrame := TDirectoryFrame.Create(FSettingsDir + 'Directory.ini', FDirectoryDir);
-  FDirectoryFrame.Parent := tabDirectory;
-
-  //Закладка для редактирования строк перевода
-  FStringTableFrame := TStringTableFrame.Create(FSettingsDir + 'StringTable.ini');
-  FStringTableFrame.Parent := tabStringTable;
+  //Создать закладки
+  CreateTabs(FTabParams);
 
   //Создать элементы запуска/останова приложений
   CreateTrayMenuLaunchItems;
@@ -348,13 +326,15 @@ end;
 
 procedure TMainForm.Done;
 begin
-  FStringTableFrame.Free;
-  FDirectoryFrame.Free;
-
-  DestroyLaunchFrame;
-
   SaveSettings;
 
+  //Удалить настройки закладок
+  FTabParams.Free;
+
+  //Удалить закладки
+  DestroyTabs;
+
+  //Почистить язык
   FLanguageFileList.Free;
   FLanguage.Free;
 end;
@@ -430,8 +410,19 @@ procedure TMainForm.ApplyLanguage;
       TranslateMenu(RootItem.Items[i], Prefix);
   end;
 
-const
-  PREFIX_TAB_CAPTION = 'MainForm.TabCaption.';
+  procedure TranslateTabsCaption;
+  const
+    PREFIX = 'MainForm.Tabs.';
+  var
+    i: Integer;
+    Tab: TTabSheet;
+  begin
+    for i := 0 to PageControl.ControlCount - 1 do
+    begin
+      Tab := PageControl.Controls[i] as TTabSheet;
+      Tab.Caption := FLanguage.GetLocalizedString(PREFIX + Tab.Name, Tab.Name);
+    end;
+  end;
 
 begin
   //Меню
@@ -439,13 +430,12 @@ begin
   TranslateMenu(TrayMenu.Items, 'MainForm.TrayMenu.');
 
   //Закладки
-  tabLaunch.Caption := FLanguage.GetLocalizedString(PREFIX_TAB_CAPTION + 'Launch', 'Запуск');
-  tabDirectory.Caption := FLanguage.GetLocalizedString(PREFIX_TAB_CAPTION + 'Directory', 'Каталоги');
-  tabStringTable.Caption := FLanguage.GetLocalizedString(PREFIX_TAB_CAPTION + 'StringTable', 'Таблица строк');
+  TranslateTabsCaption;
 
   //Закладки
-  ChangeLaunchFrameLanguage;
+  FLaunchFrame.ApplyLanguage;
   FDirectoryFrame.ChangeLanguage(FLanguage);
+  FStringTableFrame.ChangeLanguage(FLanguage);
 
   //Пересоздать пункты меню в трее
   CreateTrayMenuLaunchItems;
@@ -473,173 +463,33 @@ begin
 end;
 
 
-function TMainForm.GetLaunchFrameList: TLaunchExecutableFrameList;
-var
-  i, c: Integer;
+procedure TMainForm.CreateTabs(AParams: TTabParameters);
 begin
-  Result := nil;
+  //Закладка запуска
+  FLaunchFrame := TLaunchFrame.Create(AParams);
+  FLaunchFrame.Parent := tabLaunch;
 
-  //Просмотрим все закладки
-  for i := 0 to sbLaunch.ControlCount - 1 do
-  begin
-    if sbLaunch.Controls[i] is TLaunchApplicationFrame then
-    begin
-      c := Length(Result);
-      SetLength(Result, c + 1);
-      Result[c] := sbLaunch.Controls[i] as TLaunchApplicationFrame;
-    end;
-  end;
+  //Закладка с каталогами
+  FDirectoryFrame := TDirectoryFrame.Create(FSettingsDir + 'Directory.ini', FMainDir + 'Tabs\Directory');
+  FDirectoryFrame.Parent := tabDirectory;
+
+  //Закладка для редактирования строк перевода
+  FStringTableFrame := TStringTableFrame.Create(FSettingsDir + 'StringTable.ini');
+  FStringTableFrame.Parent := tabStringTable;
 end;
 
 
-procedure TMainForm.CreateLaunchFrame(const SettingsFile: String);
-var
-  F: TIniFile;
-  SectionList: TStringList;
-  i: Integer;
-  FrameCaption, FrameParams, FrameSettings, FrameIconName, FrameRelativeFilename, FrameLocaleID: String;
-  Frame: TLaunchApplicationFrame;
-  FrameIcon: TIcon;
+procedure TMainForm.DestroyTabs;
 begin
-  F := TIniFile.Create(SettingsFile);
-  SectionList := TStringList.Create;
-  FrameIcon := TIcon.Create;
-  try
-
-    //Прочитать список секций
-    F.ReadSections(SectionList);
-
-    //Создать фреймы запуска
-    for i := 0 to SectionList.Count - 1 do
-    begin
-      //Прочитать параметры фрейма
-      FrameCaption := SectionList.Strings[i];
-      FrameParams := FLaunchDir + F.ReadString(FrameCaption, 'ParamFile', '');
-      FrameSettings := FSettingsDir + F.ReadString(FrameCaption, 'SettingsFile', '');
-      FrameIconName := FLaunchDir + F.ReadString(FrameCaption, 'Icon', '');
-      FrameRelativeFilename := F.ReadString(FrameCaption, 'RelativeFileName', '');
-      FrameLocaleID := F.ReadString(FrameCaption, 'LocaleId', '');
-
-      //Если нет файла с настройками параметров, то пропуск
-      if not FileExists(FrameParams) then
-        Continue;
-
-      //Грузим иконку
-      try
-        if FileExists(FrameIconName) then
-          FrameIcon.LoadFromFile(FrameIconName)
-        else
-          FrameIcon.Assign(Application.Icon);
-      except
-        FrameIcon.Assign(Icon);
-      end;
-
-      //Создать фрейм
-      Frame := TLaunchApplicationFrame.Create(FrameCaption, FrameIcon, FrameParams, FrameSettings, FrameRelativeFilename, FrameLocaleID);
-
-      //Настроить выделение
-      Frame.Higlight := not Odd(i);
-
-      //Установить обработчик изменения высоты
-      Frame.OnHeightChange := @OnChangeLaunchContentHeight;
-
-      //Прикрепить фрейм к закладке
-      Frame.Parent := sbLaunch;
-    end;
-
-  finally
-    FrameIcon.Free;
-    SectionList.Free;
-    F.Free;
-  end;
-end;
-
-
-procedure TMainForm.ChangeLaunchFrameLanguage;
-var
-  FrameList: TLaunchExecutableFrameList;
-  i: Integer;
-begin
-  FrameList := GetLaunchFrameList;
-
-  for i := 0 to Length(FrameList) - 1 do
-    FrameList[i].ChangeLanguage(FLanguage);
-end;
-
-
-procedure TMainForm.DestroyLaunchFrame;
-var
-  i: Integer;
-begin
-  for i := sbLaunch.ControlCount - 1 downto 0 do
-  begin
-    if sbLaunch.Controls[i] is TLaunchApplicationFrame then
-      (sbLaunch.Controls[i] as TLaunchApplicationFrame).Free;
-  end;
-end;
-
-
-procedure TMainForm.ArrangeLaunchTabItems;
-var
-  i, Y: Integer;
-  Frame: TLaunchApplicationFrame;
-begin
-  Y := 0;
-
-  for i := 0 to sbLaunch.ControlCount - 1 do
-  begin
-    if not (sbLaunch.Controls[i] is TLaunchApplicationFrame) then
-      Continue;
-
-    Frame := sbLaunch.Controls[i] as TLaunchApplicationFrame;
-    Frame.Left := 0;
-    Frame.Width := sbLaunch.ClientWidth;
-    Frame.Top := Y;
-
-    Inc(Y, Frame.Height);
-  end;
-end;
-
-
-procedure TMainForm.FindExecutables;
-var
-  FrameList: TLaunchExecutableFrameList;
-  i: Integer;
-begin
-  FrameList := GetLaunchFrameList;
-
-  //В каждом фрейме вызвать поиск приложения
-  for i := 0 to Length(FrameList) - 1 do
-    FrameList[i].FindExecutable;
-end;
-
-
-procedure TMainForm.SetLaunchFrameCollapsed(ACollapsed: Boolean);
-var
-  FrameList: TLaunchExecutableFrameList;
-  i: Integer;
-begin
-  FrameList := GetLaunchFrameList;
-  for i := Length(FrameList) - 1 downto 0 do
-    FrameList[i].Collapsed := ACollapsed;
-end;
-
-
-procedure TMainForm.OnChangeLaunchContentHeight(Sender: TObject);
-begin
-  ArrangeLaunchTabItems;
-end;
-
-
-procedure TMainForm.DeleteIncorrectDirectory;
-begin
-  FDirectoryFrame.DeleteIncorrectDirectory;
+  FStringTableFrame.Free;
+  FDirectoryFrame.Free;
+  FLaunchFrame.Free;
 end;
 
 
 procedure TMainForm.CreateTrayMenuLaunchItems;
 
-  procedure AddMenu(RootMenu: TMenuItem; Frame: TLaunchApplicationFrame; IconIndex: Integer; Proc: TNotifyEvent);
+  procedure AddMenu(RootMenu: TMenuItem; Frame: TLaunchItemFrame; IconIndex: Integer; Proc: TNotifyEvent);
   var
     MenuItem: TMenuItem;
   begin
@@ -653,7 +503,6 @@ procedure TMainForm.CreateTrayMenuLaunchItems;
   end;
 
 var
-  FrameList: TLaunchExecutableFrameList;
   c, i, IconIndex: Integer;
 begin
   //Почистить лишнее
@@ -661,18 +510,15 @@ begin
   miTrayStop.Clear;
   ilTrayLaunch.Clear;
 
-  //Получить список фреймов запуска
-  FrameList := GetLaunchFrameList;
-
   //Построить меню
-  c := Length(FrameList) - 1;
+  c := Length(FLaunchFrame.Items) - 1;
   for i := 0 to c do
   begin
     IconIndex := ilTrayLaunch.Count;
-    ilTrayLaunch.AddIcon(FrameList[i].Icon);
+    ilTrayLaunch.AddIcon(FLaunchFrame.Items[i].Icon);
 
-    AddMenu(miTrayLaunch, FrameList[i], IconIndex, @miTrayLaunchClick);
-    AddMenu(miTrayStop, FrameList[i], IconIndex, @miTrayStopClick);
+    AddMenu(miTrayLaunch, FLaunchFrame.Items[i], IconIndex, @miTrayLaunchClick);
+    AddMenu(miTrayStop, FLaunchFrame.Items[i], IconIndex, @miTrayStopClick);
   end;
 end;
 
@@ -681,12 +527,12 @@ procedure TMainForm.CorrectTrayMenuLaunchItems;
 
   procedure SetMenuItemsEnabled(Root: TMenuItem);
   var
-    Frame: TLaunchApplicationFrame;
+    Frame: TLaunchItemFrame;
     i: Integer;
   begin
     for i := 0 to Root.Count - 1 do
     begin
-      Frame := TLaunchApplicationFrame(Root.Items[i].Tag);
+      Frame := TLaunchItemFrame(Root.Items[i].Tag);
       Root.Items[i].Enabled := Frame.ExecatableEnable;
     end;
   end;
@@ -699,24 +545,24 @@ end;
 
 procedure TMainForm.miTrayLaunchClick(Sender: TObject);
 var
-  Frame: TLaunchApplicationFrame;
+  Frame: TLaunchItemFrame;
 begin
   if not (Sender is TMenuItem) then
     Exit;
 
-  Frame := TLaunchApplicationFrame((Sender as TMenuItem).Tag);
+  Frame := TLaunchItemFrame((Sender as TMenuItem).Tag);
   Frame.Launch;
 end;
 
 
 procedure TMainForm.miTrayStopClick(Sender: TObject);
 var
-  Frame: TLaunchApplicationFrame;
+  Frame: TLaunchItemFrame;
 begin
   if not (Sender is TMenuItem) then
     Exit;
 
-  Frame := TLaunchApplicationFrame((Sender as TMenuItem).Tag);
+  Frame := TLaunchItemFrame((Sender as TMenuItem).Tag);
   Frame.Stop;
 end;
 
