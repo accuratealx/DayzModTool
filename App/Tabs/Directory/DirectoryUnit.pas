@@ -7,10 +7,10 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, Buttons, IniFiles,
   Language, SteamUtils,
-  DirectoryItemUnit;
+  TabParameters, TabCommonUnit, DirectoryItemUnit;
 
 type
-  TDirectoryFrame = class(TFrame)
+  TDirectoryFrame = class(TTabCommonFrame)
     btnExplore: TSpeedButton;
     btnEdit: TSpeedButton;
     btnDelete: TSpeedButton;
@@ -54,7 +54,8 @@ type
     //Обработчик выделения элемента
     procedure OnItemSelect(Sender: TObject);
   public
-    constructor Create(const SettingsFile: String; const IconDirectory: String); reintroduce;
+    constructor Create(Parameters: TTabParameters); reintroduce;
+    //constructor Create(const SettingsFile: String; const IconDirectory: String); reintroduce;
     destructor  Destroy; override;
 
     procedure DeleteIncorrectDirectory;
@@ -453,14 +454,18 @@ begin
 end;
 
 
-constructor TDirectoryFrame.Create(const SettingsFile: String; const IconDirectory: String);
+constructor TDirectoryFrame.Create(Parameters: TTabParameters);
 begin
-  inherited Create(nil);
+  inherited Create(Parameters);
 
-  FSettingsFile := SettingsFile;
-  FIconDirectory := IncludeTrailingBackslash(IconDirectory);
+  //Подготовить каталог данных
+  FIconDirectory := FParams.DataDirectory + 'Directory\';
   ForceDirectories(FIconDirectory);
 
+  //Определить файл настроек
+  FSettingsFile := FParams.SettingsDirectory + '\Directory.ini';
+
+  //Загрузить настройки
   LoadSettings(FSettingsFile);
 end;
 

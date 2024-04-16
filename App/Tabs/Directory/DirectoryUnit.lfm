@@ -1,24 +1,21 @@
-object DirectoryFrame: TDirectoryFrame
-  Left = 0
-  Height = 120
-  Top = 0
-  Width = 345
-  Align = alClient
-  ClientHeight = 120
-  ClientWidth = 345
+inherited DirectoryFrame: TDirectoryFrame
+  Height = 302
+  Width = 467
+  ClientHeight = 302
+  ClientWidth = 467
   OnClick = FrameClick
   TabOrder = 0
   DesignLeft = 564
   DesignTop = 285
-  object pnlTools: TPanel
+  object pnlTools: TPanel[0]
     Left = 0
     Height = 35
     Top = 0
-    Width = 345
+    Width = 467
     Align = alTop
     BevelOuter = bvNone
     ClientHeight = 35
-    ClientWidth = 345
+    ClientWidth = 467
     TabOrder = 0
     object btnAdd: TSpeedButton
       Cursor = crHandPoint
@@ -264,7 +261,7 @@ object DirectoryFrame: TDirectoryFrame
     end
     object btnExplore: TSpeedButton
       Cursor = crHandPoint
-      Left = 315
+      Left = 437
       Height = 25
       Hint = 'Открыть в проводнике'
       Top = 5
@@ -313,11 +310,11 @@ object DirectoryFrame: TDirectoryFrame
       ParentShowHint = False
     end
   end
-  object sbContent: TScrollBox
+  object sbContent: TScrollBox[1]
     Left = 0
-    Height = 85
+    Height = 267
     Top = 35
-    Width = 345
+    Width = 467
     HorzScrollBar.Page = 1
     HorzScrollBar.Tracking = True
     VertScrollBar.Page = 1

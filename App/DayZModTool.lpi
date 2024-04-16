@@ -319,6 +319,7 @@
         <Filename Value="Tabs\TabCommonUnit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="TabCommonFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
       </Unit>
       <Unit>

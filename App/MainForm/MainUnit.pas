@@ -420,7 +420,7 @@ procedure TMainForm.ApplyLanguage;
     for i := 0 to PageControl.ControlCount - 1 do
     begin
       Tab := PageControl.Controls[i] as TTabSheet;
-      Tab.Caption := FLanguage.GetLocalizedString(PREFIX + Tab.Name, Tab.Name);
+      Tab.Caption := FLanguage.GetLocalizedString(PREFIX + Tab.Name, Tab.Caption);
     end;
   end;
 
@@ -470,7 +470,7 @@ begin
   FLaunchFrame.Parent := tabLaunch;
 
   //Закладка с каталогами
-  FDirectoryFrame := TDirectoryFrame.Create(FSettingsDir + 'Directory.ini', FMainDir + 'Tabs\Directory');
+  FDirectoryFrame := TDirectoryFrame.Create(AParams);
   FDirectoryFrame.Parent := tabDirectory;
 
   //Закладка для редактирования строк перевода
