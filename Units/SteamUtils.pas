@@ -98,6 +98,9 @@ begin
     AddToResult('DayZ журналы утилит', DayZToolsPath + 'Bin\Logs', 'Folder.Page.ico');
   end;
 
+  //Каталог настроек клиента
+  AddToResult('DayZ настройки клиента', GetEnvironmentVariable('USERPROFILE') + '\Documents\DayZ', 'Folder.Page.ico', True);
+
   //Папка логов DayZ
   AddToResult('DayZ журналы', GetEnvironmentVariable('USERPROFILE') + '\AppData\Local\DayZ', 'Folder.Page.ico', True);
 end;
