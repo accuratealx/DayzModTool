@@ -24,6 +24,8 @@ MainForm.MainMenu.miMainTabDirectory = Каталоги
 MainForm.MainMenu.miMainTabDirectoryAddDefault = Добавить стандартные
 MainForm.MainMenu.miMainTabDirectoryEraseAll = Удалить все
 MainForm.MainMenu.miMainTabDirectoryEraseIncorrect = Удалить несуществующие
+MainForm.MainMenu.miMainInfo = Информация
+MainForm.MainMenu.miMainInfoDonate = Поблагодарить
 
 #TrayMenu
 MainForm.TrayMenu.miTrayShow = Показать

@@ -24,6 +24,8 @@ MainForm.MainMenu.miMainTabDirectory = Directory
 MainForm.MainMenu.miMainTabDirectoryAddDefault = Add default
 MainForm.MainMenu.miMainTabDirectoryEraseAll = Erase all
 MainForm.MainMenu.miMainTabDirectoryEraseIncorrect = Erase incorrect
+MainForm.MainMenu.miMainInfo = Information
+MainForm.MainMenu.miMainInfoDonate = Donation
 
 #TrayMenu
 MainForm.TrayMenu.miTrayShow = Show
@@ -83,6 +85,7 @@ TabLaunch.Param.SelectDirectory = Select directory
 TabLaunch.Param.FullPath = Full path
 TabLaunch.Param.SelectAll = Select all
 TabLaunch.Param.UnselectAll = Unselect all
+TabLaunch.Param.ReloadValue = Reload value
 
 #Tab Directory
 TabDirectory.Add = Add
