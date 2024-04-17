@@ -16,7 +16,7 @@ inherited DirectoryEditorDialogForm: TDirectoryEditorDialogForm
       Height = 25
       Top = 10
       Width = 120
-      Caption = 'Выбрать'
+      Caption = 'Добавить'
       Enabled = False
       Glyph.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100

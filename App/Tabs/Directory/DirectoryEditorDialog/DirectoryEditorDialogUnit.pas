@@ -34,7 +34,6 @@ type
     const
       LANGUAGE_PREFIX = 'Dialogs.DirectoryEditor.';
   private
-    FMode: TPathEditorMode;
     FIconFileName: String;
 
     function  GetIconDirectory: String;
@@ -164,9 +163,7 @@ procedure TDirectoryEditorDialogForm.SetMode(AMode: TPathEditorMode);
 var
   s: String;
 begin
-  FMode := AMode;
-
-  case FMode of
+  case AMode of
     pemNew:
       s := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Add', 'Добавить');
 
