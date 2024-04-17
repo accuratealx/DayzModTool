@@ -60,6 +60,7 @@ var
 begin
   Params := TStringTableItemEditorDialogParameters.Create;
   Params.Language := Language;
+  Params.Mode := Mode;
   Params.EditItem := EditItem;
   try
     with TStringTableItemEditorDialogForm.Create(Params) do
