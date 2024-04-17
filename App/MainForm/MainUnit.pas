@@ -25,6 +25,8 @@ type
     ilTrayDirectory: TImageList;
     ilLanguages: TImageList;
     MainMenu: TMainMenu;
+    miMainTabStringTableFitColumns: TMenuItem;
+    miMainTabStringTable: TMenuItem;
     miMainInfoDonate: TMenuItem;
     miMainInfo: TMenuItem;
     miMainToolsExtractData: TMenuItem;
@@ -72,6 +74,7 @@ type
     procedure miMainTabLaunchCollapseAllClick(Sender: TObject);
     procedure miMainTabLaunchExpandAllClick(Sender: TObject);
     procedure miMainTabLaunchFindExecutablesClick(Sender: TObject);
+    procedure miMainTabStringTableFitColumnsClick(Sender: TObject);
     procedure miMainToolsExtractDataClick(Sender: TObject);
     procedure miMainToolsWorkDriveClick(Sender: TObject);
     procedure miTrayHideClick(Sender: TObject);
@@ -227,6 +230,12 @@ end;
 procedure TMainForm.miMainTabLaunchFindExecutablesClick(Sender: TObject);
 begin
   FLaunchFrame.FindExecutables;
+end;
+
+
+procedure TMainForm.miMainTabStringTableFitColumnsClick(Sender: TObject);
+begin
+  FStringTableFrame.FitColumns;
 end;
 
 
