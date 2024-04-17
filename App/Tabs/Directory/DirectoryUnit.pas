@@ -71,7 +71,7 @@ implementation
 {$R *.lfm}
 
 uses
-  YesNoQuestionDialogUnit, DirectoryEditorDialogUnit;
+  YesNoQuestionDialogUnit, DirectoryItemEditorDialogUnit;
 
 
 procedure TDirectoryFrame.FrameClick(Sender: TObject);
@@ -146,7 +146,7 @@ begin
   APAth := Item.Path;
   AIconFileName := Item.IconName;
 
-  if DirectoryEditorDialogExecute(FParams.Language, pemEdit, FIconDirectory, ACaption, APath, AIconFileName) then
+  if DirectoryItemEditorDialogExecute(FParams.Language, pemEdit, FIconDirectory, ACaption, APath, AIconFileName) then
   begin
     //Поправить
     Item.Caption := ACaption;
@@ -219,7 +219,7 @@ begin
   APAth := '';
   AIconFileName := '';
 
-  if DirectoryEditorDialogExecute(FParams.Language, pemNew, FIconDirectory, ACaption, APath, AIconFileName) then
+  if DirectoryItemEditorDialogExecute(FParams.Language, pemNew, FIconDirectory, ACaption, APath, AIconFileName) then
   begin
     //Создать элемент каталога
     Frame := TDirectoryItemFrame.Create(FIconDirectory, ACaption, APath, AIconFileName);

@@ -1,4 +1,4 @@
-unit DirectoryEditorDialogUnit;
+unit DirectoryItemEditorDialogUnit;
 
 {$mode ObjFPC}{$H+}
 
@@ -15,7 +15,7 @@ type
     pemEdit   //Изменение
   );
 
-  TDirectoryEditorDialogForm = class(TDialogCommonForm)
+  TDirectoryItemEditorDialogForm = class(TDialogCommonForm)
     btnCancel: TSpeedButton;
     btnOK: TSpeedButton;
     edCaption: TEdit;
@@ -32,7 +32,7 @@ type
     procedure imgIconClick(Sender: TObject);
   private
     const
-      LANGUAGE_PREFIX = 'Dialogs.DirectoryEditor.';
+      LANGUAGE_PREFIX = 'Dialogs.DirectoryItemEditor.';
   private
     FIconFileName: String;
 
@@ -46,7 +46,7 @@ type
   end;
 
 
-function DirectoryEditorDialogExecute(Language: TLanguage; Mode: TPathEditorMode; const IconDirectory: String; var ACaption, APath, AIconFileName: String): Boolean;
+function DirectoryItemEditorDialogExecute(Language: TLanguage; Mode: TPathEditorMode; const IconDirectory: String; var ACaption, APath, AIconFileName: String): Boolean;
 
 
 implementation
@@ -66,7 +66,7 @@ type
   end;
 
 
-function DirectoryEditorDialogExecute(Language: TLanguage; Mode: TPathEditorMode; const IconDirectory: String; var ACaption, APath, AIconFileName: String): Boolean;
+function DirectoryItemEditorDialogExecute(Language: TLanguage; Mode: TPathEditorMode; const IconDirectory: String; var ACaption, APath, AIconFileName: String): Boolean;
 var
   Params: TDirectoryEditorDialogParameters;
 begin
@@ -78,7 +78,7 @@ begin
   Params.Path := APath;
   Params.IconFileName := AIconFileName;
   try
-    with TDirectoryEditorDialogForm.Create(Params) do
+    with TDirectoryItemEditorDialogForm.Create(Params) do
     begin
       Result := False;
       ShowModal;
@@ -100,20 +100,20 @@ begin
 end;
 
 
-procedure TDirectoryEditorDialogForm.btnCancelClick(Sender: TObject);
+procedure TDirectoryItemEditorDialogForm.btnCancelClick(Sender: TObject);
 begin
   Close;
 end;
 
 
-procedure TDirectoryEditorDialogForm.btnOKClick(Sender: TObject);
+procedure TDirectoryItemEditorDialogForm.btnOKClick(Sender: TObject);
 begin
   Tag := 1;
   Close;
 end;
 
 
-procedure TDirectoryEditorDialogForm.btnSelectDirectoryClick(Sender: TObject);
+procedure TDirectoryItemEditorDialogForm.btnSelectDirectoryClick(Sender: TObject);
 var
   Path: String;
 begin
@@ -124,13 +124,13 @@ begin
 end;
 
 
-procedure TDirectoryEditorDialogForm.edEditChange(Sender: TObject);
+procedure TDirectoryItemEditorDialogForm.edEditChange(Sender: TObject);
 begin
   btnOK.Enabled := (Trim(edCaption.Text) <> '') and (Trim(edPath.Text) <> '');
 end;
 
 
-procedure TDirectoryEditorDialogForm.FormResize(Sender: TObject);
+procedure TDirectoryItemEditorDialogForm.FormResize(Sender: TObject);
 const
   SPACE = 10;
 var
@@ -142,7 +142,7 @@ begin
 end;
 
 
-procedure TDirectoryEditorDialogForm.imgIconClick(Sender: TObject);
+procedure TDirectoryItemEditorDialogForm.imgIconClick(Sender: TObject);
 var
   IconName: String;
 begin
@@ -153,13 +153,13 @@ begin
 end;
 
 
-function TDirectoryEditorDialogForm.GetIconDirectory: String;
+function TDirectoryItemEditorDialogForm.GetIconDirectory: String;
 begin
   Result := (FParameters as TDirectoryEditorDialogParameters).IconDirectory;
 end;
 
 
-procedure TDirectoryEditorDialogForm.SetMode(AMode: TPathEditorMode);
+procedure TDirectoryItemEditorDialogForm.SetMode(AMode: TPathEditorMode);
 var
   s: String;
 begin
@@ -180,7 +180,7 @@ begin
 end;
 
 
-procedure TDirectoryEditorDialogForm.SetIconByFileName(AFileName: String);
+procedure TDirectoryItemEditorDialogForm.SetIconByFileName(AFileName: String);
 var
   AIcon: TIcon;
 begin
@@ -200,7 +200,7 @@ begin
 end;
 
 
-procedure TDirectoryEditorDialogForm.PrepareInterface;
+procedure TDirectoryItemEditorDialogForm.PrepareInterface;
 var
   Params: TDirectoryEditorDialogParameters;
 begin
@@ -213,7 +213,7 @@ begin
 end;
 
 
-procedure TDirectoryEditorDialogForm.SetLanguage;
+procedure TDirectoryItemEditorDialogForm.SetLanguage;
 begin
   btnCancel.Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Cancel', 'Отмена');
   lblCaption.Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Caption', 'Название');

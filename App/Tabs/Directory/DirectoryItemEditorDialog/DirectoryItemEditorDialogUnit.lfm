@@ -1,4 +1,4 @@
-inherited DirectoryEditorDialogForm: TDirectoryEditorDialogForm
+inherited DirectoryItemEditorDialogForm: TDirectoryItemEditorDialogForm
   Height = 121
   Width = 500
   ClientHeight = 121
