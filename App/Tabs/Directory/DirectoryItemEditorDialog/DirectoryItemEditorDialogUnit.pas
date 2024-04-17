@@ -10,9 +10,9 @@ uses
   DialogCommonUnit, SelectDirectoryDialogUnit, IconSelectorDialogUnit;
 
 type
-  TPathEditorMode = (
-    pemNew,   //Новый
-    pemEdit   //Изменение
+  TDirectoryItemEditorMode = (
+    diemNew,  //Новый
+    diemEdit  //Изменение
   );
 
   TDirectoryItemEditorDialogForm = class(TDialogCommonForm)
@@ -38,7 +38,7 @@ type
 
     function  GetIconDirectory: String;
 
-    procedure SetMode(AMode: TPathEditorMode);
+    procedure SetMode(AMode: TDirectoryItemEditorMode);
     procedure SetIconByFileName(AFileName: String);
   protected
     procedure PrepareInterface; override;
@@ -46,7 +46,7 @@ type
   end;
 
 
-function DirectoryItemEditorDialogExecute(Language: TLanguage; Mode: TPathEditorMode; const IconDirectory: String; var ACaption, APath, AIconFileName: String): Boolean;
+function DirectoryItemEditorDialogExecute(Language: TLanguage; Mode: TDirectoryItemEditorMode; const IconDirectory: String; var ACaption, APath, AIconFileName: String): Boolean;
 
 
 implementation
@@ -58,7 +58,7 @@ uses
 
 type
   TDirectoryEditorDialogParameters = class(TDialogParameters)
-    Mode: TPathEditorMode;
+    Mode: TDirectoryItemEditorMode;
     IconDirectory: String;
     Caption: String;
     Path: String;
@@ -66,7 +66,7 @@ type
   end;
 
 
-function DirectoryItemEditorDialogExecute(Language: TLanguage; Mode: TPathEditorMode; const IconDirectory: String; var ACaption, APath, AIconFileName: String): Boolean;
+function DirectoryItemEditorDialogExecute(Language: TLanguage; Mode: TDirectoryItemEditorMode; const IconDirectory: String; var ACaption, APath, AIconFileName: String): Boolean;
 var
   Params: TDirectoryEditorDialogParameters;
 begin
@@ -159,15 +159,15 @@ begin
 end;
 
 
-procedure TDirectoryItemEditorDialogForm.SetMode(AMode: TPathEditorMode);
+procedure TDirectoryItemEditorDialogForm.SetMode(AMode: TDirectoryItemEditorMode);
 var
   s: String;
 begin
   case AMode of
-    pemNew:
+    diemNew:
       s := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Add', 'Добавить');
 
-    pemEdit:
+    diemEdit:
       s := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Edit', 'Изменить');
 
     else
