@@ -8,24 +8,26 @@ Info.Date = 23.02.2024
 Info.Comment =
 
 #MainMenu
-MainForm.MainMenu.miMainSystem = Система
-MainForm.MainMenu.miMainHide = Свернуть
 MainForm.MainMenu.miMainExit = Выйти
-MainForm.MainMenu.miMainTabs = Закладки
-MainForm.MainMenu.miMainTools = Инструменты
-MainForm.MainMenu.miMainToolsWorkDrive = Рабочий каталог
-MainForm.MainMenu.miMainToolsExtractData = Извлечь данные
+MainForm.MainMenu.miMainHide = Свернуть
+MainForm.MainMenu.miMainInfo = Информация
+MainForm.MainMenu.miMainInfoDonate = Поблагодарить
 MainForm.MainMenu.miMainLanguage = Язык
-MainForm.MainMenu.miMainTabLaunch = Запуск программ
-MainForm.MainMenu.miMainTabLaunchExpandAll = Развернуть все
-MainForm.MainMenu.miMainTabLaunchCollapseAll = Свернуть все
-MainForm.MainMenu.miMainTabLaunchFindExecutables = Найти приложения
+MainForm.MainMenu.miMainSystem = Система
 MainForm.MainMenu.miMainTabDirectory = Каталоги
 MainForm.MainMenu.miMainTabDirectoryAddDefault = Добавить стандартные
 MainForm.MainMenu.miMainTabDirectoryEraseAll = Удалить все
 MainForm.MainMenu.miMainTabDirectoryEraseIncorrect = Удалить несуществующие
-MainForm.MainMenu.miMainInfo = Информация
-MainForm.MainMenu.miMainInfoDonate = Поблагодарить
+MainForm.MainMenu.miMainTabLaunch = Запуск программ
+MainForm.MainMenu.miMainTabLaunchCollapseAll = Свернуть все
+MainForm.MainMenu.miMainTabLaunchExpandAll = Развернуть все
+MainForm.MainMenu.miMainTabLaunchFindExecutables = Найти приложения
+MainForm.MainMenu.miMainTabStringTable = Таблица строк
+MainForm.MainMenu.miMainTabStringTableFitColumns = Подогнать под содержимое
+MainForm.MainMenu.miMainTabs = Закладки
+MainForm.MainMenu.miMainTools = Инструменты
+MainForm.MainMenu.miMainToolsExtractData = Извлечь данные
+MainForm.MainMenu.miMainToolsWorkDrive = Рабочий каталог
 
 #TrayMenu
 MainForm.TrayMenu.miTrayShow = Показать

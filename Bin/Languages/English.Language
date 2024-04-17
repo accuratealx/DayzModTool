@@ -8,24 +8,26 @@ Info.Date = 21.02.2024
 Info.Comment =
 
 #MainMenu
-MainForm.MainMenu.miMainSystem = System
-MainForm.MainMenu.miMainHide = Minimize
 MainForm.MainMenu.miMainExit = Exit
-MainForm.MainMenu.miMainTabs = Tabs
-MainForm.MainMenu.miMainTools = Tools
-MainForm.MainMenu.miMainToolsWorkDrive = Work drive
-MainForm.MainMenu.miMainToolsExtractData = Extract game data
+MainForm.MainMenu.miMainHide = Minimize
+MainForm.MainMenu.miMainInfo = Information
+MainForm.MainMenu.miMainInfoDonate = Donation
 MainForm.MainMenu.miMainLanguage = Language
-MainForm.MainMenu.miMainTabLaunch = Launch
-MainForm.MainMenu.miMainTabLaunchExpandAll = Expand all
-MainForm.MainMenu.miMainTabLaunchCollapseAll = Collapse all
-MainForm.MainMenu.miMainTabLaunchFindExecutables = Find applications
+MainForm.MainMenu.miMainSystem = System
 MainForm.MainMenu.miMainTabDirectory = Directory
 MainForm.MainMenu.miMainTabDirectoryAddDefault = Add default
 MainForm.MainMenu.miMainTabDirectoryEraseAll = Erase all
 MainForm.MainMenu.miMainTabDirectoryEraseIncorrect = Erase incorrect
-MainForm.MainMenu.miMainInfo = Information
-MainForm.MainMenu.miMainInfoDonate = Donation
+MainForm.MainMenu.miMainTabLaunch = Launch
+MainForm.MainMenu.miMainTabLaunchCollapseAll = Collapse all
+MainForm.MainMenu.miMainTabLaunchExpandAll = Expand all
+MainForm.MainMenu.miMainTabLaunchFindExecutables = Find applications
+MainForm.MainMenu.miMainTabStringTable = String table
+MainForm.MainMenu.miMainTabStringTableFitColumns = Fit to content
+MainForm.MainMenu.miMainTabs = Tabs
+MainForm.MainMenu.miMainTools = Tools
+MainForm.MainMenu.miMainToolsExtractData = Extract game data
+MainForm.MainMenu.miMainToolsWorkDrive = Work drive
 
 #TrayMenu
 MainForm.TrayMenu.miTrayShow = Show
@@ -52,15 +54,19 @@ Dialogs.Memo.CopyContent = Copy contetnt to clipboard
 Dialogs.IconSelector.Caption = Select icon
 Dialogs.IconSelector.Select = Select
 Dialogs.IconSelector.Close = Close
-Dialogs.DirectoryEditor.Cancel = Cancel
-Dialogs.DirectoryEditor.Caption = Caption
-Dialogs.DirectoryEditor.Directory = Directory
-Dialogs.DirectoryEditor.SelectDirectory = Select directory
-Dialogs.DirectoryEditor.ChangeIcon = Change icon
-Dialogs.DirectoryEditor.Add = Add
-Dialogs.DirectoryEditor.Edit = Edit
+Dialogs.DirectoryItemEditor.Cancel = Cancel
+Dialogs.DirectoryItemEditor.Caption = Caption
+Dialogs.DirectoryItemEditor.Directory = Directory
+Dialogs.DirectoryItemEditor.SelectDirectory = Select directory
+Dialogs.DirectoryItemEditor.ChangeIcon = Change icon
+Dialogs.DirectoryItemEditor.Add = Add
+Dialogs.DirectoryItemEditor.Edit = Edit
 Dialogs.Message.Caption = Message
 Dialogs.Message.Close = Close
+
+Dialogs.StringTableItemEditor.Add = Add
+Dialogs.StringTableItemEditor.Edit = Edit
+Dialogs.StringTableItemEditor.Cancel = Cancel
 
 #Tab Launch
 TabLaunch.Launch = Launch
@@ -99,6 +105,34 @@ TabDirectory.NewItemName = New directory
 TabDirectory.DeleteAll = Erase all directories? Action cannot be undone.
 TabDirectory.DeleteIncorrect = Erase non-existent directories?
 TabDirectory.DeleteCurrent = Remove directory "%s" from the list?
+
+#Tab StringTable
+StringTable.New = Create new
+StringTable.Open = Open
+StringTable.Save = Save
+StringTable.Add = Add
+StringTable.Edit = Edit
+StringTable.Delete = Delete
+StringTable.ProceedChange = The current table will be erased, continue?
+StringTable.FileAccessError = An error occurred while accessing file "%s"%sCannot continue
+StringTable.Executable = String tables
+StringTable.DeleteQuestion = Delete item "%s"?
+StringTable.TotalItems = Total items
+StringTable.ColumnAdjust = Adjust columns
+StringTable.Column.Идентификатор = Identifier
+StringTable.Column.Английский = English
+StringTable.Column.Чешский = Czech
+StringTable.Column.Немецкий = German
+StringTable.Column.Русский = Russian
+StringTable.Column.Польский = Polish
+StringTable.Column.Венгерский = Hungarian
+StringTable.Column.Итальянский = Italian
+StringTable.Column.Эспанский = Spanish
+StringTable.Column.Французский = French
+StringTable.Column.Китайский = Chinese
+StringTable.Column.Японский = Japanese
+StringTable.Column.Португальский = Portuguese
+StringTable.Column.Китайский (упрощенный) = Chinese Simp
 
 #Launch Applications
 TabLaunch.Application.DayZServer = DayZ Server
