@@ -83,7 +83,7 @@ type
     procedure TrayMenuPopup(Sender: TObject);
   private
     const
-      CONFIG_FILE_NAME = 'DayZConfig.ini';
+      CONFIG_FILE_NAME = 'DayZModTool.ini';
 
       CONFIG_SECTION_MAIN_FORM = 'MainForm';
       CONFIG_SECTION_SYSTEM = 'System';
