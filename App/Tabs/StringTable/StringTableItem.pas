@@ -25,6 +25,7 @@ type
     ltChineseSimp
   );
 
+
 const
   //Имена языков
   StringTableLanguageNames: array[TStringTableLanguageTypes] of string = (
@@ -42,6 +43,7 @@ const
     'Португальский',
     'Китайский (упрощенный)'
   );
+
 
 type
   //Таблица с переводами языков

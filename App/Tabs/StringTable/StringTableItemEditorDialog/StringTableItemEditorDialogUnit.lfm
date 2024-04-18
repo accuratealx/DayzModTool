@@ -1,6 +1,14 @@
 inherited StringTableItemEditorDialogForm: TStringTableItemEditorDialogForm
+  Height = 350
+  Width = 500
+  ClientHeight = 350
+  ClientWidth = 500
+  Constraints.MinWidth = 500
   OnResize = FormResize
   inherited pnlButton: TPanel
+    Top = 305
+    Width = 500
+    ClientWidth = 500
     object btnOK: TSpeedButton[0]
       Cursor = crHandPoint
       Left = 110
@@ -90,6 +98,38 @@ inherited StringTableItemEditorDialogForm: TStringTableItemEditorDialogForm
         CEFF303FC4FF2C3CC25B000000000000000000000000FFFFFF00
       }
       OnClick = btnCancelClick
+    end
+  end
+  inherited pnlContent: TPanel
+    Height = 305
+    Width = 500
+    ClientHeight = 305
+    ClientWidth = 500
+    object lblIDTitle: TLabel[0]
+      Left = 15
+      Height = 17
+      Top = 13
+      Width = 101
+      Caption = 'Идентификатор'
+      Font.CharSet = RUSSIAN_CHARSET
+      Font.Height = -13
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object edIDValue: TEdit[1]
+      Left = 180
+      Height = 23
+      Top = 10
+      Width = 310
+      Anchors = [akTop, akLeft, akRight]
+      Font.CharSet = RUSSIAN_CHARSET
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 0
     end
   end
 end

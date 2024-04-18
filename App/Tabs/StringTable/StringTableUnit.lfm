@@ -64,7 +64,7 @@ inherited StringTableFrame: TStringTableFrame
     end
     object btnEdit: TSpeedButton
       Cursor = crHandPoint
-      Left = 315
+      Left = 410
       Height = 25
       Hint = 'Изменить'
       Top = 5
@@ -115,9 +115,9 @@ inherited StringTableFrame: TStringTableFrame
       Cursor = crHandPoint
       Left = 285
       Height = 25
-      Hint = 'Добавить'
       Top = 5
-      Width = 25
+      Width = 120
+      Caption = 'Добавить'
       Flat = True
       Glyph.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
@@ -209,7 +209,7 @@ inherited StringTableFrame: TStringTableFrame
     end
     object btnDelete: TSpeedButton
       Cursor = crHandPoint
-      Left = 345
+      Left = 440
       Height = 25
       Hint = 'Удалить'
       Top = 5

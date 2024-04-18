@@ -446,7 +446,7 @@ begin
   btnNew.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'New', 'Создать новую');
   btnOpen.Caption := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Open', 'Открыть');
   btnSave.Caption := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Save', 'Сохранить');
-  btnAdd.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Add', 'Добавить');
+  btnAdd.Caption := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Add', 'Добавить');
   btnEdit.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Edit', 'Изменить');
   btnDelete.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Delete', 'Удалить');
   btnColumnAdjust.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'ColumnAdjust', 'Настройка колонок');

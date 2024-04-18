@@ -320,6 +320,12 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit>
+      <Unit>
+        <Filename Value="Tabs\Directory\DirectoryItemEditorDialog\DirectoryItemEditorDialogItemUnit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="DirectoryItemEditorDialogItemFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

@@ -5,9 +5,9 @@ unit StringTableItemEditorDialogUnit;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons, StdCtrls,
   Language,
-  StringTableItem, DialogCommonUnit;
+  StringTableItem, DialogCommonUnit, DirectoryItemEditorDialogItemUnit;
 
 type
   TStringTableItemEditorMode = (
@@ -19,17 +19,28 @@ type
   TStringTableItemEditorDialogForm = class(TDialogCommonForm)
     btnCancel: TSpeedButton;
     btnOK: TSpeedButton;
+    edIDValue: TEdit;
+    lblIDTitle: TLabel;
     procedure btnCancelClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
   private
     const
       LANGUAGE_PREFIX = 'Dialogs.StringTableItemEditor.';
+      LANGUAGE_PREFIX_LNGNAME = 'StringTable.Column.';
+  private
+    FItemList: TDirectoryItemEditorDialogItemFrameList;
+
+    procedure CreateItems;
+    procedure DestroyItems;
   protected
     procedure SetMode(AMode: TStringTableItemEditorMode);
 
+    procedure InterfaceToItem;
     procedure PrepareInterface; override;
     procedure SetLanguage; override;
+  public
+    destructor Destroy; override;
   end;
 
 
@@ -66,7 +77,11 @@ begin
     with TStringTableItemEditorDialogForm.Create(Params) do
     begin
       ShowModal;
-      Result := Tag = 1;
+      if Tag = 1 then
+      begin
+        InterfaceToItem;
+        Result := True;
+      end;
       Free;
     end;
 
@@ -101,6 +116,58 @@ begin
 end;
 
 
+procedure TStringTableItemEditorDialogForm.CreateItems;
+
+  procedure AddToList(Item: TDirectoryItemEditorDialogItemFrame);
+  var
+    c: Integer;
+  begin
+    c := Length(FItemList);
+    SetLength(FItemList, c + 1);
+    FItemList[c] := Item;
+  end;
+
+var
+  i: TStringTableLanguageTypes;
+  Y: Integer;
+  cpt: String;
+  Item: TDirectoryItemEditorDialogItemFrame;
+  Params: TStringTableItemEditorDialogParameters;
+begin
+  Params := FParameters as TStringTableItemEditorDialogParameters;
+
+  Y := 38;
+
+  for i := Low(TStringTableLanguageTypes) to High(TStringTableLanguageTypes) do
+  begin
+    cpt := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX_LNGNAME + StringTableLanguageNames[i], StringTableLanguageNames[i]);
+    Item := TDirectoryItemEditorDialogItemFrame.Create(FParameters.Language, i, cpt, Params.EditItem.Table[i]);
+    Item.Left := 0;
+    Item.Top := Y;
+    Item.Width := pnlContent.Width;
+    Item.Parent := pnlContent;
+    Item.Anchors := [akTop, akLeft, akRight];
+
+    AddToList(Item);
+
+    Inc(Y, Item.Height);
+  end;
+
+  Height := Y + pnlButton.Height + 5;
+  Constraints.MinHeight := Height;
+end;
+
+
+procedure TStringTableItemEditorDialogForm.DestroyItems;
+var
+  i: Integer;
+begin
+  for i := 0 to Length(FItemList) - 1 do
+    FItemList[i].Free;
+  SetLength(FItemList, 0);
+end;
+
+
 procedure TStringTableItemEditorDialogForm.SetMode(AMode: TStringTableItemEditorMode);
 var
   s: String;
@@ -122,17 +189,34 @@ begin
 end;
 
 
+procedure TStringTableItemEditorDialogForm.InterfaceToItem;
+var
+  Params: TStringTableItemEditorDialogParameters;
+  i: Integer;
+begin
+  Params := FParameters as TStringTableItemEditorDialogParameters;
+
+  Params.EditItem.ID := Trim(edIDValue.Text);
+  for i := 0 to Length(FItemList) - 1 do
+    Params.EditItem.LocalizedText[TStringTableLanguageTypes(i)] := FItemList[i].Value;
+end;
+
+
 procedure TStringTableItemEditorDialogForm.PrepareInterface;
 var
   Params: TStringTableItemEditorDialogParameters;
 begin
   Params := FParameters as TStringTableItemEditorDialogParameters;
 
+  //Подготовить интерфейс
   SetMode(Params.Mode);
 
-  //Заполнить данные
-  Params.EditItem.ID := 'Test';
-  Params.EditItem.LocalizedText[ltRussian] := 'Русский текст';
+  //Установить идентификатор
+  lblIDTitle.Caption := Params.Language.GetLocalizedString(LANGUAGE_PREFIX_LNGNAME + 'Идентификатор', 'Идентификатор');
+  edIDValue.Text := Params.EditItem.ID;
+
+  //Создать языки
+  CreateItems;
 end;
 
 
@@ -140,6 +224,16 @@ procedure TStringTableItemEditorDialogForm.SetLanguage;
 begin
   btnCancel.Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Cancel', 'Отмена');
 end;
+
+
+destructor TStringTableItemEditorDialogForm.Destroy;
+begin
+  DestroyItems;
+
+  inherited Destroy;
+end;
+
+
 
 end.
 
