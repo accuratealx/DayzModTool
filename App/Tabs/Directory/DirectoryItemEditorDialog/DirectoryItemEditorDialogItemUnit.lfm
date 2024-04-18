@@ -12,7 +12,7 @@ object DirectoryItemEditorDialogItemFrame: TDirectoryItemEditorDialogItemFrame
     Left = 180
     Height = 23
     Top = 5
-    Width = 245
+    Width = 275
     Anchors = [akTop, akLeft, akRight]
     Font.CharSet = RUSSIAN_CHARSET
     Font.Pitch = fpVariable
@@ -41,6 +41,7 @@ object DirectoryItemEditorDialogItemFrame: TDirectoryItemEditorDialogItemFrame
     Top = 4
     Width = 25
     Anchors = [akTop, akRight]
+    Enabled = False
     Flat = True
     Glyph.Data = {
       36040000424D3604000000000000360000002800000010000000100000000100
@@ -78,12 +79,13 @@ object DirectoryItemEditorDialogItemFrame: TDirectoryItemEditorDialogItemFrame
       00000000000000000000C0811795C37E12F7C47C0FFFD08719FFC77E12FFC780
       16F7C382199500000000000000000000000000000000FFFFFF00
     }
+    Visible = False
     ShowHint = True
     ParentShowHint = False
   end
   object btnClear: TSpeedButton
     Cursor = crHandPoint
-    Left = 435
+    Left = 465
     Height = 25
     Hint = 'Очистить'
     Top = 4
