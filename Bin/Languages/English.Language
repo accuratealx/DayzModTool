@@ -67,6 +67,8 @@ Dialogs.Message.Close = Close
 Dialogs.StringTableItemEditor.Add = Add
 Dialogs.StringTableItemEditor.Edit = Edit
 Dialogs.StringTableItemEditor.Cancel = Cancel
+Dialogs.StringTableItemEditor.Translate = Translate
+Dialogs.StringTableItemEditor.Clear = Clear value
 
 #Tab Launch
 TabLaunch.Launch = Launch
