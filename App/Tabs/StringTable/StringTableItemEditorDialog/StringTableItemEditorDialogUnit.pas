@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons, StdCtrls,
-  Language,
+  Language, Translator,
   StringTableItem, DialogCommonUnit, DirectoryItemEditorDialogItemUnit;
 
 type
@@ -39,6 +39,8 @@ type
     procedure InterfaceToItem;
     procedure PrepareInterface; override;
     procedure SetLanguage; override;
+
+    procedure LanguageClickHandler(Sender: TObject; Lng: TStringTableLanguageTypes; Msg: String);
   public
     destructor Destroy; override;
   end;
@@ -147,6 +149,7 @@ begin
     Item.Width := pnlContent.Width;
     Item.Parent := pnlContent;
     Item.Anchors := [akTop, akLeft, akRight];
+    Item.OnTranslateClick := @LanguageClickHandler;
 
     AddToList(Item);
 
@@ -223,6 +226,25 @@ end;
 procedure TStringTableItemEditorDialogForm.SetLanguage;
 begin
   btnCancel.Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Cancel', 'Отмена');
+end;
+
+
+procedure TStringTableItemEditorDialogForm.LanguageClickHandler(Sender: TObject; Lng: TStringTableLanguageTypes; Msg: String);
+var
+  i: TStringTableLanguageTypes;
+begin
+  for i := Low(TStringTableLanguageTypes) to High(TStringTableLanguageTypes) do
+  begin
+    //Пропуск текущего языка
+    if i = Lng then
+      Continue;
+
+    //Перевести элемент
+    FItemList[Ord(i)].Value := Translate_GoogleApp(TTranslatorLanguages(Lng), TTranslatorLanguages(i), Msg);
+
+    //
+    Sleep(10);
+  end;
 end;
 
 

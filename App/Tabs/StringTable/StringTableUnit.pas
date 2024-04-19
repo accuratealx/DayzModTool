@@ -96,6 +96,9 @@ begin
 
     //Поправить панель
     CorrectToolbar;
+
+    //Сохранить изменения во временный файл
+    SaveTable(FLangTableFile);
   end;
 end;
 
@@ -123,6 +126,9 @@ begin
 
     //Поправить панель
     CorrectToolbar;
+
+    //Сохранить изменения во временный файл
+    SaveTable(FLangTableFile);
   end;
 end;
 
@@ -151,6 +157,9 @@ begin
 
       //Поправить интерфейс
       UpdateTableListRowByIndex(Index);
+
+      //Сохранить изменения во временный файл
+      SaveTable(FLangTableFile);
     end;
 
   finally
@@ -189,6 +198,9 @@ begin
       //Поправить интерфейс
       LoadTableListToGrid(FLangTable);
       CorrectToolbar;
+
+      //Сохранить изменения во временный файл
+      SaveTable(FLangTableFile);
     end;
 
   finally
@@ -396,6 +408,9 @@ begin
 
     //Поправить панель
     CorrectToolbar;
+
+    //Сохранить изменения во временный файл
+    SaveTable(FLangTableFile);
 
   except
     MessageDialogExecute(

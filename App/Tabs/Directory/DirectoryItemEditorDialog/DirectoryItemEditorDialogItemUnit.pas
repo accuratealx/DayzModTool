@@ -9,18 +9,25 @@ uses
   Language, StringTableItem;
 
 type
+  //Обработчик кнопки перевода
+  TTranslateClick = procedure(Sender: TObject; Lng: TStringTableLanguageTypes; Msg: String) of object;
+
+
   TDirectoryItemEditorDialogItemFrame = class(TFrame)
     btnTranslate: TSpeedButton;
     btnClear: TSpeedButton;
     edValue: TEdit;
     lblTitle: TLabel;
     procedure btnClearClick(Sender: TObject);
+    procedure btnTranslateClick(Sender: TObject);
     procedure edValueChange(Sender: TObject);
   private
     FLanguage: TLanguage;
     FTitle: String;
     FValue: String;
     FLngType: TStringTableLanguageTypes;
+
+    FOnTranslateClick: TTranslateClick;
 
     procedure SetTitle(ATitle: String);
     procedure SetValue(AValue: String);
@@ -32,6 +39,7 @@ type
     property Title: String read FTitle;
     property Value: String read FValue write SetValue;
     property LngName: TStringTableLanguageTypes read FLngType write FLngType;
+    property OnTranslateClick: TTranslateClick read FOnTranslateClick write FOnTranslateClick;
   end;
 
 
@@ -42,6 +50,7 @@ implementation
 
 {$R *.lfm}
 
+
 procedure TDirectoryItemEditorDialogItemFrame.edValueChange(Sender: TObject);
 begin
   FValue := edValue.Text;
@@ -51,6 +60,13 @@ end;
 procedure TDirectoryItemEditorDialogItemFrame.btnClearClick(Sender: TObject);
 begin
   SetValue('');
+end;
+
+
+procedure TDirectoryItemEditorDialogItemFrame.btnTranslateClick(Sender: TObject);
+begin
+  if Assigned(FOnTranslateClick) then
+    FOnTranslateClick(Sender, FLngType, FValue);
 end;
 
 
