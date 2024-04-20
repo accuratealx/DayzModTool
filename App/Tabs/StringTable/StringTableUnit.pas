@@ -59,6 +59,7 @@ type
     procedure SaveTable(FileName: String);
     procedure LoadTable(FileName: String);
 
+    function ExistChecker(IDName, OriginalIDName: String): Boolean; //Проверка ID на совпадение
   public
     constructor Create(Parameters: TTabParameters); reintroduce;
 
@@ -150,7 +151,7 @@ begin
     Item.CopyFrom(FLangTable.Item[Index]);
 
 
-    if StringTableItemEditorDialogExecute(FParams.Language, stiemEdit, Item) then
+    if StringTableItemEditorDialogExecute(FParams.Language, stiemEdit, Item, @ExistChecker) then
     begin
       //Обновить элемент
       FLangTable.Item[Index].CopyFrom(Item);
@@ -187,7 +188,7 @@ begin
   Item := TStringTableItem.Create;
   try
 
-    if StringTableItemEditorDialogExecute(FParams.Language, stiemNew, Item) then
+    if StringTableItemEditorDialogExecute(FParams.Language, stiemNew, Item, @ExistChecker) then
     begin
       NewItem := TStringTableItem.Create;
       NewItem.CopyFrom(Item);
@@ -417,6 +418,31 @@ begin
       FParams.Language,
       Format(FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'FileAccessError', 'При доступе к файлу "%s"%sпроизошла ошибка, продолжение невозможно'), [OpenDialog.FileName, sLineBreak])
       );
+  end;
+end;
+
+
+function TStringTableFrame.ExistChecker(IDName, OriginalIDName: String): Boolean;
+var
+  i: Integer;
+  CurID: String;
+begin
+  IDName := LowerCase(Trim(IDName));
+  OriginalIDName := LowerCase(Trim(OriginalIDName));
+  Result := False;
+
+  //Проверить совпадение
+  for i := 0 to FLangTable.Count - 1 do
+  begin
+    CurID := LowerCase(FLangTable.Item[i].ID);
+
+    //Пропуск оригинального ID для редактирования
+    if CurID = OriginalIDName then
+      Continue;
+
+    //Проверить совпадение
+    if (CurID = IDName) then
+      Exit(True)
   end;
 end;
 

@@ -65,6 +65,7 @@ type
     function  ToString: String; reintroduce;
     procedure FromString(str: String);
 
+    procedure ClearTable;
     procedure CopyFrom(Item: TStringTableItem);
 
     property ID: String read FID write FID;
@@ -140,6 +141,15 @@ begin
   finally
     Cmd.Free;
   end;
+end;
+
+
+procedure TStringTableItem.ClearTable;
+var
+  i: TStringTableLanguageTypes;
+begin
+  for i := Low(TStringTableLanguageTypes) to High(TStringTableLanguageTypes) do
+    FTable[i] := '';
 end;
 
 

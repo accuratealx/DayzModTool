@@ -31,13 +31,14 @@ type
 
     procedure SetTitle(ATitle: String);
     procedure SetValue(AValue: String);
+    function  GetValue: String;
 
     procedure ApplyLanguage;
   public
     constructor Create(Language: TLanguage; LngType: TStringTableLanguageTypes; Title: String; Value: String); reintroduce;
 
     property Title: String read FTitle;
-    property Value: String read FValue write SetValue;
+    property Value: String read GetValue write SetValue;
     property LngName: TStringTableLanguageTypes read FLngType write FLngType;
     property OnTranslateClick: TTranslateClick read FOnTranslateClick write FOnTranslateClick;
   end;
@@ -82,6 +83,13 @@ begin
   FValue := AValue;
   edValue.Text := FValue;
 end;
+
+
+function TDirectoryItemEditorDialogItemFrame.GetValue: String;
+begin
+  Result := Trim(FValue);
+end;
+
 
 procedure TDirectoryItemEditorDialogItemFrame.ApplyLanguage;
 begin
