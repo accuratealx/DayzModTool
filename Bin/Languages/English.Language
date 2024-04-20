@@ -63,12 +63,13 @@ Dialogs.DirectoryItemEditor.Add = Add
 Dialogs.DirectoryItemEditor.Edit = Edit
 Dialogs.Message.Caption = Message
 Dialogs.Message.Close = Close
-
 Dialogs.StringTableItemEditor.Add = Add
 Dialogs.StringTableItemEditor.Edit = Edit
 Dialogs.StringTableItemEditor.Cancel = Cancel
 Dialogs.StringTableItemEditor.Translate = Translate
 Dialogs.StringTableItemEditor.Clear = Clear value
+Dialogs.StringTableItemEditor.Progress.Caption = Please wait, I'm translating...
+Dialogs.StringTableItemEditor.Progress.CurrentLanguage = Сurrent language
 
 #Tab Launch
 TabLaunch.Launch = Launch
