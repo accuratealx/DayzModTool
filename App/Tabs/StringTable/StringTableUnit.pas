@@ -173,11 +173,11 @@ procedure TStringTableFrame.btnColumnAdjustClick(Sender: TObject);
 var
   Pos: TPoint;
 begin
-  Pos.X := 0;
-  Pos.Y := 0;
+  Pos.X := btnColumnAdjust.Width;
+  Pos.Y := btnColumnAdjust.Height;
   Pos := btnColumnAdjust.ClientToScreen(Pos);
 
-  ColumnAdjustExecute(Pos, TableGrid);
+  ColumnAdjustExecute(FParams.Language, Pos, TableGrid);
 end;
 
 
@@ -485,8 +485,8 @@ var
 begin
   //Кнопки
   btnNew.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'New', 'Создать новую');
-  btnOpen.Caption := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Open', 'Открыть');
-  btnSave.Caption := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Save', 'Сохранить');
+  btnOpen.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Open', 'Открыть');
+  btnSave.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Save', 'Сохранить');
   btnAdd.Caption := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Add', 'Добавить');
   btnEdit.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Edit', 'Изменить');
   btnDelete.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Delete', 'Удалить');
