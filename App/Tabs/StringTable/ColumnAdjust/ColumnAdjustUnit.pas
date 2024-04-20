@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, Grids,
-  StdCtrls, Buttons, LMessages;
+  StdCtrls, Buttons, LMessages,
+  Language;
 
 type
   TColumnAdjustForm = class(TForm)
@@ -18,10 +19,15 @@ type
     procedure CheckBoxChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
   private
+    const
+      LANGUAGE_PREFIX = 'StringTable.';
+  private
+    FLanguage: TLanguage;
     FGrid: TStringGrid;
 
     procedure SetChecked(Checked: Boolean);
     procedure PrepareInterface;
+    procedure ApplyLanguage;
 
     procedure OnActivate(var msg: TLMActivate); message LM_ACTIVATE;
   public
@@ -29,7 +35,7 @@ type
   end;
 
 
-procedure ColumnAdjustExecute(PopupPos: TPoint; Grid: TStringGrid);
+procedure ColumnAdjustExecute(Language: TLanguage; PopupPos: TPoint; Grid: TStringGrid);
 
 
 implementation
@@ -37,14 +43,16 @@ implementation
 {$R *.lfm}
 
 
-procedure ColumnAdjustExecute(PopupPos: TPoint; Grid: TStringGrid);
+procedure ColumnAdjustExecute(Language: TLanguage; PopupPos: TPoint; Grid: TStringGrid);
 begin
   with TColumnAdjustForm.Create(nil) do
   begin
-    Left := PopupPos.X;
-    Top := PopupPos.Y;
+    FLanguage := Language;
     FGrid := Grid;
     PrepareInterface;
+    ApplyLanguage;
+    Left := PopupPos.X - Width;
+    Top := PopupPos.Y;
 
     Show;
   end;
@@ -128,6 +136,12 @@ begin
 
   Height := Y + PADDING_CONTENT;
   Width := ItemMaxWidth + PADDING_CONTENT * 2;
+end;
+
+
+procedure TColumnAdjustForm.ApplyLanguage;
+begin
+  Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'ColumnAdjust', 'Настройка колонок');
 end;
 
 

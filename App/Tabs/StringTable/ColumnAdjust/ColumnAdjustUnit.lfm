@@ -3,7 +3,8 @@ object ColumnAdjustForm: TColumnAdjustForm
   Height = 290
   Top = 262
   Width = 150
-  BorderStyle = bsNone
+  BorderIcons = []
+  BorderStyle = bsSingle
   ClientHeight = 290
   ClientWidth = 150
   Constraints.MinWidth = 150
@@ -16,9 +17,8 @@ object ColumnAdjustForm: TColumnAdjustForm
     Width = 150
     Align = alClient
     BevelOuter = bvNone
-    BorderStyle = bsSingle
-    ClientHeight = 286
-    ClientWidth = 146
+    ClientHeight = 290
+    ClientWidth = 150
     TabOrder = 0
     object btnSelectAll: TSpeedButton
       Cursor = crHandPoint

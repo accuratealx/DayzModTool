@@ -304,6 +304,7 @@
         <Filename Value="Tabs\StringTable\ColumnAdjust\ColumnAdjustUnit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ColumnAdjustForm"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit>
       <Unit>
