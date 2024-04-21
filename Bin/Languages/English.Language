@@ -28,6 +28,7 @@ MainForm.MainMenu.miMainTabs = Tabs
 MainForm.MainMenu.miMainTools = Tools
 MainForm.MainMenu.miMainToolsExtractData = Extract game data
 MainForm.MainMenu.miMainToolsWorkDrive = Work drive
+MainForm.FirstLaunchQuestion = Application settings not found %sDo automatic configuration?
 
 #TrayMenu
 MainForm.TrayMenu.miTrayShow = Show
