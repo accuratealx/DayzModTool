@@ -25,7 +25,7 @@
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <OtherUnitFiles Value="MainForm;ParameterModListFrame;DirectoryPathFrame;LaunchFrames\DedicatedServerFrame;Dialogs\StartParamDialogForm;Dialogs;Dialogs\MemoDialogForm;Dialogs\SelectDirectoryDialog;Dialogs\MemoDialog;Dialogs\YesNoQuestionDialog;Tabs\Directory;Tabs\Launch;Tabs\Launch\ParamFrames;Tabs\Launch\ParamFrames\ParamFrameDirectory;Tabs\Launch\ParamFrames\ParamFrameDirectoryList;Tabs\Launch\ParamFrames\ParamFrameFile;Tabs\Launch\ParamFrames\ParamFrameInteger;Tabs\Launch\ParamFrames\ParamFrameSimple;Tabs\Launch\ParamFrames\ParamFrameString;Tabs\Directory\DirectoryItem;Dialogs\IconSelectorDialog;Dialogs\PathEditorDialog;Tools\WorkDrive;Dialogs\MessageDialog;Tools\DataExtractor;Tabs\StringTable;Tabs;Units;Units\StartParam;Tabs\StringTable\ColumnAdjust;Tabs\StringTable\StringTableItemEditorDialog;Tabs\Directory\DirectoryEditorDialog;Tabs\Directory\DirectoryItemEditorDialog;Units\Translator;Tabs\StringTable\StringTableProcessDialog"/>
+            <OtherUnitFiles Value="MainForm;ParameterModListFrame;DirectoryPathFrame;LaunchFrames\DedicatedServerFrame;Dialogs\StartParamDialogForm;Dialogs;Dialogs\MemoDialogForm;Dialogs\SelectDirectoryDialog;Dialogs\MemoDialog;Dialogs\YesNoQuestionDialog;Tabs\Directory;Tabs\Launch;Tabs\Launch\ParamFrames;Tabs\Launch\ParamFrames\ParamFrameDirectory;Tabs\Launch\ParamFrames\ParamFrameDirectoryList;Tabs\Launch\ParamFrames\ParamFrameFile;Tabs\Launch\ParamFrames\ParamFrameInteger;Tabs\Launch\ParamFrames\ParamFrameSimple;Tabs\Launch\ParamFrames\ParamFrameString;Tabs\Directory\DirectoryItem;Dialogs\IconSelectorDialog;Dialogs\PathEditorDialog;Tools\WorkDrive;Dialogs\MessageDialog;Tools\DataExtractor;Tabs\StringTable;Tabs;Units;Units\StartParam;Tabs\StringTable\ColumnAdjust;Tabs\StringTable\StringTableItemEditorDialog;Tabs\Directory\DirectoryEditorDialog;Tabs\Directory\DirectoryItemEditorDialog;Units\Translator;Tabs\StringTable\StringTableProcessDialog;Tabs\StringTable\Utils"/>
             <UnitOutputDirectory Value="..\~Tmp\$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <CodeGeneration>
@@ -249,11 +249,11 @@
         <ResourceBaseClass Value="Frame"/>
       </Unit>
       <Unit>
-        <Filename Value="Tabs\StringTable\StringTableItem.pas"/>
+        <Filename Value="Tabs\StringTable\Utils\StringTableItem.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="Tabs\StringTable\StringTableItemList.pas"/>
+        <Filename Value="Tabs\StringTable\Utils\StringTableItemList.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
@@ -339,7 +339,7 @@
         <ResourceBaseClass Value="Form"/>
       </Unit>
       <Unit>
-        <Filename Value="Tabs\StringTable\TranslationWorker.pas"/>
+        <Filename Value="Tabs\StringTable\Utils\TranslationWorker.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>
     </Units>
@@ -352,7 +352,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="MainForm;ParameterModListFrame;DirectoryPathFrame;LaunchFrames\DedicatedServerFrame;Dialogs\StartParamDialogForm;Dialogs;Dialogs\MemoDialogForm;Dialogs\SelectDirectoryDialog;Dialogs\MemoDialog;Dialogs\YesNoQuestionDialog;Tabs\Directory;Tabs\Launch;Tabs\Launch\ParamFrames;Tabs\Launch\ParamFrames\ParamFrameDirectory;Tabs\Launch\ParamFrames\ParamFrameDirectoryList;Tabs\Launch\ParamFrames\ParamFrameFile;Tabs\Launch\ParamFrames\ParamFrameInteger;Tabs\Launch\ParamFrames\ParamFrameSimple;Tabs\Launch\ParamFrames\ParamFrameString;Tabs\Directory\DirectoryItem;Dialogs\IconSelectorDialog;Dialogs\PathEditorDialog;Tools\WorkDrive;Dialogs\MessageDialog;Tools\DataExtractor;Tabs\StringTable;Tabs;Units;Units\StartParam;Tabs\StringTable\ColumnAdjust;Tabs\StringTable\StringTableItemEditorDialog;Tabs\Directory\DirectoryEditorDialog;Tabs\Directory\DirectoryItemEditorDialog;Units\Translator;Tabs\StringTable\StringTableProcessDialog"/>
+      <OtherUnitFiles Value="MainForm;ParameterModListFrame;DirectoryPathFrame;LaunchFrames\DedicatedServerFrame;Dialogs\StartParamDialogForm;Dialogs;Dialogs\MemoDialogForm;Dialogs\SelectDirectoryDialog;Dialogs\MemoDialog;Dialogs\YesNoQuestionDialog;Tabs\Directory;Tabs\Launch;Tabs\Launch\ParamFrames;Tabs\Launch\ParamFrames\ParamFrameDirectory;Tabs\Launch\ParamFrames\ParamFrameDirectoryList;Tabs\Launch\ParamFrames\ParamFrameFile;Tabs\Launch\ParamFrames\ParamFrameInteger;Tabs\Launch\ParamFrames\ParamFrameSimple;Tabs\Launch\ParamFrames\ParamFrameString;Tabs\Directory\DirectoryItem;Dialogs\IconSelectorDialog;Dialogs\PathEditorDialog;Tools\WorkDrive;Dialogs\MessageDialog;Tools\DataExtractor;Tabs\StringTable;Tabs;Units;Units\StartParam;Tabs\StringTable\ColumnAdjust;Tabs\StringTable\StringTableItemEditorDialog;Tabs\Directory\DirectoryEditorDialog;Tabs\Directory\DirectoryItemEditorDialog;Units\Translator;Tabs\StringTable\StringTableProcessDialog;Tabs\StringTable\Utils"/>
       <UnitOutputDirectory Value="..\~Tmp\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Parsing>

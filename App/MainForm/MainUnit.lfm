@@ -11,6 +11,7 @@ object MainForm: TMainForm
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnShow = FormShow
   LCLVersion = '3.2.0.0'
   object PageControl: TPageControl
     Left = 0

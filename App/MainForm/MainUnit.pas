@@ -7,7 +7,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus,
-  ExtCtrls, ComCtrls,
+  ExtCtrls, ComCtrls, windows,
   sgeStringList,
   Language, TabParameters,
   LaunchUnit, LaunchItemUnit, DirectoryUnit, DirectoryItemUnit, StringTableUnit,
@@ -65,6 +65,7 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure miMainHideClick(Sender: TObject);
     procedure miExitClick(Sender: TObject);
     procedure miMainInfoDonateClick(Sender: TObject);
@@ -81,6 +82,10 @@ type
     procedure miTrayShowClick(Sender: TObject);
     procedure TrayIconDblClick(Sender: TObject);
     procedure TrayMenuPopup(Sender: TObject);
+  private
+    const
+      WM_AFTER_SHOW = WM_USER + 1;
+      procedure AfterShowHandler(var Msg: TMessage); message WM_AFTER_SHOW;
   private
     const
       CONFIG_FILE_NAME = 'DayZModTool.ini';
@@ -153,8 +158,8 @@ implementation
 uses
   sgeFileUtils,
   DataExtractorUnit,
-  IniFiles,
-  LCLIntf;
+  YesNoQuestionDialogUnit,
+  IniFiles, LCLIntf;
 
 
 procedure TMainForm.FormCreate(Sender: TObject);
@@ -175,6 +180,12 @@ end;
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   Done;
+end;
+
+
+procedure TMainForm.FormShow(Sender: TObject);
+begin
+  PostMessage(Handle, WM_AFTER_SHOW, 0, 0);
 end;
 
 
@@ -286,6 +297,26 @@ begin
 end;
 
 
+procedure TMainForm.AfterShowHandler(var Msg: TMessage);
+begin
+  //Проверим, если нет файла настроек, значит это первый запуск
+  if not FileExists(FSettingsDir + CONFIG_FILE_NAME) then
+  begin
+    if YesNoQuestionDialogExecute(
+      FLanguage,
+      FLanguage.GetLocalizedString('MainForm.FirstLaunchQuestion', format('Не обнаружены настройки приложения%sПровести автоматическую настройку?', [sLineBreak]))
+    ) then
+    begin
+      //Поищем каталоги
+      miMainTabDirectoryAddDefault.Click;
+
+      //Найдем приложения
+      miMainTabLaunchFindExecutables.Click;
+    end;
+  end;
+end;
+
+
 procedure TMainForm.Init;
 begin
   Caption := 'DayZ Mod Tool  v' + VERSION;
@@ -295,19 +326,21 @@ begin
   FLanguage := TLanguage.Create;
   FLanguageFileList := TsgeStringList.Create;
 
-  //Каталоги
+  //Каталог запуска
   FMainDir := ExtractFilePath(ParamStr(0));
 
-  FSettingsDir := FMainDir + 'Settings\'; //TODO: Заменить на AppData
+  //Каталог хранения настроек пользователей
+  FSettingsDir := IncludeTrailingBackslash(SysUtils.GetEnvironmentVariable('APPDATA')) + 'DayZModTool\';
   ForceDirectories(FSettingsDir);
 
+  //Языки
   FLanguageDir := FMainDir + 'Languages\';
   ForceDirectories(FLanguageDir);
 
   //Параметры закладок
   FTabParams := TTabParameters.Create;
   FTabParams.Language := FLanguage;
-  FTabParams.DataDirectory := FMainDir + 'Tabs\';
+  FTabParams.DataDirectory := FMainDir + 'Data\Tabs\';
   FTabParams.SettingsDirectory := FSettingsDir;
 
   //Создать закладки
@@ -475,11 +508,11 @@ end;
 
 procedure TMainForm.CreateTabs(AParams: TTabParameters);
 begin
-  //Запуска
+  //Запуск
   FLaunchFrame := TLaunchFrame.Create(AParams);
   FLaunchFrame.Parent := tabLaunch;
 
-  //Каталогами
+  //Каталоги
   FDirectoryFrame := TDirectoryFrame.Create(AParams);
   FDirectoryFrame.Parent := tabDirectory;
 
