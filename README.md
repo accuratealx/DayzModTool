@@ -39,6 +39,8 @@
 - Автоматический поиск и добавление стандартных каталогов DayZ
 - Монтирование каталога проекта в виртуальный диск
 - Распаковка игровых архивов
+- Редактирование **stringtable.csv**
+- Автоматический перевод строк на другие языки
 
 ## Зависимости:
 - [Simple Game Engine 2](https://github.com/accuratealx/SimpleGameEngine2)
@@ -50,22 +52,8 @@
 ![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot001.png)
 ![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot002.png)
 ![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot003.png)
-![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot004.png)
-![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot005.png)
-![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot006.png)
-![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot007.png)
-![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot008.png)
-![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot009.png)
-![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot010.png)
+![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/ScreenshotTray.png)
 
 
 ## Особенности:
 - На данный момент настройки хранятся в каталоге запуска приложения
-
-## Идеи по развитию:
-- Добавить закладку в виде дерева помощи (часто приходится искать данные по крупицам)
-- Добавить закладку с полезными ссылками, например, официальное руководство по **Enforce Script** и т. д.
-- Добавить закладку для редактирования и создания переводов в файле **stringtable.csv**
-- Добавить закладку для редактирования серверного конфига **serverDZ.cfg**
-- Добавить мастер создания новой модификации
-- Добавить закладку "C чего начать"
