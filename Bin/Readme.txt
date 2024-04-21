@@ -1,4 +1,4 @@
-Dayz Mod Tool v0.7  accuratealx@gmail
+Dayz Mod Tool v0.8  accuratealx@gmail
 
 
 Первый запуск:
@@ -45,5 +45,4 @@ Dayz Mod Tool v0.7  accuratealx@gmail
   * CheeryProgrammer  medulla_261@mail.ru.
 
 Поддержать автора:
-  * Сбербанк 4276 1609 3867 4034.
-  * Yoomoney 5599 0020 5735 6232.
+  * https://donation.ntlab.su
