@@ -13,6 +13,8 @@ type
   public
     constructor Create; reintroduce;
 
+    procedure Change(Index1, Index2: Integer);
+
     procedure LoadFromFile(FileName: String);
     procedure SaveToFile(FileName: String);
   end;
@@ -27,6 +29,17 @@ uses
 constructor TStringTableItemList.Create;
 begin
   inherited Create(True);
+end;
+
+
+procedure TStringTableItemList.Change(Index1, Index2: Integer);
+var
+  el: TStringTableItem;
+begin
+  //TODO: Добавить проверку на выход за диапазон
+  el := FList[Index1];
+  FList[Index1] := FList[Index2];
+  FList[Index2] := el;
 end;
 
 

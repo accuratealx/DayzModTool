@@ -6,18 +6,21 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, ExtCtrls, IniFiles, Buttons, Grids,
-  Dialogs, ComCtrls, windows,
+  Dialogs, ComCtrls, Menus, windows, Clipbrd,
   StringTableItemList, StringTableItem, TabParameters, TabCommonUnit;
 
 type
   TStringTableFrame = class(TTabCommonFrame)
     btnColumnAdjust: TSpeedButton;
+    btnCopyIdToClipboard: TSpeedButton;
+    btnDown: TSpeedButton;
     btnOpen: TSpeedButton;
     btnDelete: TSpeedButton;
-    btnNew: TSpeedButton;
+    btnClearTable: TSpeedButton;
     btnEdit: TSpeedButton;
     btnSave: TSpeedButton;
     btnAdd: TSpeedButton;
+    btnUp: TSpeedButton;
     OpenDialog: TOpenDialog;
     pnlTools: TPanel;
     SaveDialog: TSaveDialog;
@@ -26,11 +29,14 @@ type
     TableGrid: TStringGrid;
     procedure btnAddClick(Sender: TObject);
     procedure btnColumnAdjustClick(Sender: TObject);
+    procedure btnCopyIdToClipboardClick(Sender: TObject);
     procedure btnDeleteClick(Sender: TObject);
+    procedure btnDownClick(Sender: TObject);
     procedure btnEditClick(Sender: TObject);
-    procedure btnNewClick(Sender: TObject);
+    procedure btnClearTableClick(Sender: TObject);
     procedure btnOpenClick(Sender: TObject);
     procedure btnSaveClick(Sender: TObject);
+    procedure btnUpClick(Sender: TObject);
     procedure TableGridClick(Sender: TObject);
     procedure TableGridDblClick(Sender: TObject);
   private
@@ -56,6 +62,7 @@ type
     procedure CorrectToolbar;
     function  GetTableSelectedRowIndex: Integer;
     procedure UpdateStatusBar;
+    procedure ChangeItems(Index1, Index2: Integer);
     procedure SaveTable(FileName: String);
     procedure LoadTable(FileName: String);
 
@@ -78,7 +85,7 @@ uses
   YesNoQuestionDialogUnit, MessageDialogUnit, ColumnAdjustUnit, StringTableItemEditorDialogUnit;
 
 
-procedure TStringTableFrame.btnNewClick(Sender: TObject);
+procedure TStringTableFrame.btnClearTableClick(Sender: TObject);
 begin
   //Если таблица пустая, то нечего спрашивать
   if FLangTable.Count = 0 then
@@ -134,6 +141,18 @@ begin
 end;
 
 
+procedure TStringTableFrame.btnDownClick(Sender: TObject);
+var
+  Index: Integer;
+begin
+  Index := GetTableSelectedRowIndex;
+  ChangeItems(Index, Index + 1);
+
+  //Сместить выделение
+  TableGrid.Row := Index + 2;
+end;
+
+
 procedure TStringTableFrame.btnEditClick(Sender: TObject);
 var
   Item: TStringTableItem;
@@ -181,6 +200,15 @@ begin
 end;
 
 
+procedure TStringTableFrame.btnCopyIdToClipboardClick(Sender: TObject);
+var
+  Index: Integer;
+begin
+  Index := GetTableSelectedRowIndex;
+  Clipboard.AsText := FLangTable.Item[Index].ID;
+end;
+
+
 procedure TStringTableFrame.btnAddClick(Sender: TObject);
 var
   Item, NewItem: TStringTableItem;
@@ -223,6 +251,18 @@ begin
   SaveDialog.FileName := 'stringtable.csv';
   if SaveDialog.Execute then
     SaveTable(SaveDialog.FileName);
+end;
+
+
+procedure TStringTableFrame.btnUpClick(Sender: TObject);
+var
+  Index: Integer;
+begin
+  Index := GetTableSelectedRowIndex;
+  ChangeItems(Index, Index - 1);
+
+  //Сместить выделение
+  TableGrid.Row := Index;
 end;
 
 
@@ -365,6 +405,9 @@ begin
   //Кнопки
   btnEdit.Enabled := RowIndex <> -1;
   btnDelete.Enabled := RowIndex <> -1;
+  btnCopyIdToClipboard.Enabled := RowIndex <> -1;
+  btnUp.Enabled := (RowIndex <> -1) and (RowIndex > 0);
+  btnDown.Enabled := (RowIndex <> -1) and (RowIndex < TableGrid.RowCount - 2);
 
   //Поправить строку статуса
   UpdateStatusBar;
@@ -380,6 +423,21 @@ end;
 procedure TStringTableFrame.UpdateStatusBar;
 begin
   StatusBar.SimpleText := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'TotalItems', 'Всего элементов') + ': ' + IntToStr(FLangTable.Count);
+end;
+
+
+procedure TStringTableFrame.ChangeItems(Index1, Index2: Integer);
+begin
+  //Поменять элементы местами
+  FLangTable.Change(Index1, Index2);
+
+  //Поправить интерфейс
+  UpdateTableListRowByIndex(Index1);
+  UpdateTableListRowByIndex(Index2);
+  CorrectToolbar;
+
+  //Сохранить изменения во временный файл
+  SaveTable(FLangTableFile);
 end;
 
 
@@ -484,11 +542,14 @@ var
   i: Integer;
 begin
   //Кнопки
-  btnNew.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'New', 'Создать новую');
+  btnClearTable.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Clear', 'Очистить таблицу');
   btnOpen.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Open', 'Открыть');
   btnSave.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Save', 'Сохранить');
+  btnCopyIdToClipboard.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'CopyIDToClipboard', 'Скопировать идентификатор в буфер обмена');
   btnAdd.Caption := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Add', 'Добавить');
   btnEdit.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Edit', 'Изменить');
+  btnUp.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Up', 'Вверх');
+  btnDown.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Down', 'Вниз');
   btnDelete.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Delete', 'Удалить');
   btnColumnAdjust.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'ColumnAdjust', 'Настройка колонок');
   OpenDialog.Filter := Format('%s (*.csv)|*.csv', [FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Executable', 'Таблицы строк')]);
