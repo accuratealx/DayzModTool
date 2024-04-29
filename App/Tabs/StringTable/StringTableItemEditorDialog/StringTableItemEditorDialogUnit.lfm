@@ -132,7 +132,6 @@ inherited StringTableItemEditorDialogForm: TStringTableItemEditorDialogForm
       ParentFont = False
       TabOrder = 0
       OnChange = edIDValueChange
-      OnKeyPress = edIDValueKeyPress
     end
   end
 end

@@ -29,7 +29,6 @@ type
     procedure btnCancelClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure edIDValueChange(Sender: TObject);
-    procedure edIDValueKeyPress(Sender: TObject; var Key: char);
     procedure FormResize(Sender: TObject);
   private
     const
@@ -124,15 +123,6 @@ end;
 procedure TStringTableItemEditorDialogForm.edIDValueChange(Sender: TObject);
 begin
   CorrectOKButton;
-end;
-
-
-procedure TStringTableItemEditorDialogForm.edIDValueKeyPress(Sender: TObject; var Key: char);
-const
-  VALID_CHARS = ['a'..'z', 'A'..'Z', '0'..'9', '_', #8];
-begin
-  if not (Key in VALID_CHARS) then
-    Key := #0;
 end;
 
 
@@ -279,6 +269,21 @@ procedure TStringTableItemEditorDialogForm.CorrectOKButton;
     end;
   end;
 
+  function IsValidChars: Boolean;
+  const
+    CHARS = ['a'..'z', 'A'..'Z', '_'];
+  var
+    i: Integer;
+    s: String;
+  begin
+    Result := True;
+
+    s := Trim(edIDValue.Text);
+    for i := 1 to Length(s) do
+      if not (s[i] in CHARS) then
+        Exit(False);
+  end;
+
   function IsIDEmpty: Boolean;
   begin
     Result := Trim(edIDValue.Text) = '';
@@ -290,10 +295,11 @@ begin
   //Проверить на совпадение по таблице
   IsExist := (FParameters as TStringTableItemEditorDialogParameters).ExistChecker(edIDValue.Text, FOriginalIDName);
 
-  btnOK.Enabled := (not IsExist) and (not IsFirstCharNumber) and (not IsIDEmpty);
-  //{$BoolEval ON}
-  //btnOK.Enabled := not (IsExist and IsFirstCharNumber and IsIDEmpty);
-  //{$BoolEval OFF}
+  btnOK.Enabled :=
+    (not IsExist) and             //Не существует
+    (not IsFirstCharNumber) and   //Первый символ не число
+    (not IsIDEmpty) and           //Не пустой
+    IsValidChars;                 //Допустимые символы
 end;
 
 
