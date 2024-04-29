@@ -80,11 +80,13 @@ type
     procedure miMainToolsWorkDriveClick(Sender: TObject);
     procedure miTrayHideClick(Sender: TObject);
     procedure miTrayShowClick(Sender: TObject);
-    procedure TrayIconDblClick(Sender: TObject);
+    procedure TrayIconClick(Sender: TObject);
     procedure TrayMenuPopup(Sender: TObject);
   private
     const
       WM_AFTER_SHOW = WM_USER + 1;
+    var
+      FIsFirstRun: Boolean;
       procedure AfterShowHandler(var Msg: TMessage); message WM_AFTER_SHOW;
   private
     const
@@ -185,7 +187,12 @@ end;
 
 procedure TMainForm.FormShow(Sender: TObject);
 begin
-  PostMessage(Handle, WM_AFTER_SHOW, 0, 0);
+  if FIsFirstRun then
+  begin
+    FIsFirstRun := False;
+    if not FileExists(FSettingsDir + CONFIG_FILE_NAME) then
+      PostMessage(Handle, WM_AFTER_SHOW, 0, 0);
+  end;
 end;
 
 
@@ -274,12 +281,11 @@ begin
 end;
 
 
-procedure TMainForm.TrayIconDblClick(Sender: TObject);
+procedure TMainForm.TrayIconClick(Sender: TObject);
 begin
-  if MainForm.Visible then
-    miTrayHide.Click
-  else
+  if not Visible then
     miTrayShow.Click;
+  BringToFront;
 end;
 
 
@@ -321,6 +327,8 @@ procedure TMainForm.Init;
 begin
   Caption := 'DayZ Mod Tool  v' + VERSION;
   TrayIcon.Hint := Caption;
+
+  FIsFirstRun := True;
 
   //Объекты
   FLanguage := TLanguage.Create;
@@ -438,6 +446,7 @@ begin
   Fn := FLanguageDir + LanguageName + '.Language';
   if FileExists(Fn) then
     FLanguage.LoadFromFile(Fn);
+
 end;
 
 
