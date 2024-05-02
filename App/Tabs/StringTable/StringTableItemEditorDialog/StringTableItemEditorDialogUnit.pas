@@ -166,7 +166,7 @@ begin
     Item := TDirectoryItemEditorDialogItemFrame.Create(FParameters.Language, i, cpt, Params.EditItem.Table[i]);
     Item.Left := 0;
     Item.Top := Y;
-    Item.Width := pnlContent.Width;
+    Item.Width := pnlContent.Width - pnlContent.BevelWidth;
     Item.Parent := pnlContent;
     Item.Anchors := [akTop, akLeft, akRight];
     Item.OnTranslateClick := @LanguageClickHandler;
