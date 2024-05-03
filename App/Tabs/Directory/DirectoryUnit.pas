@@ -61,6 +61,8 @@ type
     procedure DeleteAll;
 
     procedure ApplyLanguage; override;
+    procedure SaveSettings;
+    procedure LoadSettings;
 
     property Frames: TDirectoryItemFrameArray read FFrames;
   end;
@@ -585,6 +587,18 @@ begin
   btnDown.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Down', 'Вниз');
   btnDelete.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Delete', 'Удалить');
   btnExplore.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'OpenDirectory', 'Открыть в проводнике');
+end;
+
+
+procedure TDirectoryFrame.SaveSettings;
+begin
+  SaveSettings(FSettingsFile);
+end;
+
+
+procedure TDirectoryFrame.LoadSettings;
+begin
+  LoadSettings(FSettingsFile);
 end;
 
 

@@ -74,6 +74,8 @@ type
 
     procedure ApplyLanguage; override;
     procedure FitColumns;
+    procedure SaveSettings;
+    procedure LoadSettings;
   end;
 
 
@@ -572,6 +574,18 @@ begin
   for i := 0 to TableGrid.Columns.Count - 1 do
     if TableGrid.Columns.Items[i].Visible then
       TableGrid.AutoSizeColumn(i);
+end;
+
+
+procedure TStringTableFrame.SaveSettings;
+begin
+  SaveSettings(FSettingsFile);
+end;
+
+
+procedure TStringTableFrame.LoadSettings;
+begin
+  LoadSettings(FSettingsFile);
 end;
 
 

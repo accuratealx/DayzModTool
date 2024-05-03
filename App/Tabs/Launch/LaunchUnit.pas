@@ -30,6 +30,8 @@ type
     procedure FindExecutables;
     procedure ApplyLanguage; override;
     procedure SetCollapset(ACollapsed: Boolean);
+    procedure SaveSettings;
+    procedure LoadSettings;
 
     property Items: TLaunchItemFrameList read FItems;
   end;
@@ -210,6 +212,24 @@ var
 begin
   for i := Length(FItems) - 1 downto 0 do
     FItems[i].Collapsed := ACollapsed;
+end;
+
+
+procedure TLaunchFrame.SaveSettings;
+var
+  i: Integer;
+begin
+  for i := Length(FItems) - 1 downto 0 do
+    FItems[i].SaveSettings;
+end;
+
+
+procedure TLaunchFrame.LoadSettings;
+var
+  i: Integer;
+begin
+  for i := Length(FItems) - 1 downto 0 do
+    FItems[i].LoadSettings;
 end;
 
 

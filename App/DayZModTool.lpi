@@ -342,6 +342,10 @@
         <Filename Value="Tabs\StringTable\Utils\TranslationWorker.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>
+      <Unit>
+        <Filename Value="Units\SettingsManager.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

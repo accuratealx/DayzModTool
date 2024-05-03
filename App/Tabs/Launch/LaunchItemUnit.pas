@@ -95,6 +95,8 @@ type
     procedure FindExecutable;
     function  ExecatableEnable: Boolean;
     procedure ChangeLanguage(Language: TLanguage);
+    procedure SaveSettings;
+    procedure LoadSettings;
 
     property Icon: TIcon read FIcon write SetIcon;
     property Caption: String read FCaption write FCaption;
@@ -475,6 +477,19 @@ begin
 end;
 
 
+procedure TLaunchItemFrame.SaveSettings;
+begin
+  SaveSettings(FSettingsFile);
+end;
+
+
+procedure TLaunchItemFrame.LoadSettings;
+begin
+  LoadItemsSettings(FSettingsFile);
+  LoadSettings(FSettingsFile);
+end;
+
+
 procedure TLaunchItemFrame.SaveSettings(const FileName: String);
 var
   F: TIniFile;
@@ -599,9 +614,6 @@ end;
 
 procedure TLaunchItemFrame.SetCollapsed(ACollapsed: Boolean);
 begin
-  if FCollapsed = ACollapsed then
-    Exit;
-
   FCollapsed := ACollapsed;
 
   if FCollapsed then

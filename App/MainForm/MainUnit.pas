@@ -7,14 +7,14 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus,
-  ExtCtrls, ComCtrls, windows,
+  ExtCtrls, ComCtrls, windows, IniFiles, LCLIntf,
   sgeStringList,
   Language, TabParameters,
   LaunchUnit, LaunchItemUnit, DirectoryUnit, DirectoryItemUnit, StringTableUnit,
   WorkDriveUnit;
 
 const
-  VERSION = '0.8';
+  VERSION = '0.9';
 
 type
   TMainForm = class(TForm)
@@ -25,6 +25,9 @@ type
     ilTrayDirectory: TImageList;
     ilLanguages: TImageList;
     MainMenu: TMainMenu;
+    miMainToolsSeparator1: TMenuItem;
+    miMainToolsImportSettings: TMenuItem;
+    miMainToolsExportSettings: TMenuItem;
     miMainTabStringTableFitColumns: TMenuItem;
     miMainTabStringTable: TMenuItem;
     miMainInfoDonate: TMenuItem;
@@ -56,7 +59,9 @@ type
     miTrayShow: TMenuItem;
     miTraySeparator1: TMenuItem;
     miTrayExit: TMenuItem;
+    OpenDialog: TOpenDialog;
     PageControl: TPageControl;
+    SaveDialog: TSaveDialog;
     tabLaunch: TTabSheet;
     tabDirectory: TTabSheet;
     tabStringTable: TTabSheet;
@@ -76,7 +81,9 @@ type
     procedure miMainTabLaunchExpandAllClick(Sender: TObject);
     procedure miMainTabLaunchFindExecutablesClick(Sender: TObject);
     procedure miMainTabStringTableFitColumnsClick(Sender: TObject);
+    procedure miMainToolsExportSettingsClick(Sender: TObject);
     procedure miMainToolsExtractDataClick(Sender: TObject);
+    procedure miMainToolsImportSettingsClick(Sender: TObject);
     procedure miMainToolsWorkDriveClick(Sender: TObject);
     procedure miTrayHideClick(Sender: TObject);
     procedure miTrayShowClick(Sender: TObject);
@@ -147,6 +154,10 @@ type
     procedure CreateLanguageMenuItems;
     procedure CorrectLanguageMenuItemSelected;
     procedure miLanguageMenuItemClick(Sender: TObject);
+
+    //Методы для импорта/экспорта настроек
+    procedure GlobalSaveSettings;
+    procedure GlobalLoadSettings;
   end;
 
 
@@ -158,10 +169,9 @@ implementation
 {$R *.lfm}
 
 uses
-  sgeFileUtils,
+  sgeFileUtils, SettingsManager,
   DataExtractorUnit,
-  YesNoQuestionDialogUnit,
-  IniFiles, LCLIntf;
+  YesNoQuestionDialogUnit, MessageDialogUnit;
 
 
 procedure TMainForm.FormCreate(Sender: TObject);
@@ -257,9 +267,65 @@ begin
 end;
 
 
+procedure TMainForm.miMainToolsExportSettingsClick(Sender: TObject);
+var
+  Fn: String;
+begin
+  fn := Format('DayzModTool Settings v%s %s.dzmtcb', [VERSION, FormatDateTime('yyyy.mm.dd-hh.nn.ss', Now)]);
+  SaveDialog.FileName := Fn;
+  if SaveDialog.Execute then
+  begin
+    try
+      //Обновим настройки на диске, что бы экспортировать по факту
+      SaveSettings;
+
+      //Экспорт
+      SettingsManager_Export(FSettingsDir, SaveDialog.FileName);
+
+      //Показать что все создано успешно
+      MessageDialogExecute(
+        FLanguage,
+        FLanguage.GetLocalizedString('MainForm.ExportConfigSuccess', 'Настройки успешно экспортированы')
+      );
+    except
+      MessageDialogExecute(
+        FLanguage,
+        FLanguage.GetLocalizedString('MainForm.ExportConfigError', 'Произошла ошибка при экспорте настроек') + sLineBreak + Exception(ExceptObject).Message
+      );
+    end;
+  end;
+end;
+
+
 procedure TMainForm.miMainToolsExtractDataClick(Sender: TObject);
 begin
   DataExtractorExecute(FLanguage, FSettingsDir + CONFIG_FILE_NAME);
+end;
+
+
+procedure TMainForm.miMainToolsImportSettingsClick(Sender: TObject);
+begin
+  if OpenDialog.Execute then
+  begin
+    try
+      //Импорт настроек
+      SettingsManager_Import(FSettingsDir, OpenDialog.FileName);
+
+      //Перезагрузить настройки
+      GlobalLoadSettings;
+
+      //Показать что все успешно
+      MessageDialogExecute(
+        FLanguage,
+        FLanguage.GetLocalizedString('MainForm.ImportConfigSuccess', 'Настройки успешно импортированы')
+      );
+    except
+      MessageDialogExecute(
+        FLanguage,
+        FLanguage.GetLocalizedString('MainForm.ImportConfigError', 'Произошла ошибка при импорте настроек') + sLineBreak + Exception(ExceptObject).Message
+      );
+    end;
+  end;
 end;
 
 
@@ -478,6 +544,9 @@ procedure TMainForm.ApplyLanguage;
     end;
   end;
 
+const
+  LANGUAGE_PREFIX = 'MainForm.';
+
 begin
   //Меню
   TranslateMenu(MainMenu.Items, 'MainForm.MainMenu.');
@@ -491,6 +560,10 @@ begin
 
   //Пересоздать пункты меню в трее
   CreateTrayMenuLaunchItems;
+
+  //Главная форма
+  OpenDialog.Filter := Format('%s (*.dzmtcb)|*.dzmtcb', [FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'ConfigBackup', 'Файлы бэкапа настроек')]);
+  SaveDialog.Filter := OpenDialog.Filter;
 end;
 
 
@@ -731,6 +804,30 @@ var
 begin
   LngName := FLanguageFileList.Part[(Sender as TMenuItem).Tag];
   ChangeLanguage(ChangeFileExt(LngName, ''));
+end;
+
+
+procedure TMainForm.GlobalSaveSettings;
+begin
+  //Основная форма
+  SaveSettings;
+
+  //Фреймы
+  FLaunchFrame.SaveSettings;
+  FDirectoryFrame.SaveSettings;
+  FStringTableFrame.SaveSettings;
+end;
+
+
+procedure TMainForm.GlobalLoadSettings;
+begin
+  //Основная форма
+  SaveSettings;
+
+  //Фреймы
+  FLaunchFrame.LoadSettings;
+  FDirectoryFrame.LoadSettings;
+  FStringTableFrame.LoadSettings;
 end;
 
 
