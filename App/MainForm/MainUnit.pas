@@ -25,6 +25,8 @@ type
     ilTrayDirectory: TImageList;
     ilLanguages: TImageList;
     MainMenu: TMainMenu;
+    miTraySeparator3: TMenuItem;
+    miTrayDonate: TMenuItem;
     miMainToolsSeparator1: TMenuItem;
     miMainToolsImportSettings: TMenuItem;
     miMainToolsExportSettings: TMenuItem;
@@ -85,6 +87,7 @@ type
     procedure miMainToolsExtractDataClick(Sender: TObject);
     procedure miMainToolsImportSettingsClick(Sender: TObject);
     procedure miMainToolsWorkDriveClick(Sender: TObject);
+    procedure miTrayDonateClick(Sender: TObject);
     procedure miTrayHideClick(Sender: TObject);
     procedure miTrayShowClick(Sender: TObject);
     procedure TrayIconClick(Sender: TObject);
@@ -132,6 +135,8 @@ type
     procedure Done;
     procedure SaveSettings;
     procedure LoadSettings;
+
+    procedure OpenDonationSite;
 
     procedure LoadLanguage(LanguageName: String);
     procedure ApplyLanguage;
@@ -221,7 +226,7 @@ end;
 
 procedure TMainForm.miMainInfoDonateClick(Sender: TObject);
 begin
-  OpenURL('https://donation.ntlab.su');
+  OpenDonationSite;
 end;
 
 
@@ -332,6 +337,12 @@ end;
 procedure TMainForm.miMainToolsWorkDriveClick(Sender: TObject);
 begin
   WorkDriveExecute(FLanguage, FSettingsDir + CONFIG_FILE_NAME);
+end;
+
+
+procedure TMainForm.miTrayDonateClick(Sender: TObject);
+begin
+  OpenDonationSite;
 end;
 
 
@@ -502,6 +513,12 @@ begin
   finally
     Ini.Free;
   end;
+end;
+
+
+procedure TMainForm.OpenDonationSite;
+begin
+  OpenURL('https://donation.ntlab.su');
 end;
 
 
