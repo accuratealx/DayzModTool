@@ -1,8 +1,8 @@
 # DayZ Mod Tool language file
 
 #Language info
-Info.AppVersion = 0.8
-Info.FileVersion = 1.1
+Info.AppVersion = 0.9
+Info.FileVersion = 1.2
 Info.Autor = accuratealx@gmail.com
 Info.Date = 21.02.2024
 Info.Comment =
@@ -28,7 +28,8 @@ MainForm.MainMenu.miMainTabs = Tabs
 MainForm.MainMenu.miMainTools = Tools
 MainForm.MainMenu.miMainToolsExtractData = Extract game data
 MainForm.MainMenu.miMainToolsWorkDrive = Work drive
-MainForm.FirstLaunchQuestion = Application settings not found %sDo automatic configuration?
+MainForm.MainMenu.miMainToolsExportSettings = Export settings
+MainForm.MainMenu.miMainToolsImportSettings = Import settings
 
 #TrayMenu
 MainForm.TrayMenu.miTrayShow = Show
@@ -36,12 +37,21 @@ MainForm.TrayMenu.miTrayHide = Minimize
 MainForm.TrayMenu.miTrayLaunch = Launch
 MainForm.TrayMenu.miTrayStop = Terminate
 MainForm.TrayMenu.miTrayDirectory = Directory
+MainForm.TrayMenu.miTrayDonate = Donation
 MainForm.TrayMenu.miTrayExit = Exit
 
 #Tab captions
 MainForm.Tabs.tabLaunch = Launch
 MainForm.Tabs.tabDirectory = Directory
 MainForm.Tabs.tabStringTable = String table
+
+#MainForm
+MainForm.FirstLaunchQuestion = Application settings not found %sDo automatic configuration?
+MainForm.ConfigBackup = Settings backup files
+MainForm.ExportConfigSuccess = Settings exported successfully
+MainForm.ExportConfigError = An error occurred while exporting settings
+MainForm.ImportConfigSuccess = Settings successfully imported
+MainForm.ImportConfigError = An error occurred while importing settings
 
 #Dialogs
 Dialogs.YesNo.Caption = Question
@@ -111,11 +121,14 @@ TabDirectory.DeleteIncorrect = Erase non-existent directories?
 TabDirectory.DeleteCurrent = Remove directory "%s" from the list?
 
 #Tab StringTable
-StringTable.New = Create new
+StringTable.Clear = Clear table
 StringTable.Open = Open
 StringTable.Save = Save
+StringTable.CopyIDToClipboard = Copy ID to clipboard
 StringTable.Add = Add
 StringTable.Edit = Edit
+StringTable.Up = Up
+StringTable.Down = Down
 StringTable.Delete = Delete
 StringTable.ProceedChange = The current table will be erased, continue?
 StringTable.FileAccessError = An error occurred while accessing file "%s"%sCannot continue
