@@ -362,7 +362,9 @@ procedure TMainForm.TrayIconClick(Sender: TObject);
 begin
   if not Visible then
     miTrayShow.Click;
-  BringToFront;
+
+  //Активировать главную форму
+  SetForegroundWindow(Handle);
 end;
 
 
