@@ -5,7 +5,7 @@ unit TranslationWorker;
 interface
 
 uses
-  Classes, Windows,
+  Classes, Windows, SysUtils,
   Translator, StringTableItem;
 
 const
@@ -16,14 +16,20 @@ const
   TRANSLATOR_WPARAM_LANGUAGE_ID = 3;
 
 type
+  //Метод передачи строки с ошибкой
+  TTranslateErrorHandler = procedure(msg: String) of object;
+
+
   TTranslateWorker = class(TThread)
   private
     FCallbackHandler: HWND;
     FTableItem: TStringTableItem;
     FOriginalLng: TStringTableLanguageTypes;
     FMsg: String;
+
+    FOnErrorHandler: TTranslateErrorHandler;
   public
-    constructor Create(CallbackHandler: HWND; TableItem: TStringTableItem; OriginalLng: TStringTableLanguageTypes; Msg: String);
+    constructor Create(CallbackHandler: HWND; ErrorHandler: TTranslateErrorHandler; TableItem: TStringTableItem; OriginalLng: TStringTableLanguageTypes; Msg: String);
 
     procedure Execute; override;
   end;
@@ -31,7 +37,7 @@ type
 implementation
 
 
-constructor TTranslateWorker.Create(CallbackHandler: HWND; TableItem: TStringTableItem; OriginalLng: TStringTableLanguageTypes; Msg: String);
+constructor TTranslateWorker.Create(CallbackHandler: HWND; ErrorHandler: TTranslateErrorHandler; TableItem: TStringTableItem; OriginalLng: TStringTableLanguageTypes; Msg: String);
 begin
   inherited Create(False);
   FreeOnTerminate := True;
@@ -40,6 +46,8 @@ begin
   FTableItem := TableItem;
   FOriginalLng := OriginalLng;
   FMsg := Msg;
+
+  FOnErrorHandler := ErrorHandler;
 end;
 
 
@@ -74,6 +82,10 @@ begin
     PostMessage(FCallbackHandler, TRANSLATOR_MESSAGE, TRANSLATOR_WPARAM_FINISH, 0);
 
   except
+    //Передать сообщение об ошибке
+    if Assigned(FOnErrorHandler) then
+      FOnErrorHandler(Exception(ExceptObject).Message);
+
     //Отправить сообщение что произошла ошибка
     PostMessage(FCallbackHandler, TRANSLATOR_MESSAGE, TRANSLATOR_WPARAM_ERROR, 0);
   end;

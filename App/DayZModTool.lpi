@@ -336,6 +336,7 @@
         <Filename Value="Tabs\StringTable\StringTableProcessDialog\StringTableProcessDialogUnit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="StringTableProcessDialogForm"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit>
       <Unit>

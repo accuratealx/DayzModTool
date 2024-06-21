@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons, StdCtrls, windows,
   DialogParameters, Language, Translator,
-  StringTableItem, DialogCommonUnit, DirectoryItemEditorDialogItemUnit,
+  StringTableItem, DialogCommonUnit, DirectoryItemEditorDialogItemUnit, MessageDialogUnit,
   StringTableProcessDialogUnit, TranslationWorker;
 
 type
@@ -36,9 +36,12 @@ type
       LANGUAGE_PREFIX_LNGNAME = 'StringTable.Column.';
   private
     FItemList: TDirectoryItemEditorDialogItemFrameList;
+    FThreadWorkerError: String;
 
     procedure CreateItems;
     procedure DestroyItems;
+
+    procedure ThreadWorkerErrorReciever(Msg: String);
   protected
     procedure SetMode(AMode: TStringTableItemEditorMode);
 
@@ -191,6 +194,12 @@ begin
 end;
 
 
+procedure TStringTableItemEditorDialogForm.ThreadWorkerErrorReciever(Msg: String);
+begin
+  FThreadWorkerError := Msg;
+end;
+
+
 procedure TStringTableItemEditorDialogForm.SetMode(AMode: TStringTableItemEditorMode);
 var
   s: String;
@@ -309,7 +318,7 @@ begin
   FWorkerItem.ClearTable;
 
   //Создать поток перевода
-  TTranslateWorker.Create(Handle, FWorkerItem, Lng, Msg);
+  TTranslateWorker.Create(Handle, @ThreadWorkerErrorReciever, FWorkerItem, Lng, Msg);
 end;
 
 
@@ -331,7 +340,7 @@ begin
       StringTableProcessDialogUpdateMessage(StringTableLanguageNames[LngType]);
     end;
 
-    TRANSLATOR_WPARAM_FINISH, TRANSLATOR_WPARAM_ERROR:
+    TRANSLATOR_WPARAM_FINISH:
     begin
       StringTableProcessDialogHide;
       Enabled := True;
@@ -339,6 +348,18 @@ begin
       //Заполнить элементы
       for i := 0 to Length(FItemList) - 1 do
         FItemList[i].Value := FWorkerItem.LocalizedText[TStringTableLanguageTypes(i)];
+    end;
+
+    TRANSLATOR_WPARAM_ERROR:
+    begin
+      StringTableProcessDialogHide;
+      Enabled := True;
+
+      //Покажем ошибку переводчика
+      MessageDialogExecute(
+        FParameters.Language,
+        FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'TranslateError', 'Произошла ошибка во время перевода') + sLineBreak + FThreadWorkerError
+      );
     end;
   end;
 end;
