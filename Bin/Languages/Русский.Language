@@ -1,8 +1,8 @@
 # DayZ Mod Tool language file
 
 #Language info
-Info.AppVersion = 0.9
-Info.FileVersion = 1.2
+Info.AppVersion = 0.10
+Info.FileVersion = 1.3
 Info.Autor = accuratealx@gmail.com
 Info.Date = 23.02.2024
 Info.Comment =
@@ -28,6 +28,7 @@ MainForm.MainMenu.miMainTabs = Закладки
 MainForm.MainMenu.miMainTools = Инструменты
 MainForm.MainMenu.miMainToolsExtractData = Извлечь данные
 MainForm.MainMenu.miMainToolsWorkDrive = Рабочий каталог
+MainForm.MainMenu.miMainToolsTrashCleaner = Очистка мусора
 MainForm.MainMenu.miMainToolsExportSettings = Экспортировать настройки
 MainForm.MainMenu.miMainToolsImportSettings = Импортировать настройки
 

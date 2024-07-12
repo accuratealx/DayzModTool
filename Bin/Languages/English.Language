@@ -1,8 +1,8 @@
 # DayZ Mod Tool language file
 
 #Language info
-Info.AppVersion = 0.9
-Info.FileVersion = 1.2
+Info.AppVersion = 0.10
+Info.FileVersion = 1.3
 Info.Autor = accuratealx@gmail.com
 Info.Date = 21.02.2024
 Info.Comment =
@@ -28,6 +28,7 @@ MainForm.MainMenu.miMainTabs = Tabs
 MainForm.MainMenu.miMainTools = Tools
 MainForm.MainMenu.miMainToolsExtractData = Extract game data
 MainForm.MainMenu.miMainToolsWorkDrive = Work drive
+MainForm.MainMenu.miMainToolsTrashCleaner = Trash cleaner
 MainForm.MainMenu.miMainToolsExportSettings = Export settings
 MainForm.MainMenu.miMainToolsImportSettings = Import settings
 
@@ -81,6 +82,7 @@ Dialogs.StringTableItemEditor.Translate = Translate
 Dialogs.StringTableItemEditor.Clear = Clear value
 Dialogs.StringTableItemEditor.Progress.Caption = Please wait, I'm translating...
 Dialogs.StringTableItemEditor.Progress.CurrentLanguage = Сurrent language
+Dialogs.StringTableItemEditor.TranslateError = An error occurred during translation
 
 #Tab Launch
 TabLaunch.Launch = Launch
@@ -191,8 +193,14 @@ Tools.DataExtractor.CantFindCfgConverterTool = Bin to Cpp conversion utility not
 Tools.DataExtractor.CantFindGameFolder = The game directory was not found. Specify manually?
 Tools.DataExtractor.CantFindProjectFolder = Project directory not found. Specify manually?
 Tools.DataExtractor.ExtractError = An error occurred while unpacking
-Tools.DataExtractor.ConvertError = An error occurred converting
+Tools.DataExtractor.ConvertError = An error occurred during conversion
 Tools.DataExtractor.ExtractPBO = Extract PBO
 Tools.DataExtractor.ConvertBin = Convert Bin -> Cpp
 Tools.DataExtractor.Cancel = Aborted by user
 Tools.DataExtractor.Success = Data successfully extracted
+
+#Tools TrashCleaner
+Tools.TrashCleaner.Caption = Clean trash
+Tools.TrashCleaner.Close = Close
+Tools.TrashCleaner.Clean = Clean
+Tools.TrashCleaner.CantDeleteAll = Not all files were deleted
