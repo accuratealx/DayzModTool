@@ -87,7 +87,7 @@ end;
 
 procedure TDataExtractorForm.FormResize(Sender: TObject);
 const
-  SPACE_CLOSE = 40;
+  SPACE_CLOSE = 10;
 var
   W: Integer;
 begin
@@ -250,7 +250,7 @@ begin
       FParameters.Language,
       FParameters.Language.GetLocalizedString(
         LANGUAGE_PREFIX + 'CantFindGameFolder',
-        'Не найден каталог с игрой. Укажите в ручную?')
+        'Не найден каталог с игрой. Укажите вручную?')
     ) of
       True:
       begin
@@ -272,7 +272,7 @@ begin
       FParameters.Language,
       FParameters.Language.GetLocalizedString(
         LANGUAGE_PREFIX + 'CantFindProjectFolder',
-        'Не найден каталог проекта. Укажите в ручную?')
+        'Не найден каталог проекта. Укажите вручную?')
     ) of
       True:
       begin

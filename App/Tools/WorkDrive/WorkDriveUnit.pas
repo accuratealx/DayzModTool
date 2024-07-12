@@ -155,7 +155,7 @@ end;
 procedure TWorkDriveForm.FormResize(Sender: TObject);
 const
   SPACE_MOUNT = 10;
-  SPACE_CLOSE = 40;
+  SPACE_CLOSE = 10;
 var
   W: Integer;
 begin
