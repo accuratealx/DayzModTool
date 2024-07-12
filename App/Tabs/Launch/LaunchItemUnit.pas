@@ -177,8 +177,9 @@ end;
 
 procedure TLaunchItemFrame.btnLaunchClick(Sender: TObject);
 begin
-  //Удалить содержимое каталога
-  ClearLogDirectory;
+  //Удалить содержимое каталога если включена настройка
+  if cbEraseJournalDirBeforeRun.Checked then
+    ClearLogDirectory;
 
   //Launch application
   ExecuteFile(Trim(edExecutable.Text), GetCommandLine);
