@@ -11,10 +11,10 @@ uses
   sgeStringList,
   Language, TabParameters,
   LaunchUnit, LaunchItemUnit, DirectoryUnit, DirectoryItemUnit, StringTableUnit,
-  WorkDriveUnit;
+  WorkDriveUnit, TrashCleanerUnit;
 
 const
-  VERSION = '0.9';
+  VERSION = '0.10';
 
 type
   TMainForm = class(TForm)
@@ -25,6 +25,7 @@ type
     ilTrayDirectory: TImageList;
     ilLanguages: TImageList;
     MainMenu: TMainMenu;
+    miMainToolsTrashCleaner: TMenuItem;
     miTraySeparator3: TMenuItem;
     miTrayDonate: TMenuItem;
     miMainToolsSeparator1: TMenuItem;
@@ -86,6 +87,7 @@ type
     procedure miMainToolsExportSettingsClick(Sender: TObject);
     procedure miMainToolsExtractDataClick(Sender: TObject);
     procedure miMainToolsImportSettingsClick(Sender: TObject);
+    procedure miMainToolsTrashCleanerClick(Sender: TObject);
     procedure miMainToolsWorkDriveClick(Sender: TObject);
     procedure miTrayDonateClick(Sender: TObject);
     procedure miTrayHideClick(Sender: TObject);
@@ -331,6 +333,12 @@ begin
       );
     end;
   end;
+end;
+
+
+procedure TMainForm.miMainToolsTrashCleanerClick(Sender: TObject);
+begin
+  TrashCleanerExecute(FLanguage);
 end;
 
 

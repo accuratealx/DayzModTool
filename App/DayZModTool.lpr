@@ -3,7 +3,7 @@ program DayZModTool;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, Forms, MainUnit;
+  Interfaces, Forms, MainUnit, TrashCleanerUnit;
 
 {$R *.res}
 
