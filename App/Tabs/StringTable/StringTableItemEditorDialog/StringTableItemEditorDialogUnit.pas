@@ -280,7 +280,7 @@ procedure TStringTableItemEditorDialogForm.CorrectOKButton;
 
   function IsValidChars: Boolean;
   const
-    CHARS = ['a'..'z', 'A'..'Z', '_'];
+    CHARS = ['a'..'z', 'A'..'Z', '0'..'9', '_'];
   var
     i: Integer;
     s: String;
