@@ -25,6 +25,7 @@ type
     ilTrayDirectory: TImageList;
     ilLanguages: TImageList;
     MainMenu: TMainMenu;
+    miMainToolsTimeCalculator: TMenuItem;
     miMainToolsTrashCleaner: TMenuItem;
     miTraySeparator3: TMenuItem;
     miTrayDonate: TMenuItem;
@@ -87,6 +88,7 @@ type
     procedure miMainToolsExportSettingsClick(Sender: TObject);
     procedure miMainToolsExtractDataClick(Sender: TObject);
     procedure miMainToolsImportSettingsClick(Sender: TObject);
+    procedure miMainToolsTimeCalculatorClick(Sender: TObject);
     procedure miMainToolsTrashCleanerClick(Sender: TObject);
     procedure miMainToolsWorkDriveClick(Sender: TObject);
     procedure miTrayDonateClick(Sender: TObject);
@@ -178,7 +180,7 @@ implementation
 uses
   sgeFileUtils, SettingsManager,
   DataExtractorUnit,
-  YesNoQuestionDialogUnit, MessageDialogUnit;
+  YesNoQuestionDialogUnit, MessageDialogUnit, TimecalCulatorUnit;
 
 
 procedure TMainForm.FormCreate(Sender: TObject);
@@ -333,6 +335,12 @@ begin
       );
     end;
   end;
+end;
+
+
+procedure TMainForm.miMainToolsTimeCalculatorClick(Sender: TObject);
+begin
+  TimeCalculatorExecute(FLanguage);
 end;
 
 
