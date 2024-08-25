@@ -340,7 +340,7 @@ end;
 
 procedure TMainForm.miMainToolsTimeCalculatorClick(Sender: TObject);
 begin
-  TimeCalculatorExecute(FLanguage);
+  TimeCalculatorExecute(FLanguage, FSettingsDir + 'TimeCalculator.ini');
 end;
 
 

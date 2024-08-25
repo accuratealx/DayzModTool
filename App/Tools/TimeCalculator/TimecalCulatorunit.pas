@@ -33,6 +33,10 @@ type
   private
     const
       LANGUAGE_PREFIX = 'Tools.TimeCalculator.';
+
+      SECTION_SYSTEM = 'System';
+      PARAM_DAY = 'Day';
+      PARAM_NIGHT = 'Night';
   private
     function FitValueToRange(Value: Single; Min: Single = 0.1; Max: Single = 64): Single;
 
@@ -54,15 +58,19 @@ type
     procedure UpdateParams;
     procedure UpdateResultMemo(Day, Night: Single);
     procedure DisableTimeEditActions(ADisable: Boolean);
+
+    procedure LoadSettings;
+    procedure SaveSettings;
   protected
     procedure SetLanguage; override;
     procedure PrepareInterface; override;
   public
-
+    constructor Create(Parameters: TDialogParameters); reintroduce;
+    destructor  Destroy; override;
   end;
 
 
-procedure TimeCalculatorExecute(Language: TLanguage);
+procedure TimeCalculatorExecute(Language: TLanguage; const SettingsFile: String);
 
 
 implementation
@@ -70,14 +78,20 @@ implementation
 {$R *.lfm}
 
 uses
-  Math, Clipbrd;
+  Math, Clipbrd, IniFiles;
 
-procedure TimeCalculatorExecute(Language: TLanguage);
+type
+  TTimeCalculatorParameters = class(TDialogParameters)
+    SettingsFile: String;
+  end;
+
+procedure TimeCalculatorExecute(Language: TLanguage; const SettingsFile: String);
 var
-  Params: TDialogParameters;
+  Params: TTimeCalculatorParameters;
 begin
-  Params := TDialogParameters.Create;
+  Params := TTimeCalculatorParameters.Create;
   Params.Language := Language;
+  Params.SettingsFile := SettingsFile;
   try
     with TTimeCalculatorForm.Create(Params) do
     begin
@@ -202,8 +216,7 @@ begin
 end;
 
 
-function TTimeCalculatorForm.DayParameterToTime(DayParameter: Single
-  ): TDateTime;
+function TTimeCalculatorForm.DayParameterToTime(DayParameter: Single): TDateTime;
 begin
   Result := FloatCoefficientToTime(DayParameterToFloatCoefficient(DayParameter));
 end;
@@ -300,6 +313,32 @@ begin
 end;
 
 
+procedure TTimeCalculatorForm.LoadSettings;
+var
+  F: TIniFile;
+begin
+  F := TIniFile.Create((FParameters as TTimeCalculatorParameters).SettingsFile);
+
+  teDay.Text := F.ReadString(SECTION_SYSTEM, PARAM_DAY, '12:00');
+  teNight.Text := F.ReadString(SECTION_SYSTEM, PARAM_NIGHT, '1:00');
+
+  F.Free;
+end;
+
+
+procedure TTimeCalculatorForm.SaveSettings;
+var
+  F: TIniFile;
+begin
+  F := TIniFile.Create((FParameters as TTimeCalculatorParameters).SettingsFile);
+
+  F.WriteString(SECTION_SYSTEM, PARAM_DAY, teDay.Text);
+  F.WriteString(SECTION_SYSTEM, PARAM_NIGHT, teNight.Text);
+
+  F.Free;
+end;
+
+
 procedure TTimeCalculatorForm.SetLanguage;
 begin
   Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Caption', 'Калькулятор времени');
@@ -313,6 +352,22 @@ end;
 procedure TTimeCalculatorForm.PrepareInterface;
 begin
   UpdateParams;
+end;
+
+
+constructor TTimeCalculatorForm.Create(Parameters: TDialogParameters);
+begin
+  inherited Create(Parameters);
+
+  LoadSettings;
+end;
+
+
+destructor TTimeCalculatorForm.Destroy;
+begin
+  SaveSettings;
+
+  inherited Destroy;
 end;
 
 
