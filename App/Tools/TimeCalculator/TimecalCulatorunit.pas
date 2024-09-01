@@ -290,11 +290,21 @@ const
   FORMAT_STR = '%s = %f';
   DAY_PARAM = 'serverTimeAcceleration';
   NIGHT_PARAM = 'serverNightTimeAcceleration';
+var
+  ods: Char;
 begin
-  mResult.Clear;
-  mResult.Lines.Add(Format(FORMAT_STR, [DAY_PARAM, Day]));
-  mResult.Lines.Add(Format(FORMAT_STR, [NIGHT_PARAM, Night]));
-  mResult.SelStart := 0;
+  ods := DefaultFormatSettings.DecimalSeparator;
+  try
+    DefaultFormatSettings.DecimalSeparator := '.';
+
+    mResult.Clear;
+    mResult.Lines.Add(Format(FORMAT_STR, [DAY_PARAM, Day]));
+    mResult.Lines.Add(Format(FORMAT_STR, [NIGHT_PARAM, Night]));
+    mResult.SelStart := 0;
+
+  finally
+    DefaultFormatSettings.DecimalSeparator := ods;
+  end;
 end;
 
 
