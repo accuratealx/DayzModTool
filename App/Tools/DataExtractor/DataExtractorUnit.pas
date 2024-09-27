@@ -29,7 +29,7 @@ type
     type
       TButtonType = (btExtract, btStop);
       TWorkMode = (wmExtract, wmBreak);
-      TExtractStage = (esPBO, esBin);
+      TExtractStage = (esPBO, esBin, esRvmat);
   private
     procedure MessageHook(var Msg: TMessage); message WM_EXTRACT_WORKER;
   private
@@ -154,6 +154,36 @@ begin
     end;
 
     WORKER_BIN_STEP:
+    begin
+      pbExtract.StepIt;
+      CorrectExtractLabel;
+    end;
+
+
+    WORKER_RVMAT_ERROR:
+    begin
+      FreeAndNil(FExtractor);
+      btnExtract.Enabled := True;
+      SetButtonCaption(btExtract);
+      pbExtract.Position := 0;
+      FWorkMode := wmExtract;
+      lblProgressInfo.Visible := False;
+      MessageDialogExecute(
+        FParameters.Language,
+        FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'ConvertError', 'Произошла ошибка конвертировании')
+      );
+    end;
+
+    WORKER_RVMAT_COUNT:
+    begin
+      pbExtract.Position := 0;
+      pbExtract.Max := Msg.lParam + 1;
+      lblProgressInfo.Visible := True;
+      CorrectCurrentStage(esRvmat);
+      CorrectExtractLabel;
+    end;
+
+    WORKER_RVMAT_STEP:
     begin
       pbExtract.StepIt;
       CorrectExtractLabel;
@@ -317,6 +347,9 @@ begin
 
     esBin:
       FCurrentExtractStageName := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'ConvertBin', 'Конвертирование Bin -> Cpp');
+
+    esRvmat:
+      FCurrentExtractStageName := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'ConvertRvmat', 'Конвертирование Rvmat');
   end;
 end;
 

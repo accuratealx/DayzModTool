@@ -9,26 +9,42 @@ uses
 
 const
   WM_EXTRACT_WORKER = WM_USER + 1;
+
   WORKER_PBO_ERROR = 1;
   WORKER_PBO_COUNT = 2;
   WORKER_PBO_STEP = 3;
+
   WORKER_BIN_ERROR = 4;
   WORKER_BIN_COUNT = 5;
   WORKER_BIN_STEP = 6;
-  WORKER_FINISH = 7;
-  WORKER_CANCEL = 8;
+
+  WORKER_RVMAT_ERROR = 7;
+  WORKER_RVMAT_COUNT = 8;
+  WORKER_RVMAT_STEP = 9;
+
+  WORKER_FINISH = 10;
+  WORKER_CANCEL = 11;
 
 type
   TExtractWorker = class(TThread)
   private
     type
       TMessageType = (
+        //Распаковка PBO
         mtPBOError,
         mtPBOCount,
         mtPBOStep,
+
+        //Конвертирование Bin -> Cfg
         mtBINError,
         mtBINCount,
         mtBINStep,
+
+        //Конвертирование Rvmat
+        mtRvmatError,
+        mtRvmatCount,
+        mtRvmatStep,
+
         mtFinish,
         mtCancel
       );
@@ -46,9 +62,11 @@ type
 
     procedure GetPBOListForExtract(const Dir: String; OutList: TStringList);
     procedure GetBinListForConvert(const Dir: String; OutList: TStringList);
+    procedure GetRvmatListForConvert(const Dir: String; OutList: TStringList);
 
     procedure ExtractPBO;
     procedure ConvertBin;
+    procedure ConvertRvmat;
   public
     constructor Create(const ExtractTool, CfgConverterTool, ProjectDirectory, GameDirectory: String; MainFormHandle: THandle);
 
@@ -85,6 +103,15 @@ begin
 
     mtBINStep:
       PostMessage(FMainFormHandle, WM_EXTRACT_WORKER, WORKER_BIN_STEP, 0);
+
+    mtRvmatError:
+      PostMessage(FMainFormHandle, WM_EXTRACT_WORKER, WORKER_RVMAT_ERROR, 0);
+
+    mtRvmatCount:
+      PostMessage(FMainFormHandle, WM_EXTRACT_WORKER, WORKER_RVMAT_COUNT, Count);
+
+    mtRvmatStep:
+      PostMessage(FMainFormHandle, WM_EXTRACT_WORKER, WORKER_RVMAT_STEP, 0);
 
     mtFinish:
       PostMessage(FMainFormHandle, WM_EXTRACT_WORKER, WORKER_FINISH, 0);
@@ -141,7 +168,27 @@ begin
   finally
     BinList.Free;
   end;
+end;
 
+
+procedure TExtractWorker.GetRvmatListForConvert(const Dir: String; OutList: TStringList);
+var
+  RvmatList: TsgeStringList;
+  i: Integer;
+begin
+  OutList.Clear;
+
+  RvmatList := TsgeStringList.Create;
+  try
+    //Получим весь список
+    sgeFindFilesInFolderByExt(Dir, RvmatList, 'rvmat');
+
+    for i := 0 to RvmatList.Count - 1 do
+      OutList.Add(ExcludeTrailingBackslash(Dir) + RvmatList.Part[i]);
+
+  finally
+    RvmatList.Free;
+  end;
 end;
 
 
@@ -201,7 +248,7 @@ begin
     //Отослать сколько всего элементов
     SendMessage(mtBINCount, BinList.Count);
 
-    //Прогнать все архивы
+    //Прогнать все Bin
     for i := 0 to BinList.Count - 1 do
     begin
       try
@@ -234,9 +281,52 @@ begin
 end;
 
 
+procedure TExtractWorker.ConvertRvmat;
+var
+  i: Integer;
+  Params: String;
+  RvmatList: TStringList;
+begin
+  RvmatList := TStringList.Create;
+  try
+    GetRvmatListForConvert(FProjectDirectory, RvmatList);
+
+    //Отослать сколько всего элементов
+    SendMessage(mtRvmatCount, RvmatList.Count);
+
+    //Прогнать все rvmat
+    for i := 0 to RvmatList.Count - 1 do
+    begin
+      try
+        //Параметры запуска
+        Params := Format('-rvmat -dst "%s" "%s"', [RvmatList.Strings[i], RvmatList.Strings[i]]);
+
+        //Выполнить распаковку
+        //CfgConvert.exe -rvmat -dst Destination.rvmat Source.rvmat
+        ExecuteFileAndWait(FCfgConverterTool, Params);
+
+        //Сказать что следующий файл
+        SendMessage(mtRvmatStep);
+
+        //Проверить отмену
+        if FCancel then
+          Break;
+
+      except
+        FError := True;
+        Break;
+      end;
+    end;
+
+  finally
+    RvmatList.Free;
+  end;
+
+end;
+
+
 constructor TExtractWorker.Create(const ExtractTool, CfgConverterTool, ProjectDirectory, GameDirectory: String; MainFormHandle: THandle);
 begin
-
   FExtractTool := ExtractTool;
   FCfgConverterTool := CfgConverterTool;
   FProjectDirectory := ExcludeTrailingBackslash(ProjectDirectory);
@@ -285,6 +375,24 @@ begin
     SendMessage(mtCancel);
     Exit;
   end;
+
+
+  //Конвертировать rvmat
+  ConvertRvmat;
+
+  if FError then
+  begin
+    SendMessage(mtRvmatError);
+    Exit;
+  end;
+
+  //Сообщить что работа прервана
+  if FCancel then
+  begin
+    SendMessage(mtCancel);
+    Exit;
+  end;
+
 
   //Сказать что все прошло успешно
   SendMessage(mtFinish);
