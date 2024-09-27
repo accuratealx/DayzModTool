@@ -2,7 +2,7 @@
 
 #Language info
 Info.AppVersion = 0.11
-Info.FileVersion = 1.3
+Info.FileVersion = 1.4
 Info.Autor = accuratealx@gmail.com
 Info.Date = 21.02.2024
 Info.Comment =
@@ -197,6 +197,7 @@ Tools.DataExtractor.ExtractError = An error occurred while unpacking
 Tools.DataExtractor.ConvertError = An error occurred during conversion
 Tools.DataExtractor.ExtractPBO = Extract PBO
 Tools.DataExtractor.ConvertBin = Convert Bin -> Cpp
+Tools.DataExtractor.ConvertRvmat = Convert Rvmat
 Tools.DataExtractor.Cancel = Aborted by user
 Tools.DataExtractor.Success = Data successfully extracted
 
