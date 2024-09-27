@@ -170,6 +170,9 @@ type
   end;
 
 
+function GetAppTitle: String;
+
+
 var
   MainForm: TMainForm;
 
@@ -420,7 +423,7 @@ end;
 
 procedure TMainForm.Init;
 begin
-  Caption := 'DayZ Mod Tool  v' + VERSION;
+  Caption := GetAppTitle;
   TrayIcon.Hint := Caption;
 
   FIsFirstRun := True;
@@ -863,6 +866,12 @@ begin
   FLaunchFrame.LoadSettings;
   FDirectoryFrame.LoadSettings;
   FStringTableFrame.LoadSettings;
+end;
+
+
+function GetAppTitle: String;
+begin
+  Result := 'DayZ Mod Tool  v' + VERSION;
 end;
 
 
