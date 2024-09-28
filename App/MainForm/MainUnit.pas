@@ -10,7 +10,7 @@ uses
   ExtCtrls, ComCtrls, windows, IniFiles, LCLIntf,
   sgeStringList,
   Language, TabParameters,
-  LaunchUnit, LaunchItemUnit, DirectoryUnit, DirectoryItemUnit, StringTableUnit,
+  LaunchUnit, LaunchItemUnit, DirectoryUnit, DirectoryItemUnit, StringTableUnit, BuilderUnit,
   WorkDriveUnit, TrashCleanerUnit;
 
 const
@@ -68,6 +68,7 @@ type
     SaveDialog: TSaveDialog;
     tabLaunch: TTabSheet;
     tabDirectory: TTabSheet;
+    tabBuilder: TTabSheet;
     tabStringTable: TTabSheet;
     TrayMenu: TPopupMenu;
     TrayIcon: TTrayIcon;
@@ -134,6 +135,7 @@ type
     FLaunchFrame: TLaunchFrame;
     FDirectoryFrame: TDirectoryFrame;
     FStringTableFrame: TStringTableFrame;
+    FBuilderFrame: TBuilderFrame;
 
     procedure Init;
     procedure Done;
@@ -550,7 +552,6 @@ begin
   Fn := FLanguageDir + LanguageName + '.Language';
   if FileExists(Fn) then
     FLanguage.LoadFromFile(Fn);
-
 end;
 
 
@@ -636,6 +637,10 @@ begin
   FDirectoryFrame := TDirectoryFrame.Create(AParams);
   FDirectoryFrame.Parent := tabDirectory;
 
+  //Построитель
+  FBuilderFrame := TBuilderFrame.Create(AParams);
+  FBuilderFrame.Parent := tabBuilder;
+
   //Таблица строк
   FStringTableFrame := TStringTableFrame.Create(AParams);
   FStringTableFrame.Parent := tabStringTable;
@@ -646,6 +651,7 @@ procedure TMainForm.DestroyTabs;
 begin
   FStringTableFrame.Free;
   FDirectoryFrame.Free;
+  FBuilderFrame.Free;
   FLaunchFrame.Free;
 end;
 
@@ -654,6 +660,7 @@ procedure TMainForm.ApplayTabsLanguage;
 begin
   FLaunchFrame.ApplyLanguage;
   FDirectoryFrame.ApplyLanguage;
+  FBuilderFrame.ApplyLanguage;
   FStringTableFrame.ApplyLanguage;
 end;
 
@@ -853,6 +860,7 @@ begin
   //Фреймы
   FLaunchFrame.SaveSettings;
   FDirectoryFrame.SaveSettings;
+  FBuilderFrame.SaveSettings;
   FStringTableFrame.SaveSettings;
 end;
 
@@ -865,6 +873,7 @@ begin
   //Фреймы
   FLaunchFrame.LoadSettings;
   FDirectoryFrame.LoadSettings;
+  FBuilderFrame.LoadSettings;
   FStringTableFrame.LoadSettings;
 end;
 

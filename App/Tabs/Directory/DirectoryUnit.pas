@@ -280,6 +280,7 @@ begin
     Frame.Left := 0;
     Frame.Top := Y;
     Frame.Width := sbContent.ClientWidth;
+    Frame.Highlight := not Odd(i);
 
     Inc(Y, Frame.Height);
   end;

@@ -19,6 +19,7 @@ type
     FCaption: String;
     FPath: String;
     FIconName: String;
+    FHighlight: Boolean;
     FSelected: Boolean;
 
     FOnSelect: TNotifyEvent;
@@ -28,6 +29,7 @@ type
     procedure SetPath(APath: String);
     procedure SetIconName(AFileName: String);
     procedure SetSelected(ASelected: Boolean);
+    procedure SetHighlight(AHighlight: Boolean);
 
     procedure DoOnSelect;
   public
@@ -47,6 +49,7 @@ type
     property Path: String read FPath write SetPath;
     property IconName: String read FIconName write SetIconName;
     property Selected: Boolean read FSelected write SetSelected;
+    property Highlight: Boolean read FHighlight write SetHighlight;
     property OnSelect: TNotifyEvent read FOnSelect write FOnSelect;
   end;
 
@@ -127,12 +130,26 @@ begin
   Self.ParentBackground := not FSelected;
 
   if FSelected then
-    Color := cl3DLight
+    Color := clSkyBlue
   else
-    Color := clDefault;
+    if FHighlight then
+      Color := cl3DLight
+    else
+      Color := clDefault;
 
   if FSelected then
     DoOnSelect;
+end;
+
+
+procedure TDirectoryItemFrame.SetHighlight(AHighlight: Boolean);
+begin
+  if FHighlight = AHighlight then
+    Exit;
+
+  FHighlight := AHighlight;
+
+  SetSelected(FSelected);
 end;
 
 
@@ -147,6 +164,7 @@ constructor TDirectoryItemFrame.Create(const AIconDirectory: String);
 begin
   inherited Create(nil);
 
+  FHighlight := False;
   FIconDirectory := IncludeTrailingBackslash(AIconDirectory);
 end;
 

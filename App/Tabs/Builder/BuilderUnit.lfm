@@ -1,0 +1,5 @@
+inherited BuilderFrame: TBuilderFrame
+  TabOrder = 0
+  DesignLeft = 662
+  DesignTop = 288
+end

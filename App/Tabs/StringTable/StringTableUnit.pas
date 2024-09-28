@@ -69,7 +69,6 @@ type
     function ExistChecker(IDName, OriginalIDName: String): Boolean; //Проверка ID на совпадение
   public
     constructor Create(Parameters: TTabParameters); reintroduce;
-
     destructor  Destroy; override;
 
     procedure ApplyLanguage; override;
