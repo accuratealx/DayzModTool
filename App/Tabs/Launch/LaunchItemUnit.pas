@@ -12,11 +12,13 @@ uses
 
 type
   TLaunchItemFrame = class(TFrame)
+    btnClearValue: TSpeedButton;
     btnClearJournalDir: TSpeedButton;
     btnExecutableOpenDirectory: TSpeedButton;
     btnStop: TSpeedButton;
     btnOpenJournalDirectory: TSpeedButton;
     cbEraseJournalDirBeforeRun: TCheckBox;
+    cbSubdirectories: TCheckBox;
     edExecutable: TEdit;
     edAdditionalCommandLine: TEdit;
     edJournalDir: TEdit;
@@ -34,6 +36,7 @@ type
     btnShowCommandLine: TSpeedButton;
     btnSelectExecutable: TSpeedButton;
     procedure btnClearJournalDirClick(Sender: TObject);
+    procedure btnClearValueClick(Sender: TObject);
     procedure btnLaunchClick(Sender: TObject);
     procedure btnExecutableOpenDirectoryClick(Sender: TObject);
     procedure btnOpenJournalDirectoryClick(Sender: TObject);
@@ -51,6 +54,7 @@ type
       PARAM_CMD_LINE = 'CmdLine';
       PARAM_ERASE_JOURNAL = 'EraseJournalBeforeRun';
       PARAM_ERASE_JOURNAL_DIRECTORY = 'JournalDirectory';
+      PARAM_ERASE_JOURNAL_SUBDERICTORIES = 'Subdirectories';
       PARAM_COLLAPSED = 'Collapsed';
 
       LANGUAGE_PREFIX = 'TabLaunch.';
@@ -79,7 +83,7 @@ type
 
     procedure OnChangeContentHeight(Sender: TObject);
     procedure DoHeightChange;
-    procedure ClearLogDirectory;
+    procedure ClearDirectory;
 
     procedure SetIcon(AIcon: TIcon);
     procedure SetCollapsed(ACollapsed: Boolean);
@@ -179,16 +183,22 @@ procedure TLaunchItemFrame.btnLaunchClick(Sender: TObject);
 begin
   //Удалить содержимое каталога если включена настройка
   if cbEraseJournalDirBeforeRun.Checked then
-    ClearLogDirectory;
+    ClearDirectory;
 
   //Launch application
   ExecuteFile(Trim(edExecutable.Text), GetCommandLine);
 end;
 
 
+procedure TLaunchItemFrame.btnClearValueClick(Sender: TObject);
+begin
+  edJournalDir.Text := '';
+end;
+
+
 procedure TLaunchItemFrame.btnClearJournalDirClick(Sender: TObject);
 begin
-  ClearLogDirectory;
+  ClearDirectory;
 end;
 
 
@@ -462,11 +472,13 @@ begin
   btnSelectExecutable.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'SelectExecutable', 'Выбрать файл для запуска');
   btnOpenJournalDirectory.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'OpenJournalDirectory', 'Открыть каталог в проводнике');
   btnSelectJournalDirectory.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'SelectJournalDirectory', 'Выбрать каталог журналов');
+  btnClearValue.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'ClearValue', 'Очистить значение');
   btnClearJournalDir.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'ClearJournalDir', 'Очистить каталог');
   edExecutable.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'Executable', 'Файл для запуска');
   edAdditionalCommandLine.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'AdditionalCommandLine', 'Дополнительные параметры запуска');
   edJournalDir.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'JournalDir', 'Каталог с журналами');
   cbEraseJournalDirBeforeRun.Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'EraseJournalDirBeforeRun', 'Очищать каталог перед запуском');
+  cbSubdirectories.Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'Subdirectories', 'Подкаталоги');
   OpenDialog.Filter := Format('%s (*.exe)|*.exe', [FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'Applications', 'Приложения')]);
 
   //Перевести редакторы параметров
@@ -504,6 +516,7 @@ begin
 
     //Очистка каталога перед запуском
     F.WriteBool(SECTION_EXECUTABLE, PARAM_ERASE_JOURNAL, cbEraseJournalDirBeforeRun.Checked);
+    F.WriteBool(SECTION_EXECUTABLE, PARAM_ERASE_JOURNAL_SUBDERICTORIES, cbSubdirectories.Checked);
     F.WriteString(SECTION_EXECUTABLE, PARAM_ERASE_JOURNAL_DIRECTORY, edJournalDir.Text);
 
     //Записать параметры
@@ -527,12 +540,13 @@ begin
   F := TIniFile.Create(FileName);
   try
     //Настройки запуска
-    SetValue(F.ReadString(SECTION_Executable, PARAM_APP, ''));
-    edAdditionalCommandLine.Text := F.ReadString(SECTION_Executable, PARAM_CMD_LINE, '');
+    SetValue(F.ReadString(SECTION_EXECUTABLE, PARAM_APP, ''));
+    edAdditionalCommandLine.Text := F.ReadString(SECTION_EXECUTABLE, PARAM_CMD_LINE, '');
 
     //Очистка каталога перед запуском
-    cbEraseJournalDirBeforeRun.Checked := F.ReadBool(SECTION_Executable, PARAM_ERASE_JOURNAL, False);
-    edJournalDir.Text := F.ReadString(SECTION_Executable, PARAM_ERASE_JOURNAL_DIRECTORY, '');
+    cbEraseJournalDirBeforeRun.Checked := F.ReadBool(SECTION_EXECUTABLE, PARAM_ERASE_JOURNAL, False);
+    cbSubdirectories.Checked := F.ReadBool(SECTION_EXECUTABLE, PARAM_ERASE_JOURNAL_SUBDERICTORIES, False);
+    edJournalDir.Text := F.ReadString(SECTION_EXECUTABLE, PARAM_ERASE_JOURNAL_DIRECTORY, '');
 
     //Чтение параметров
     for i := 0 to pnlContent.ControlCount - 1 do
@@ -595,15 +609,19 @@ begin
 end;
 
 
-procedure TLaunchItemFrame.ClearLogDirectory;
+procedure TLaunchItemFrame.ClearDirectory;
 var
-  Dir: String;
+  dir: String;
 begin
+  //Кталог для удаления
   Dir := Trim(edJournalDir.Text);
+  if dir = '' then
+    Exit;
 
-  //Удалить содержимое каталога
-  if Dir <> '' then
-    DeleteFolderToRecycle(Dir);
+  if cbSubdirectories.Checked then
+    DeleteFolderToRecycle(Dir)
+  else
+    DeleteFilesToRecycle(Dir);
 end;
 
 

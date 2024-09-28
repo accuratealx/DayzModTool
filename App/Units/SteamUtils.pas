@@ -99,7 +99,7 @@ begin
   end;
 
   //Каталог настроек клиента
-  AddToResult('DayZ настройки клиента', GetEnvironmentVariable('USERPROFILE') + '\Documents\DayZ', 'Folder.Page.ico', True);
+  AddToResult('DayZ настройки пользователя', GetEnvironmentVariable('USERPROFILE') + '\Documents\DayZ', 'Folder.Page.ico', True);
 
   //Папка логов DayZ
   AddToResult('DayZ журналы', GetEnvironmentVariable('USERPROFILE') + '\AppData\Local\DayZ', 'Folder.Page.ico', True);

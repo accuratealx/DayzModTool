@@ -11,6 +11,7 @@ function  ExecuteFileAndWait(const FileName, Params: String; StartDir: String = 
 function  DeleteFileToRecycle(FileName: String): Boolean;
 procedure OpenFolderInExplorer(const Folder: String);
 procedure DeleteFolderToRecycle(const Folder: String);
+procedure DeleteFilesToRecycle(const Folder: String);
 procedure ExecuteFile(const ExeFile: String; const Params: String);
 procedure KillProcess(const ProcName: String);
 procedure GetDayZTrashDirectoryList(List: TsgeStringList);
@@ -80,7 +81,36 @@ end;
 
 procedure DeleteFolderToRecycle(const Folder: String);
 var
-  FileList, DirectoryList: TsgeStringList;
+  DirectoryList: TsgeStringList;
+  i: Integer;
+  Dir: String;
+begin
+  Dir := sgeCheckPathDelimiter(Folder);
+
+  if not DirectoryExists(Dir) then
+    Exit;
+
+  DirectoryList := TsgeStringList.Create;
+  try
+    //Получить список каталогов в папке
+    sgeGetDirectoryListInFolder(Dir, DirectoryList);
+
+    //Удалить каталоги
+    for i := 0 to DirectoryList.Count - 1 do
+      DeleteFileToRecycle(Dir + DirectoryList.Part[i]);
+
+    //Удалить файлы
+    DeleteFilesToRecycle(Dir);
+
+  finally
+    DirectoryList.Free;
+  end;
+end;
+
+
+procedure DeleteFilesToRecycle(const Folder: String);
+var
+  FileList: TsgeStringList;
   i: Integer;
   Dir: String;
 begin
@@ -90,25 +120,15 @@ begin
     Exit;
 
   FileList := TsgeStringList.Create;
-  DirectoryList := TsgeStringList.Create;
   try
-
-    //Получить список каталогов в папке
-    sgeGetDirectoryListInFolder(Dir, DirectoryList);
-
     //Получить список файлов в папке
     sgeGetFileListInFolder(Dir, FileList);
-
-    //Удалить каталоги
-    for i := 0 to DirectoryList.Count - 1 do
-      DeleteFileToRecycle(Dir + DirectoryList.Part[i]);
 
     //Удалить файлы
     for i := 0 to FileList.Count - 1 do
       DeleteFileToRecycle(Dir + FileList.Part[i]);
 
   finally
-    DirectoryList.Free;
     FileList.Free;
   end;
 end;
