@@ -53,20 +53,21 @@ inherited MessageDialogForm: TMessageDialogForm
   end
   inherited pnlContent: TPanel
     Height = 35
-  end
-  object lblText: TLabel[2]
-    Left = 10
-    Height = 15
-    Top = 10
-    Width = 43
-    Alignment = taCenter
-    AutoSize = False
-    Caption = 'Привет'
-    Font.CharSet = RUSSIAN_CHARSET
-    Font.Pitch = fpVariable
-    Font.Quality = fqDraft
-    Font.Style = [fsBold]
-    ParentFont = False
-    WordWrap = True
+    ClientHeight = 35
+    object lblText: TLabel[0]
+      Left = 10
+      Height = 15
+      Top = 10
+      Width = 43
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'Привет'
+      Font.CharSet = RUSSIAN_CHARSET
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentFont = False
+      WordWrap = True
+    end
   end
 end
