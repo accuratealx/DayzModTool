@@ -18,20 +18,21 @@ type
     FSettingsDir: String;           //Каталог с настройками
     FLaunchListFile: String;        //Файл настроек приложений
 
-    procedure AddLaunchFrame(AFrame: TLaunchItemFrame);
-    procedure CreateLaunchFrames(const LaunchFile: String);
-    procedure DestroyLaunchFrame;
-    procedure ArrangeLaunchTabItems;
+    procedure AddItemFrame(AFrame: TLaunchItemFrame);
+    procedure CreateItemFrames(const LaunchFile: String);
+    procedure ClearItemFrames;
+    procedure ArrangeItemFrames;
     procedure OnChangeLaunchContentHeight(Sender: TObject);
   public
-    constructor Create(Parameters: TTabParameters); reintroduce;
+    constructor Create(Parameters: TTabParameters; AParent: TWinControl); reintroduce;
     destructor  Destroy; override;
 
     procedure FindExecutables;
     procedure ApplyLanguage; override;
+    procedure SaveSettings; override;
+    procedure LoadSettings; override;
+
     procedure SetCollapset(ACollapsed: Boolean);
-    procedure SaveSettings;
-    procedure LoadSettings;
 
     property Items: TLaunchItemFrameList read FItems;
   end;
@@ -44,11 +45,11 @@ implementation
 
 procedure TLaunchFrame.sbLaunchResize(Sender: TObject);
 begin
-  ArrangeLaunchTabItems;
+  ArrangeItemFrames;
 end;
 
 
-procedure TLaunchFrame.AddLaunchFrame(AFrame: TLaunchItemFrame);
+procedure TLaunchFrame.AddItemFrame(AFrame: TLaunchItemFrame);
 var
   c: Integer;
 begin
@@ -58,7 +59,7 @@ begin
 end;
 
 
-procedure TLaunchFrame.CreateLaunchFrames(const LaunchFile: String);
+procedure TLaunchFrame.CreateItemFrames(const LaunchFile: String);
 var
   F: TIniFile;
   SectionList: TStringList;
@@ -104,7 +105,7 @@ begin
       Frame := TLaunchItemFrame.Create(FrameCaption, FrameIcon, FrameParams, FrameSettings, FrameRelativeFilename, FrameLocaleID);
 
       //Настроить выделение
-      Frame.Higlight := not Odd(i);
+      Frame.Highlight := not Odd(i);
 
       //Установить обработчик изменения высоты
       Frame.OnHeightChange := @OnChangeLaunchContentHeight;
@@ -113,7 +114,7 @@ begin
       Frame.Parent := sbLaunch;
 
       //Добавить в список
-      AddLaunchFrame(Frame);
+      AddItemFrame(Frame);
     end;
 
   finally
@@ -124,17 +125,18 @@ begin
 end;
 
 
-procedure TLaunchFrame.DestroyLaunchFrame;
+procedure TLaunchFrame.ClearItemFrames;
 var
   i: Integer;
 begin
   for i := 0 to Length(FItems) - 1 do
     FItems[i].Free;
+
   SetLength(FItems, 0);
 end;
 
 
-procedure TLaunchFrame.ArrangeLaunchTabItems;
+procedure TLaunchFrame.ArrangeItemFrames;
 var
   i, Y: Integer;
   Frame: TLaunchItemFrame;
@@ -155,33 +157,33 @@ end;
 
 procedure TLaunchFrame.OnChangeLaunchContentHeight(Sender: TObject);
 begin
-  ArrangeLaunchTabItems;
+  ArrangeItemFrames;
 end;
 
 
-constructor TLaunchFrame.Create(Parameters: TTabParameters);
+constructor TLaunchFrame.Create(Parameters: TTabParameters; AParent: TWinControl);
 begin
-  inherited Create(Parameters);
+  inherited Create(Parameters, AParent);
 
   //Подготовить каталог данных
   FDataDir := FParams.DataDirectory + 'Launch\';
   ForceDirectories(FDataDir);
 
   //Определить файл настроек фреймов
-  FLaunchListFile := FDataDir + '\List.ini';
+  FLaunchListFile := FDataDir + 'List.ini';
 
   //Подготовить каталог хранения параметров фреймов
   FSettingsDir := FParams.SettingsDirectory + 'Launch\';
   ForceDirectories(FSettingsDir);
 
   //Создать фреймы
-  CreateLaunchFrames(FLaunchListFile);
+  CreateItemFrames(FLaunchListFile);
 end;
 
 
 destructor TLaunchFrame.Destroy;
 begin
-  DestroyLaunchFrame;
+  ClearItemFrames;
 
   inherited Destroy;
 end;
@@ -206,15 +208,6 @@ begin
 end;
 
 
-procedure TLaunchFrame.SetCollapset(ACollapsed: Boolean);
-var
-  i: Integer;
-begin
-  for i := Length(FItems) - 1 downto 0 do
-    FItems[i].Collapsed := ACollapsed;
-end;
-
-
 procedure TLaunchFrame.SaveSettings;
 var
   i: Integer;
@@ -230,6 +223,15 @@ var
 begin
   for i := Length(FItems) - 1 downto 0 do
     FItems[i].LoadSettings;
+end;
+
+
+procedure TLaunchFrame.SetCollapset(ACollapsed: Boolean);
+var
+  i: Integer;
+begin
+  for i := Length(FItems) - 1 downto 0 do
+    FItems[i].Collapsed := ACollapsed;
 end;
 
 

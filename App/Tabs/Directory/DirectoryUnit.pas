@@ -36,24 +36,21 @@ type
     FSettingsFile: String;
     FFrames: TDirectoryItemFrameArray;
 
-    procedure AddDirectoryFrame(AFrame: TDirectoryItemFrame);
-    procedure ClearDirectoryFrames;
-    procedure ArrangeDirectoryFrames;
-    procedure SwapDirectoryFrame(Index1, Index2: Integer);
-    procedure DeleteDirectoryFrameByIndex(Index: Integer);
+    procedure AddItemFrame(AFrame: TDirectoryItemFrame);
+    procedure ClearItemFrames;
+    procedure ArrangeItemFrames;
+    procedure SwapItemFrames(Index1, Index2: Integer);
+    procedure DeleteItemFrameByIndex(Index: Integer);
+    function  GetSelectedItemFrame: TDirectoryItemFrame;
+    function  GetItemFrameIndex(Frame: TDirectoryItemFrame): Integer;
+    function  IsItemFrameExist(APath: String): Boolean;
 
-    function  GetSelectedDirectoryFrame: TDirectoryItemFrame;
-    function  GetDirectoryFrameIndex(Frame: TDirectoryItemFrame): Integer;
-    function  IsDirectoryFrameExist(APath: String): Boolean;
     procedure CorrectToolButtons;
-
-    procedure SaveSettings(const FileName: String);
-    procedure LoadSettings(const FileName: String);
 
     //Обработчик выделения элемента
     procedure OnItemSelect(Sender: TObject);
   public
-    constructor Create(Parameters: TTabParameters); reintroduce;
+    constructor Create(Parameters: TTabParameters; AParent: TWinControl); reintroduce;
     destructor  Destroy; override;
 
     procedure DeleteIncorrectDirectory;
@@ -61,8 +58,8 @@ type
     procedure DeleteAll;
 
     procedure ApplyLanguage; override;
-    procedure SaveSettings;
-    procedure LoadSettings;
+    procedure SaveSettings; override;
+    procedure LoadSettings; override;
 
     property Frames: TDirectoryItemFrameArray read FFrames;
   end;
@@ -87,23 +84,23 @@ var
   Index: Integer;
 begin
   //индекс выделенного фрейма
-  Index := GetDirectoryFrameIndex(GetSelectedDirectoryFrame);
+  Index := GetItemFrameIndex(GetSelectedItemFrame);
 
   //Защита от падения
   if Index = 0 then
     Exit;
 
   //Поменять местами
-  SwapDirectoryFrame(Index, Index - 1);
+  SwapItemFrames(Index, Index - 1);
 
   //Перестроить элементы
-  ArrangeDirectoryFrames;
+  ArrangeItemFrames;
 
   //Поправить панель инструментов
   CorrectToolButtons;
 
   //Сохранить настройки
-  SaveSettings(FSettingsFile);
+  SaveSettings;
 end;
 
 
@@ -112,23 +109,23 @@ var
   Index: Integer;
 begin
   //индекс выделенного фрейма
-  Index := GetDirectoryFrameIndex(GetSelectedDirectoryFrame);
+  Index := GetItemFrameIndex(GetSelectedItemFrame);
 
   //Защита от падения
   if Index = Length(FFrames) - 1 then
     Exit;
 
   //Поменять местами
-  SwapDirectoryFrame(Index, Index + 1);
+  SwapItemFrames(Index, Index + 1);
 
   //Перестроить элементы
-  ArrangeDirectoryFrames;
+  ArrangeItemFrames;
 
   //Поправить панель инструментов
   CorrectToolButtons;
 
   //Сохранить настройки
-  SaveSettings(FSettingsFile);
+  SaveSettings;
 end;
 
 
@@ -138,7 +135,7 @@ var
   Item: TDirectoryItemFrame;
 begin
   //Ссылка на элемент
-  Item := GetSelectedDirectoryFrame;
+  Item := GetSelectedItemFrame;
 
   if Item = nil then
     Exit;
@@ -159,7 +156,7 @@ begin
     CorrectToolButtons;
 
     //Сохранить настройки
-    SaveSettings(FSettingsFile);
+    SaveSettings;
   end;
 end;
 
@@ -169,7 +166,7 @@ var
   Item: TDirectoryItemFrame;
 begin
   //Ссылка на элемент
-  Item := GetSelectedDirectoryFrame;
+  Item := GetSelectedItemFrame;
 
   //Защита от дурака
   if Item = nil then
@@ -186,7 +183,7 @@ var
   Index: Integer;
 begin
   //Выделенный фрейм
-  Frame := GetSelectedDirectoryFrame;
+  Frame := GetSelectedItemFrame;
 
   if YesNoQuestionDialogExecute(
     FParams.Language,
@@ -194,19 +191,19 @@ begin
   ) then
   begin
     //индекс выделенного фрейма
-    Index := GetDirectoryFrameIndex(Frame);
+    Index := GetItemFrameIndex(Frame);
 
     //Удалить фрейм
-    DeleteDirectoryFrameByIndex(Index);
+    DeleteItemFrameByIndex(Index);
 
     //Перестроить элементы
-    ArrangeDirectoryFrames;
+    ArrangeItemFrames;
 
     //Поправить панель инструментов
     CorrectToolButtons;
 
     //Сохранить настройки
-    SaveSettings(FSettingsFile);
+    SaveSettings;
   end;
 end;
 
@@ -228,21 +225,21 @@ begin
     Frame.OnSelect := @OnItemSelect;
 
     //Добавить в массив
-    AddDirectoryFrame(Frame);
+    AddItemFrame(Frame);
 
     //Упорядочить элементы
-    ArrangeDirectoryFrames;
+    ArrangeItemFrames;
 
     //Поправить панель инструментов
     CorrectToolButtons;
 
     //Сохранить настройки
-    SaveSettings(FSettingsFile);
+    SaveSettings;
   end;
 end;
 
 
-procedure TDirectoryFrame.AddDirectoryFrame(AFrame: TDirectoryItemFrame);
+procedure TDirectoryFrame.AddItemFrame(AFrame: TDirectoryItemFrame);
 var
   c: Integer;
 begin
@@ -252,7 +249,7 @@ begin
 end;
 
 
-procedure TDirectoryFrame.ClearDirectoryFrames;
+procedure TDirectoryFrame.ClearItemFrames;
 var
   i, c: Integer;
 begin
@@ -264,7 +261,7 @@ begin
 end;
 
 
-procedure TDirectoryFrame.ArrangeDirectoryFrames;
+procedure TDirectoryFrame.ArrangeItemFrames;
 var
   i, Y: Integer;
   Frame: TDirectoryItemFrame;
@@ -287,7 +284,7 @@ begin
 end;
 
 
-procedure TDirectoryFrame.SwapDirectoryFrame(Index1, Index2: Integer);
+procedure TDirectoryFrame.SwapItemFrames(Index1, Index2: Integer);
 var
   Frame: TDirectoryItemFrame;
 begin
@@ -297,7 +294,7 @@ begin
 end;
 
 
-procedure TDirectoryFrame.DeleteDirectoryFrameByIndex(Index: Integer);
+procedure TDirectoryFrame.DeleteItemFrameByIndex(Index: Integer);
 var
   c, i: Integer;
 begin
@@ -317,7 +314,7 @@ begin
 end;
 
 
-function TDirectoryFrame.GetSelectedDirectoryFrame: TDirectoryItemFrame;
+function TDirectoryFrame.GetSelectedItemFrame: TDirectoryItemFrame;
 var
   i, c: Integer;
 begin
@@ -332,7 +329,7 @@ begin
 end;
 
 
-function TDirectoryFrame.GetDirectoryFrameIndex(Frame: TDirectoryItemFrame): Integer;
+function TDirectoryFrame.GetItemFrameIndex(Frame: TDirectoryItemFrame): Integer;
 var
   i, c: Integer;
 begin
@@ -347,7 +344,7 @@ begin
 end;
 
 
-function TDirectoryFrame.IsDirectoryFrameExist(APath: String): Boolean;
+function TDirectoryFrame.IsItemFrameExist(APath: String): Boolean;
 var
   i: Integer;
 begin
@@ -365,74 +362,13 @@ procedure TDirectoryFrame.CorrectToolButtons;
 var
   Item: TDirectoryItemFrame;
 begin
-  Item := GetSelectedDirectoryFrame;
+  Item := GetSelectedItemFrame;
 
   btnDelete.Enabled := Item <> nil;
   btnEdit.Enabled := Item <> nil;
-  btnUp.Enabled := (Item <> nil) and (GetDirectoryFrameIndex(Item) > 0);
-  btnDown.Enabled := (Item <> nil) and (GetDirectoryFrameIndex(Item) < Length(FFrames) - 1);
+  btnUp.Enabled := (Item <> nil) and (GetItemFrameIndex(Item) > 0);
+  btnDown.Enabled := (Item <> nil) and (GetItemFrameIndex(Item) < Length(FFrames) - 1);
   btnExplore.Enabled := (Item <> nil) and (Item.IsPathCorrect);
-end;
-
-
-procedure TDirectoryFrame.SaveSettings(const FileName: String);
-var
-  F: TIniFile;
-  i: Integer;
-begin
-  F := TIniFile.Create(FSettingsFile);
-  try
-    //Стереть секцию
-    F.EraseSection(SECTION_DIRECTORY);
-
-    for i := 0 to Length(FFrames) - 1 do
-      F.WriteString(SECTION_DIRECTORY, IntToStr(i), FFrames[i].ValueToString);
-
-  finally
-    F.Free;
-  end;
-end;
-
-
-procedure TDirectoryFrame.LoadSettings(const FileName: String);
-var
-  F: TIniFile;
-  Values: TStringList;
-  i: Integer;
-  Line: String;
-  Frame: TDirectoryItemFrame;
-begin
-  //Удалить фреймы
-  ClearDirectoryFrames;
-
-
-  F := TIniFile.Create(FileName);
-  Values := TStringList.Create;
-  try
-    F.ReadSection(SECTION_DIRECTORY, Values);
-
-    for i := 0 to Values.Count - 1 do
-    begin
-      Line := Trim(F.ReadString(SECTION_DIRECTORY, Values.Strings[i], ''));
-
-      if Line = '' then
-        Continue;
-
-      //Создать элемент каталога
-      Frame := TDirectoryItemFrame.Create(FIconDirectory, Line);
-      Frame.OnSelect := @OnItemSelect;
-
-      //Добавить в массив
-      AddDirectoryFrame(Frame);
-    end;
-
-    //Упорядочить фреймы
-    ArrangeDirectoryFrames;
-
-  finally
-    Values.Free;
-    F.Free;
-  end;
 end;
 
 
@@ -455,27 +391,27 @@ begin
 end;
 
 
-constructor TDirectoryFrame.Create(Parameters: TTabParameters);
+constructor TDirectoryFrame.Create(Parameters: TTabParameters; AParent: TWinControl);
 begin
-  inherited Create(Parameters);
+  inherited Create(Parameters, AParent);
 
   //Подготовить каталог данных
   FIconDirectory := FParams.DataDirectory + 'Directory\';
   ForceDirectories(FIconDirectory);
 
   //Определить файл настроек
-  FSettingsFile := FParams.SettingsDirectory + '\Directory.ini';
+  FSettingsFile := FParams.SettingsDirectory + 'Directory.ini';
 
   //Загрузить настройки
-  LoadSettings(FSettingsFile);
+  LoadSettings;
 end;
 
 
 destructor TDirectoryFrame.Destroy;
 begin
-  SaveSettings(FSettingsFile);
+  SaveSettings;
 
-  ClearDirectoryFrames;
+  ClearItemFrames;
 
   inherited Destroy;
 end;
@@ -493,17 +429,17 @@ begin
     for i := Length(FFrames) - 1 downto 0 do
     begin
       if not FFrames[i].IsPathCorrect then
-        DeleteDirectoryFrameByIndex(i);
+        DeleteItemFrameByIndex(i);
     end;
 
     //Упорядочить фреймы
-    ArrangeDirectoryFrames;
+    ArrangeItemFrames;
 
     //Поправить панель кнопок
     CorrectToolButtons;
 
     //Сохранить настройки
-    SaveSettings(FSettingsFile);
+    SaveSettings;
   end;
 end;
 
@@ -536,7 +472,7 @@ begin
   for i := 0 to List.Count - 1 do
   begin
     //Пропуск существующих
-    if IsDirectoryFrameExist(GetPathFromString(List.Strings[i])) then
+    if IsItemFrameExist(GetPathFromString(List.Strings[i])) then
       Continue;
 
     //Создать элемент каталога
@@ -547,14 +483,14 @@ begin
     Frame.Caption := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'DirectoryName.' + Frame.Caption, Frame.Caption);
 
     //Добавить в массив
-    AddDirectoryFrame(Frame);
+    AddItemFrame(Frame);
   end;
 
   //Сохранить настройки
-  SaveSettings(FSettingsFile);
+  SaveSettings;
 
   //Упорядочить фреймы
-  ArrangeDirectoryFrames;
+  ArrangeItemFrames;
 
   List.Free;
 end;
@@ -568,10 +504,10 @@ begin
   ) then
   begin
     //Удалить все каталоги
-    ClearDirectoryFrames;
+    ClearItemFrames;
 
     //Сохранить настройки
-    SaveSettings(FSettingsFile);
+    SaveSettings;
 
     //Поправить панель кнопок
     CorrectToolButtons;
@@ -592,14 +528,63 @@ end;
 
 
 procedure TDirectoryFrame.SaveSettings;
+var
+  F: TIniFile;
+  i: Integer;
 begin
-  SaveSettings(FSettingsFile);
+  F := TIniFile.Create(FSettingsFile);
+  try
+    //Стереть секцию
+    F.EraseSection(SECTION_DIRECTORY);
+
+    for i := 0 to Length(FFrames) - 1 do
+      F.WriteString(SECTION_DIRECTORY, IntToStr(i), FFrames[i].ValueToString);
+
+  finally
+    F.Free;
+  end;
 end;
 
 
 procedure TDirectoryFrame.LoadSettings;
+var
+  F: TIniFile;
+  Values: TStringList;
+  i: Integer;
+  Line: String;
+  Frame: TDirectoryItemFrame;
 begin
-  LoadSettings(FSettingsFile);
+  //Удалить фреймы
+  ClearItemFrames;
+
+
+  F := TIniFile.Create(FSettingsFile);
+  Values := TStringList.Create;
+  try
+    F.ReadSection(SECTION_DIRECTORY, Values);
+
+    for i := 0 to Values.Count - 1 do
+    begin
+      Line := Trim(F.ReadString(SECTION_DIRECTORY, Values.Strings[i], ''));
+
+      if Line = '' then
+        Continue;
+
+      //Создать элемент каталога
+      Frame := TDirectoryItemFrame.Create(FIconDirectory, Line);
+      Frame.OnSelect := @OnItemSelect;
+
+      //Добавить в массив
+      AddItemFrame(Frame);
+    end;
+
+    //Упорядочить фреймы
+    ArrangeItemFrames;
+
+  finally
+    Values.Free;
+    F.Free;
+  end;
 end;
 
 

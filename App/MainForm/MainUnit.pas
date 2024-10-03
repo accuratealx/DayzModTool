@@ -9,7 +9,7 @@ uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus,
   ExtCtrls, ComCtrls, windows, IniFiles, LCLIntf,
   sgeStringList,
-  Language, TabParameters,
+  Language, TabParameters, TabCommonUnit,
   LaunchUnit, LaunchItemUnit, DirectoryUnit, DirectoryItemUnit, StringTableUnit, BuilderUnit,
   WorkDriveUnit, TrashCleanerUnit;
 
@@ -25,6 +25,9 @@ type
     ilTrayDirectory: TImageList;
     ilLanguages: TImageList;
     MainMenu: TMainMenu;
+    miMainTabBuilderCollapseAll: TMenuItem;
+    miMainTabBuilderExpandAll: TMenuItem;
+    miMainTabBuilder: TMenuItem;
     miMainToolsTimeCalculator: TMenuItem;
     miMainToolsTrashCleaner: TMenuItem;
     miTraySeparator3: TMenuItem;
@@ -79,6 +82,8 @@ type
     procedure miMainHideClick(Sender: TObject);
     procedure miExitClick(Sender: TObject);
     procedure miMainInfoDonateClick(Sender: TObject);
+    procedure miMainTabBuilderCollapseAllClick(Sender: TObject);
+    procedure miMainTabBuilderExpandAllClick(Sender: TObject);
     procedure miMainTabDirectoryAddDefaultClick(Sender: TObject);
     procedure miMainTabDirectoryEraseAllClick(Sender: TObject);
     procedure miMainTabDirectoryEraseIncorrectClick(Sender: TObject);
@@ -98,6 +103,13 @@ type
     procedure TrayIconClick(Sender: TObject);
     procedure TrayMenuPopup(Sender: TObject);
   private
+    type
+      TTabFrameType = (
+        tftLaunch,
+        tftDirectory,
+        tftBuilder,
+        tftStringTable
+      );
     const
       WM_AFTER_SHOW = WM_USER + 1;
     var
@@ -132,10 +144,11 @@ type
 
     //Закладки
     FTabParams: TTabParameters;
-    FLaunchFrame: TLaunchFrame;
-    FDirectoryFrame: TDirectoryFrame;
-    FStringTableFrame: TStringTableFrame;
-    FBuilderFrame: TBuilderFrame;
+    FFrames: array[TTabFrameType] of TTabCommonFrame;
+    //FLaunchFrame: TLaunchFrame;
+    //FDirectoryFrame: TDirectoryFrame;
+    //FStringTableFrame: TStringTableFrame;
+    //FBuilderFrame: TBuilderFrame;
 
     procedure Init;
     procedure Done;
@@ -239,45 +252,57 @@ begin
 end;
 
 
+procedure TMainForm.miMainTabBuilderCollapseAllClick(Sender: TObject);
+begin
+  (FFrames[tftBuilder] as TBuilderFrame).SetCollapset(True);
+end;
+
+
+procedure TMainForm.miMainTabBuilderExpandAllClick(Sender: TObject);
+begin
+  (FFrames[tftBuilder] as TBuilderFrame).SetCollapset(False);
+end;
+
+
 procedure TMainForm.miMainTabDirectoryAddDefaultClick(Sender: TObject);
 begin
-  FDirectoryFrame.AddStandartDirectory;
+  (FFrames[tftDirectory] as TDirectoryFrame).AddStandartDirectory;
 end;
 
 
 procedure TMainForm.miMainTabDirectoryEraseAllClick(Sender: TObject);
 begin
-  FDirectoryFrame.DeleteAll;
+  (FFrames[tftDirectory] as TDirectoryFrame).DeleteAll;
 end;
 
 
 procedure TMainForm.miMainTabDirectoryEraseIncorrectClick(Sender: TObject);
 begin
-  FDirectoryFrame.DeleteIncorrectDirectory;
+  (FFrames[tftDirectory] as TDirectoryFrame).DeleteIncorrectDirectory;
 end;
 
 
 procedure TMainForm.miMainTabLaunchCollapseAllClick(Sender: TObject);
 begin
-  FLaunchFrame.SetCollapset(True);
+  (FFrames[tftLaunch] as TLaunchFrame).SetCollapset(True);
 end;
 
 
 procedure TMainForm.miMainTabLaunchExpandAllClick(Sender: TObject);
 begin
-  FLaunchFrame.SetCollapset(False);
+  (FFrames[tftLaunch] as TLaunchFrame).SetCollapset(False);
 end;
 
 
 procedure TMainForm.miMainTabLaunchFindExecutablesClick(Sender: TObject);
 begin
-  FLaunchFrame.FindExecutables;
+  (FFrames[tftLaunch] as TLaunchFrame).FindExecutables;
 end;
 
 
 procedure TMainForm.miMainTabStringTableFitColumnsClick(Sender: TObject);
 begin
-  FStringTableFrame.FitColumns;
+  (FFrames[tftStringTable] as TStringTableFrame).FitColumns;
 end;
 
 
@@ -629,39 +654,31 @@ end;
 
 procedure TMainForm.CreateTabs(AParams: TTabParameters);
 begin
-  //Запуск
-  FLaunchFrame := TLaunchFrame.Create(AParams);
-  FLaunchFrame.Parent := tabLaunch;
-
-  //Каталоги
-  FDirectoryFrame := TDirectoryFrame.Create(AParams);
-  FDirectoryFrame.Parent := tabDirectory;
-
-  //Построитель
-  FBuilderFrame := TBuilderFrame.Create(AParams);
-  FBuilderFrame.Parent := tabBuilder;
-
-  //Таблица строк
-  FStringTableFrame := TStringTableFrame.Create(AParams);
-  FStringTableFrame.Parent := tabStringTable;
+  FFrames[tftLaunch] := TLaunchFrame.Create(AParams, tabLaunch);
+  FFrames[tftDirectory] := TDirectoryFrame.Create(AParams, tabDirectory);
+  FFrames[tftBuilder] := TBuilderFrame.Create(AParams, tabBuilder);
+  FFrames[tftStringTable] := TStringTableFrame.Create(AParams, tabStringTable);
 end;
 
 
 procedure TMainForm.DestroyTabs;
+var
+  i: TTabFrameType;
 begin
-  FStringTableFrame.Free;
-  FDirectoryFrame.Free;
-  FBuilderFrame.Free;
-  FLaunchFrame.Free;
+  for i := Low(TTabFrameType) to High(TTabFrameType) do
+  begin
+    FFrames[i].Free;
+    FFrames[i] := nil;
+  end;
 end;
 
 
 procedure TMainForm.ApplayTabsLanguage;
+var
+  i: TTabFrameType;
 begin
-  FLaunchFrame.ApplyLanguage;
-  FDirectoryFrame.ApplyLanguage;
-  FBuilderFrame.ApplyLanguage;
-  FStringTableFrame.ApplyLanguage;
+  for i := Low(TTabFrameType) to High(TTabFrameType) do
+    FFrames[i].ApplyLanguage;
 end;
 
 
@@ -682,6 +699,7 @@ procedure TMainForm.CreateTrayMenuLaunchItems;
 
 var
   c, i, IconIndex: Integer;
+  Frame: TLaunchFrame;
 begin
   //Почистить лишнее
   miTrayLaunch.Clear;
@@ -689,14 +707,15 @@ begin
   ilTrayLaunch.Clear;
 
   //Построить меню
-  c := Length(FLaunchFrame.Items) - 1;
+  Frame := FFrames[tftLaunch] as TLaunchFrame;
+  c := Length(Frame.Items) - 1;
   for i := 0 to c do
   begin
     IconIndex := ilTrayLaunch.Count;
-    ilTrayLaunch.AddIcon(FLaunchFrame.Items[i].Icon);
+    ilTrayLaunch.AddIcon(Frame.Items[i].Icon);
 
-    AddMenu(miTrayLaunch, FLaunchFrame.Items[i], IconIndex, @miTrayLaunchClick);
-    AddMenu(miTrayStop, FLaunchFrame.Items[i], IconIndex, @miTrayStopClick);
+    AddMenu(miTrayLaunch, Frame.Items[i], IconIndex, @miTrayLaunchClick);
+    AddMenu(miTrayStop, Frame.Items[i], IconIndex, @miTrayStopClick);
   end;
 end;
 
@@ -763,14 +782,16 @@ procedure TMainForm.CreateTrayMenuDirectoryItems;
 
 var
   i: Integer;
+  Frame: TDirectoryFrame;
 begin
   DestroyTrayMenuDirectoryItems;
   ilTrayDirectory.Clear;
 
-  for i := 0 to Length(FDirectoryFrame.Frames) - 1 do
+  Frame := FFrames[tftDirectory] as TDirectoryFrame;
+  for i := 0 to Length(Frame.Frames) - 1 do
   begin
-    ilTrayDirectory.AddIcon(FDirectoryFrame.Frames[i].Icon);
-    AddMenu(miTrayDirectory, FDirectoryFrame.Frames[i], i);
+    ilTrayDirectory.AddIcon(Frame.Frames[i].Icon);
+    AddMenu(miTrayDirectory, Frame.Frames[i], i);
   end;
 end;
 
@@ -853,28 +874,29 @@ end;
 
 
 procedure TMainForm.GlobalSaveSettings;
+var
+  i: TTabFrameType;
 begin
   //Основная форма
   SaveSettings;
 
   //Фреймы
-  FLaunchFrame.SaveSettings;
-  FDirectoryFrame.SaveSettings;
-  FBuilderFrame.SaveSettings;
-  FStringTableFrame.SaveSettings;
+  for i := Low(TTabFrameType) to High(TTabFrameType) do
+    FFrames[i].SaveSettings;
 end;
 
 
 procedure TMainForm.GlobalLoadSettings;
+var
+  i: TTabFrameType;
 begin
   //Основная форма
   SaveSettings;
 
   //Фреймы
-  FLaunchFrame.LoadSettings;
-  FDirectoryFrame.LoadSettings;
-  FBuilderFrame.LoadSettings;
-  FStringTableFrame.LoadSettings;
+  //Фреймы
+  for i := Low(TTabFrameType) to High(TTabFrameType) do
+    FFrames[i].LoadSettings;
 end;
 
 

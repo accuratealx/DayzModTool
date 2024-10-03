@@ -125,17 +125,18 @@ procedure TDirectoryItemFrame.SetSelected(ASelected: Boolean);
 begin
   FSelected := ASelected;
 
-  //Изменить фоновый цвет
-  Self.ParentColor := not FSelected;
-  Self.ParentBackground := not FSelected;
+  Self.ParentColor := not FHighlight;
+  Self.ParentBackground := not FHighlight;
 
   if FSelected then
-    Color := clSkyBlue
+    Self.Color := clSkyBlue
   else
+  begin
     if FHighlight then
-      Color := cl3DLight
+      Self.Color := cl3DLight
     else
-      Color := clDefault;
+      Self.Color := Parent.Color;
+  end;
 
   if FSelected then
     DoOnSelect;

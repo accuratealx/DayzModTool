@@ -67,7 +67,7 @@ type
     FRelativeFileName: String;
     FLocaleID: String;
     FCollapsed: Boolean;
-    FHiglight: Boolean;
+    FHighlight: Boolean;
     FOnHeightChange: TNotifyEvent;
     FLanguage: TLanguage;
 
@@ -111,7 +111,7 @@ type
     property RelativeFileName: String read FRelativeFileName write FRelativeFileName;
     property LocaleID: String read FLocaleID write FLocaleID;
     property Collapsed: Boolean read FCollapsed write SetCollapsed;
-    property Higlight: Boolean read FHiglight write SetHighlight;
+    property Highlight: Boolean read FHighlight write SetHighlight;
     property OnHeightChange: TNotifyEvent read FOnHeightChange write FOnHeightChange;
   end;
 
@@ -653,19 +653,19 @@ end;
 
 procedure TLaunchItemFrame.SetHighlight(AHighlight: Boolean);
 begin
-  if FHiglight = AHighlight then
+  if FHighlight = AHighlight then
     Exit;
 
-  FHiglight := AHighlight;
+  FHighlight := AHighlight;
 
   //Изменить фоновый цвет
-  Self.ParentColor := not FHiglight;
-  Self.ParentBackground := not FHiglight;
+  Self.ParentColor := not FHighlight;
+  Self.ParentBackground := not FHighlight;
 
-  if FHiglight then
-    Color := cl3DLight
+  if FHighlight then
+    Self.Color := cl3DLight
   else
-    Color := clDefault;
+    Self.Color := clDefault;
 end;
 
 

@@ -47,12 +47,8 @@ type
       LANGUAGE_PREFIX = 'StringTable.';
   private
     FLangTable: TStringTableItemList;
-    FSettingsDir: String;
     FSettingsFile: String;
     FLangTableFile: String;
-
-    procedure SaveSettings(const FileName: String);
-    procedure LoadSettings(const FileName: String);
 
     function  GetColumnCaptionByIndex(index: Integer): String;
     procedure PrepareTableGrid;
@@ -68,13 +64,14 @@ type
 
     function ExistChecker(IDName, OriginalIDName: String): Boolean; //Проверка ID на совпадение
   public
-    constructor Create(Parameters: TTabParameters); reintroduce;
+    constructor Create(Parameters: TTabParameters; AParent: TWinControl); reintroduce;
     destructor  Destroy; override;
 
     procedure ApplyLanguage; override;
+    procedure SaveSettings; override;
+    procedure LoadSettings; override;
+
     procedure FitColumns;
-    procedure SaveSettings;
-    procedure LoadSettings;
   end;
 
 
@@ -279,55 +276,6 @@ begin
 end;
 
 
-procedure TStringTableFrame.SaveSettings(const FileName: String);
-var
-  F: TIniFile;
-  i: Integer;
-begin
-  F := TIniFile.Create(FSettingsFile);
-  try
-
-    //Столбцы таблицы
-    for i := 0 to TableGrid.Columns.Count - 1 do
-    begin
-      F.WriteBool(SECTION_COLUMN_VISIBLE, IntToStr(i), TableGrid.Columns.Items[i].Visible);
-      F.WriteInteger(SECTION_COLUMN_WIDTH, IntToStr(i), TableGrid.Columns.Items[i].StoredWidth);
-    end;
-
-  finally
-    F.Free;
-  end;
-
-  //Сохранить тоследнюю таблицу
-  SaveTable(FLangTableFile);
-end;
-
-
-procedure TStringTableFrame.LoadSettings(const FileName: String);
-var
-  F: TIniFile;
-  i: Integer;
-begin
-  F := TIniFile.Create(FSettingsFile);
-  try
-
-    //Столбцы таблицы
-    for i := 0 to TableGrid.Columns.Count - 1 do
-    begin
-      TableGrid.Columns.Items[i].Width := F.ReadInteger(SECTION_COLUMN_WIDTH, IntToStr(i), TableGrid.DefaultColWidth);
-      TableGrid.Columns.Items[i].Visible := F.ReadBool(SECTION_COLUMN_VISIBLE, IntToStr(i), True);
-    end;
-
-  finally
-    F.Free;
-  end;
-
-  //Загрузить тоследнюю таблицу
-  if FileExists(FLangTableFile) then
-    LoadTable(FLangTableFile);
-end;
-
-
 function TStringTableFrame.GetColumnCaptionByIndex(index: Integer): String;
 begin
   Result := '';
@@ -506,9 +454,11 @@ begin
 end;
 
 
-constructor TStringTableFrame.Create(Parameters: TTabParameters);
+constructor TStringTableFrame.Create(Parameters: TTabParameters; AParent: TWinControl);
+var
+  Dir: String;
 begin
-  inherited Create(Parameters);
+  inherited Create(Parameters, AParent);
 
   //Создать классы
   FLangTable := TStringTableItemList.Create;
@@ -517,20 +467,20 @@ begin
   PrepareTableGrid;
 
   //Определить настройки
-  FSettingsDir := FParams.SettingsDirectory + 'StringTable\';
-  ForceDirectories(FSettingsDir);
-  FSettingsFile := FSettingsDir + 'StringTable.ini';
-  FLangTableFile := FSettingsDir + 'Work.csv';
+  Dir := FParams.SettingsDirectory + 'StringTable\';
+  ForceDirectories(Dir);
+  FSettingsFile := Dir + 'StringTable.ini';
+  FLangTableFile := Dir + 'Work.csv';
 
   //Загрузить настройки
-  LoadSettings(FSettingsFile);
+  LoadSettings;
 end;
 
 
 destructor TStringTableFrame.Destroy;
 begin
   //Сохранить настройки
-  SaveSettings(FSettingsFile);
+  SaveSettings;
 
   FLangTable.Free;
 
@@ -566,6 +516,54 @@ begin
 end;
 
 
+procedure TStringTableFrame.SaveSettings;
+var
+  F: TIniFile;
+  i: Integer;
+begin
+  F := TIniFile.Create(FSettingsFile);
+  try
+
+    //Столбцы таблицы
+    for i := 0 to TableGrid.Columns.Count - 1 do
+    begin
+      F.WriteBool(SECTION_COLUMN_VISIBLE, IntToStr(i), TableGrid.Columns.Items[i].Visible);
+      F.WriteInteger(SECTION_COLUMN_WIDTH, IntToStr(i), TableGrid.Columns.Items[i].StoredWidth);
+    end;
+
+  finally
+    F.Free;
+  end;
+
+  //Сохранить тоследнюю таблицу
+  SaveTable(FLangTableFile);
+end;
+
+
+procedure TStringTableFrame.LoadSettings;
+var
+  F: TIniFile;
+  i: Integer;
+begin
+  F := TIniFile.Create(FSettingsFile);
+  try
+      //Столбцы таблицы
+    for i := 0 to TableGrid.Columns.Count - 1 do
+    begin
+      TableGrid.Columns.Items[i].Width := F.ReadInteger(SECTION_COLUMN_WIDTH, IntToStr(i), TableGrid.DefaultColWidth);
+      TableGrid.Columns.Items[i].Visible := F.ReadBool(SECTION_COLUMN_VISIBLE, IntToStr(i), True);
+    end;
+
+  finally
+    F.Free;
+  end;
+
+  //Загрузить тоследнюю таблицу
+  if FileExists(FLangTableFile) then
+    LoadTable(FLangTableFile);
+end;
+
+
 procedure TStringTableFrame.FitColumns;
 var
   i: Integer;
@@ -573,18 +571,6 @@ begin
   for i := 0 to TableGrid.Columns.Count - 1 do
     if TableGrid.Columns.Items[i].Visible then
       TableGrid.AutoSizeColumn(i);
-end;
-
-
-procedure TStringTableFrame.SaveSettings;
-begin
-  SaveSettings(FSettingsFile);
-end;
-
-
-procedure TStringTableFrame.LoadSettings;
-begin
-  LoadSettings(FSettingsFile);
 end;
 
 

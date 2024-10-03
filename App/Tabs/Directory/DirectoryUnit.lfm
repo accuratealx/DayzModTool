@@ -1,8 +1,8 @@
 inherited DirectoryFrame: TDirectoryFrame
   Height = 302
-  Width = 467
+  Width = 460
   ClientHeight = 302
-  ClientWidth = 467
+  ClientWidth = 460
   OnClick = FrameClick
   TabOrder = 0
   DesignLeft = 564
@@ -11,11 +11,11 @@ inherited DirectoryFrame: TDirectoryFrame
     Left = 0
     Height = 35
     Top = 0
-    Width = 467
+    Width = 460
     Align = alTop
     BevelOuter = bvNone
     ClientHeight = 35
-    ClientWidth = 467
+    ClientWidth = 460
     TabOrder = 0
     object btnAdd: TSpeedButton
       Cursor = crHandPoint
@@ -261,7 +261,7 @@ inherited DirectoryFrame: TDirectoryFrame
     end
     object btnExplore: TSpeedButton
       Cursor = crHandPoint
-      Left = 437
+      Left = 430
       Height = 25
       Hint = 'Открыть в проводнике'
       Top = 5
@@ -314,7 +314,7 @@ inherited DirectoryFrame: TDirectoryFrame
     Left = 0
     Height = 267
     Top = 35
-    Width = 467
+    Width = 460
     HorzScrollBar.Page = 1
     HorzScrollBar.Tracking = True
     VertScrollBar.Page = 1

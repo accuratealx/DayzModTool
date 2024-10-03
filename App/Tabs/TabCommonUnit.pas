@@ -15,10 +15,13 @@ type
 
     procedure SetParams(AParameters: TTabParameters);
   public
-    constructor Create(Parameters: TTabParameters); reintroduce;
+    constructor Create(Parameters: TTabParameters; AParent: TWinControl); reintroduce;
     destructor  Destroy; override;
 
     procedure ApplyLanguage; virtual;
+    procedure SaveSettings; virtual;
+    procedure LoadSettings; virtual;
+
 
     property Params: TTabParameters read FParams write SetParams;
   end;
@@ -36,9 +39,10 @@ begin
 end;
 
 
-constructor TTabCommonFrame.Create(Parameters: TTabParameters);
+constructor TTabCommonFrame.Create(Parameters: TTabParameters; AParent: TWinControl);
 begin
   inherited Create(nil);
+  Parent := AParent;
 
   //Подготовить параметры
   FParams := TTabParameters.Create;
@@ -56,6 +60,18 @@ end;
 
 
 procedure TTabCommonFrame.ApplyLanguage;
+begin
+  //Переопределяется в потомках
+end;
+
+
+procedure TTabCommonFrame.SaveSettings;
+begin
+  //Переопределяется в потомках
+end;
+
+
+procedure TTabCommonFrame.LoadSettings;
 begin
   //Переопределяется в потомках
 end;
