@@ -36,7 +36,6 @@ type
     FFrames: TBuilderItemFrameList;
 
     FSettingsFile: String;
-    FIconDirectory: String;
 
     procedure AddItemFrame(AFrame: TBuilderItemFrame);
     procedure ClearItemFrames;
@@ -85,7 +84,7 @@ begin
     AName) then
   begin
     //Создать фрейм
-    Frame := TBuilderItemFrame.Create(FIconDirectory);
+    Frame := TBuilderItemFrame.Create(FParams.IconDirectory);
     Frame.Title := AName;
 
     //Добавить в список
@@ -109,7 +108,7 @@ begin
   Frame := GetSelectedItemFrame;
 
   s := Frame.IconName;
-  if IconSelectorDialogExecute(FParams.Language, FIconDirectory, s) then
+  if IconSelectorDialogExecute(FParams.Language, FParams.IconDirectory, s) then
   begin
     //Изменить иконку
     Frame.IconName := s;
@@ -387,7 +386,6 @@ begin
   inherited Create(Parameters, AParent);
 
   FSettingsFile := FParams.SettingsDirectory + 'Build.ini';
-  FIconDirectory := FParams.DataDirectory + 'Directory\';
 
   //Загрузить настройки
   LoadSettings;
@@ -477,7 +475,7 @@ begin
         Continue;
 
       //Создать элемент каталога
-      Frame := TBuilderItemFrame.Create(FIconDirectory, Line);
+      Frame := TBuilderItemFrame.Create(FParams.IconDirectory, Line);
 
       //Добавить в массив
       AddItemFrame(Frame);

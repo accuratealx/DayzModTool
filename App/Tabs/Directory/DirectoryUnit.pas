@@ -32,7 +32,6 @@ type
 
       LANGUAGE_PREFIX = 'TabDirectory.';
   private
-    FIconDirectory: String;
     FSettingsFile: String;
     FFrames: TDirectoryItemFrameArray;
 
@@ -145,7 +144,7 @@ begin
   APAth := Item.Path;
   AIconFileName := Item.IconName;
 
-  if DirectoryItemEditorDialogExecute(FParams.Language, diemEdit, FIconDirectory, ACaption, APath, AIconFileName) then
+  if DirectoryItemEditorDialogExecute(FParams.Language, diemEdit, FParams.IconDirectory, ACaption, APath, AIconFileName) then
   begin
     //Поправить
     Item.Caption := ACaption;
@@ -218,10 +217,10 @@ begin
   APAth := '';
   AIconFileName := '';
 
-  if DirectoryItemEditorDialogExecute(FParams.Language, diemNew, FIconDirectory, ACaption, APath, AIconFileName) then
+  if DirectoryItemEditorDialogExecute(FParams.Language, diemNew, FParams.IconDirectory, ACaption, APath, AIconFileName) then
   begin
     //Создать элемент каталога
-    Frame := TDirectoryItemFrame.Create(FIconDirectory, ACaption, APath, AIconFileName);
+    Frame := TDirectoryItemFrame.Create(FParams.IconDirectory, ACaption, APath, AIconFileName);
     Frame.OnSelect := @OnItemSelect;
 
     //Добавить в массив
@@ -395,10 +394,6 @@ constructor TDirectoryFrame.Create(Parameters: TTabParameters; AParent: TWinCont
 begin
   inherited Create(Parameters, AParent);
 
-  //Подготовить каталог данных
-  FIconDirectory := FParams.DataDirectory + 'Directory\';
-  ForceDirectories(FIconDirectory);
-
   //Определить файл настроек
   FSettingsFile := FParams.SettingsDirectory + 'Directory.ini';
 
@@ -476,7 +471,7 @@ begin
       Continue;
 
     //Создать элемент каталога
-    Frame := TDirectoryItemFrame.Create(FIconDirectory, List.Strings[i]);
+    Frame := TDirectoryItemFrame.Create(FParams.IconDirectory, List.Strings[i]);
     Frame.OnSelect := @OnItemSelect;
 
     //Проверить перевод
@@ -571,7 +566,7 @@ begin
         Continue;
 
       //Создать элемент каталога
-      Frame := TDirectoryItemFrame.Create(FIconDirectory, Line);
+      Frame := TDirectoryItemFrame.Create(FParams.IconDirectory, Line);
       Frame.OnSelect := @OnItemSelect;
 
       //Добавить в массив

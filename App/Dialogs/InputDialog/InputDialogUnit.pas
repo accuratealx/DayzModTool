@@ -35,8 +35,7 @@ implementation
 {$R *.lfm}
 
 uses
-  Math,
-  DialogUtils, DialogParameters;
+  DialogParameters;
 
 type
   TInputDialogParameters = class(TDialogParameters)

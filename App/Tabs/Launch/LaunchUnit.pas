@@ -166,7 +166,7 @@ begin
   inherited Create(Parameters, AParent);
 
   //Подготовить каталог данных
-  FDataDir := FParams.DataDirectory + 'Launch\';
+  FDataDir := FParams.TabDirectory + 'Launch\';
   ForceDirectories(FDataDir);
 
   //Определить файл настроек фреймов

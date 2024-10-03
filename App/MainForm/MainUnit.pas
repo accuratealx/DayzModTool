@@ -479,8 +479,10 @@ begin
   //Параметры закладок
   FTabParams := TTabParameters.Create;
   FTabParams.Language := FLanguage;
-  FTabParams.DataDirectory := FMainDir + 'Data\Tabs\';
+  FTabParams.TabDirectory := FMainDir + 'Data\Tabs\';
+  FTabParams.IconDirectory := FMainDir + 'Data\Icons\';
   FTabParams.SettingsDirectory := FSettingsDir;
+  ForceDirectories(FTabParams.IconDirectory);
 
   //Создать закладки
   CreateTabs(FTabParams);
