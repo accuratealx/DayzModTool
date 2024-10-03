@@ -449,7 +449,7 @@ begin
 
     //Проверить совпадение
     if (CurID = IDName) then
-      Exit(True)
+      Exit(True);
   end;
 end;
 

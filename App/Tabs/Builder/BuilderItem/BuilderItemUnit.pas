@@ -21,9 +21,9 @@ type
     procedure pnlCollapsePaint(Sender: TObject);
   private
     FLanguage: TLanguage;
+    FIconDirectory: String;
 
-    FIcon: TIcon;
-
+    FIconName: String;
     FCollapsed: Boolean;
     FHighlight: Boolean;
     FSelected: Boolean;
@@ -38,22 +38,24 @@ type
     procedure SetSelected(ASelected: Boolean);
     procedure SetHighlight(AHighlight: Boolean);
     procedure SetCollapsed(ACollapsed: Boolean);
+    procedure SetIconName(AIconName: String);
 
     procedure DoOnSelect;
     procedure DoHeightChange;
   public
-    constructor Create; reintroduce;
-    constructor Create(ASettings: String);
-    destructor  Destroy; override;
+    constructor Create(AIconDirectory: String); reintroduce;
+    constructor Create(AIconDirectory: String; ASettings: String);
 
     procedure ValueFromString(const AValue: String);
     function  ValueToString: String;
+
     procedure ChangeLanguage(Language: TLanguage);
 
     property Collapsed: Boolean read FCollapsed write SetCollapsed;
     property Selected: Boolean read FSelected write SetSelected;
     property Highlight: Boolean read FHighlight write SetHighlight;
     property Title: String read GetTitle write SetTitle;
+    property IconName: String read FIconName write SetIconName;
 
     property OnSelect: TNotifyEvent read FOnSelect write FOnSelect;
   end;
@@ -172,6 +174,29 @@ begin
 end;
 
 
+procedure TBuilderItemFrame.SetIconName(AIconName: String);
+var
+  AIcon: TIcon;
+  IcoFile: String;
+begin
+  IcoFile := FIconDirectory + AIconName;
+
+  if FileExists(IcoFile) then
+  begin
+    FIconName := AIconName;
+
+    AIcon := TIcon.Create;
+    try
+      AIcon.LoadFromFile(IcoFile);
+      imgIcon.Picture.Assign(AIcon);
+
+    finally
+      AIcon.Free;
+    end;
+  end;
+end;
+
+
 procedure TBuilderItemFrame.DoOnSelect;
 begin
   if Assigned(FOnSelect) then
@@ -186,25 +211,17 @@ begin
 end;
 
 
-constructor TBuilderItemFrame.Create;
+constructor TBuilderItemFrame.Create(AIconDirectory: String);
 begin
   inherited Create(nil);
+  FIconDirectory := AIconDirectory;
 end;
 
 
-constructor TBuilderItemFrame.Create(ASettings: String);
+constructor TBuilderItemFrame.Create(AIconDirectory: String; ASettings: String);
 begin
-  Create;
-
+  Create(AIconDirectory);
   ValueFromString(ASettings);
-end;
-
-
-destructor TBuilderItemFrame.Destroy;
-begin
-
-  FIcon.Free;
-  inherited Destroy;
 end;
 
 
@@ -217,9 +234,14 @@ begin
   List.Text := AValue;
   try
 
-    //TODO: Сделать безосную загрузку параметров
-    Collapsed := StrToBool(List.Strings[0]);
-    SetTitle(List.Strings[1]);
+    if List.Count > 0 then
+      Collapsed := StrToBool(List.Strings[0]);
+
+    if List.Count > 1 then
+      SetIconName(List.Strings[1]);
+
+    if List.Count > 2 then
+      SetTitle(List.Strings[2]);
 
   finally
     List.Free;
@@ -231,6 +253,7 @@ function TBuilderItemFrame.ValueToString: String;
 begin
   Result :=
     BoolToStr(FCollapsed) + SEPARATOR +
+    FIconName + SEPARATOR +
     lblTitle.Caption;
 end;
 

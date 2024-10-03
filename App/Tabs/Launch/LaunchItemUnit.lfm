@@ -263,7 +263,7 @@ object LaunchItemFrame: TLaunchItemFrame
       OnClick = btnCollapseClick
       object lblTitle: TLabel
         Cursor = crHandPoint
-        Left = 74
+        Left = 80
         Height = 17
         Top = 14
         Width = 83
@@ -291,9 +291,9 @@ object LaunchItemFrame: TLaunchItemFrame
       object imgIcon: TImage
         Cursor = crHandPoint
         Left = 40
-        Height = 29
-        Top = 8
-        Width = 29
+        Height = 32
+        Top = 6
+        Width = 32
         OnClick = btnCollapseClick
         Stretch = True
       end

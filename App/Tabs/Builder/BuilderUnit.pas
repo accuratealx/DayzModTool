@@ -12,6 +12,7 @@ type
   TBuilderFrame = class(TTabCommonFrame)
     btnAdd: TSpeedButton;
     btnDelete: TSpeedButton;
+    btnChangeIcon: TSpeedButton;
     btnDown: TSpeedButton;
     btnRename: TSpeedButton;
     btnExplore: TSpeedButton;
@@ -19,6 +20,7 @@ type
     pnlTools: TPanel;
     sbContent: TScrollBox;
     procedure btnAddClick(Sender: TObject);
+    procedure btnChangeIconClick(Sender: TObject);
     procedure btnDeleteClick(Sender: TObject);
     procedure btnDownClick(Sender: TObject);
     procedure btnRenameClick(Sender: TObject);
@@ -34,6 +36,7 @@ type
     FFrames: TBuilderItemFrameList;
 
     FSettingsFile: String;
+    FIconDirectory: String;
 
     procedure AddItemFrame(AFrame: TBuilderItemFrame);
     procedure ClearItemFrames;
@@ -67,7 +70,7 @@ implementation
 
 uses
   IniFiles,
-  InputDialogUnit, YesNoQuestionDialogUnit;
+  InputDialogUnit, YesNoQuestionDialogUnit, IconSelectorDialogUnit;
 
 
 procedure TBuilderFrame.btnAddClick(Sender: TObject);
@@ -82,7 +85,7 @@ begin
     AName) then
   begin
     //Создать фрейм
-    Frame := TBuilderItemFrame.Create;
+    Frame := TBuilderItemFrame.Create(FIconDirectory);
     Frame.Title := AName;
 
     //Добавить в список
@@ -92,6 +95,26 @@ begin
     ArrangeItemFrames;
 
     //Сохранить настройки
+    SaveSettings;
+  end;
+end;
+
+
+procedure TBuilderFrame.btnChangeIconClick(Sender: TObject);
+var
+  Frame: TBuilderItemFrame;
+  s: String;
+begin
+  //Выделенный фрейм
+  Frame := GetSelectedItemFrame;
+
+  s := Frame.IconName;
+  if IconSelectorDialogExecute(FParams.Language, FIconDirectory, s) then
+  begin
+    //Изменить иконку
+    Frame.IconName := s;
+
+    //Сохранить параметры
     SaveSettings;
   end;
 end;
@@ -327,6 +350,7 @@ begin
   Item := GetSelectedItemFrame;
 
   btnDelete.Enabled := Item <> nil;
+  btnChangeIcon.Enabled := Item <> nil;
   btnRename.Enabled := Item <> nil;
   btnUp.Enabled := (Item <> nil) and (GetItemFrameIndex(Item) > 0);
   btnDown.Enabled := (Item <> nil) and (GetItemFrameIndex(Item) < Length(FFrames) - 1);
@@ -363,6 +387,7 @@ begin
   inherited Create(Parameters, AParent);
 
   FSettingsFile := FParams.SettingsDirectory + 'Build.ini';
+  FIconDirectory := FParams.DataDirectory + 'Directory\';
 
   //Загрузить настройки
   LoadSettings;
@@ -396,6 +421,7 @@ var
 begin
   //Перевод
   btnAdd.Caption := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Add', 'Добавить');
+  btnChangeIcon.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'ChangeIcon', 'Изменить иконку');
   btnRename.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Rename', 'Переименовать');
   btnUp.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Up', 'Вверх');
   btnDown.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Down', 'Вниз');
@@ -451,7 +477,7 @@ begin
         Continue;
 
       //Создать элемент каталога
-      Frame := TBuilderItemFrame.Create(Line);
+      Frame := TBuilderItemFrame.Create(FIconDirectory, Line);
 
       //Добавить в массив
       AddItemFrame(Frame);

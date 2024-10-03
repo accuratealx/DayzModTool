@@ -84,9 +84,9 @@ object BuilderItemFrame: TBuilderItemFrame
     object imgIcon: TImage
       Cursor = crHandPoint
       Left = 40
-      Height = 29
-      Top = 8
-      Width = 29
+      Height = 32
+      Top = 6
+      Width = 32
       OnClick = pnlCollapseClick
       Picture.Data = {
         1754506F727461626C654E6574776F726B47726170686963CF06000089504E47
@@ -147,10 +147,11 @@ object BuilderItemFrame: TBuilderItemFrame
         00000049454E44AE426082
       }
       Stretch = True
+      Transparent = True
     end
     object lblTitle: TLabel
       Cursor = crHandPoint
-      Left = 74
+      Left = 80
       Height = 17
       Top = 14
       Width = 83

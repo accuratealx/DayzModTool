@@ -25,6 +25,10 @@ type
     ilTrayDirectory: TImageList;
     ilLanguages: TImageList;
     MainMenu: TMainMenu;
+    miMainToolsOpenSettings: TMenuItem;
+    miMainToolsImportSettings: TMenuItem;
+    miMainToolsExportSettings: TMenuItem;
+    miMainToolsGroup: TMenuItem;
     miMainTabBuilderCollapseAll: TMenuItem;
     miMainTabBuilderExpandAll: TMenuItem;
     miMainTabBuilder: TMenuItem;
@@ -33,8 +37,6 @@ type
     miTraySeparator3: TMenuItem;
     miTrayDonate: TMenuItem;
     miMainToolsSeparator1: TMenuItem;
-    miMainToolsImportSettings: TMenuItem;
-    miMainToolsExportSettings: TMenuItem;
     miMainTabStringTableFitColumns: TMenuItem;
     miMainTabStringTable: TMenuItem;
     miMainInfoDonate: TMenuItem;
@@ -69,6 +71,7 @@ type
     OpenDialog: TOpenDialog;
     PageControl: TPageControl;
     SaveDialog: TSaveDialog;
+    miMainToolsGroupSeparator1: TMenuItem;
     tabLaunch: TTabSheet;
     tabDirectory: TTabSheet;
     tabBuilder: TTabSheet;
@@ -94,6 +97,7 @@ type
     procedure miMainToolsExportSettingsClick(Sender: TObject);
     procedure miMainToolsExtractDataClick(Sender: TObject);
     procedure miMainToolsImportSettingsClick(Sender: TObject);
+    procedure miMainToolsOpenSettingsClick(Sender: TObject);
     procedure miMainToolsTimeCalculatorClick(Sender: TObject);
     procedure miMainToolsTrashCleanerClick(Sender: TObject);
     procedure miMainToolsWorkDriveClick(Sender: TObject);
@@ -104,6 +108,7 @@ type
     procedure TrayMenuPopup(Sender: TObject);
   private
     type
+      //Типы вкладок
       TTabFrameType = (
         tftLaunch,
         tftDirectory,
@@ -145,10 +150,6 @@ type
     //Закладки
     FTabParams: TTabParameters;
     FFrames: array[TTabFrameType] of TTabCommonFrame;
-    //FLaunchFrame: TLaunchFrame;
-    //FDirectoryFrame: TDirectoryFrame;
-    //FStringTableFrame: TStringTableFrame;
-    //FBuilderFrame: TBuilderFrame;
 
     procedure Init;
     procedure Done;
@@ -164,7 +165,6 @@ type
 
     procedure CreateTabs(AParams: TTabParameters);
     procedure DestroyTabs;
-    procedure ApplayTabsLanguage;
 
     procedure CreateTrayMenuLaunchItems;
     procedure CorrectTrayMenuLaunchItems;
@@ -196,7 +196,7 @@ implementation
 {$R *.lfm}
 
 uses
-  sgeFileUtils, SettingsManager,
+  sgeFileUtils, DayZUtils, SettingsManager,
   DataExtractorUnit,
   YesNoQuestionDialogUnit, MessageDialogUnit, TimecalCulatorUnit;
 
@@ -365,6 +365,12 @@ begin
       );
     end;
   end;
+end;
+
+
+procedure TMainForm.miMainToolsOpenSettingsClick(Sender: TObject);
+begin
+  OpenFolderInExplorer(FSettingsDir);
 end;
 
 
@@ -608,9 +614,16 @@ procedure TMainForm.ApplyLanguage;
     end;
   end;
 
+  procedure TranslateTabs;
+  var
+    i: TTabFrameType;
+  begin
+    for i := Low(TTabFrameType) to High(TTabFrameType) do
+      FFrames[i].ApplyLanguage;
+  end;
+
 const
   LANGUAGE_PREFIX = 'MainForm.';
-
 begin
   //Меню
   TranslateMenu(MainMenu.Items, 'MainForm.MainMenu.');
@@ -620,7 +633,7 @@ begin
   TranslateTabsCaption;
 
   //Закладки
-  ApplayTabsLanguage;
+  TranslateTabs;
 
   //Пересоздать пункты меню в трее
   CreateTrayMenuLaunchItems;
@@ -670,15 +683,6 @@ begin
     FFrames[i].Free;
     FFrames[i] := nil;
   end;
-end;
-
-
-procedure TMainForm.ApplayTabsLanguage;
-var
-  i: TTabFrameType;
-begin
-  for i := Low(TTabFrameType) to High(TTabFrameType) do
-    FFrames[i].ApplyLanguage;
 end;
 
 
@@ -893,7 +897,6 @@ begin
   //Основная форма
   SaveSettings;
 
-  //Фреймы
   //Фреймы
   for i := Low(TTabFrameType) to High(TTabFrameType) do
     FFrames[i].LoadSettings;
