@@ -7,14 +7,16 @@ interface
 uses
   SysUtils, Controls, Graphics, Dialogs, ShellCtrls, Buttons, StdCtrls,
   Language,
-  DialogCommonUnit;
+  DialogCommonUnit, Classes;
 
 type
   TSelectDirectoryDialogForm = class(TDialogCommonForm)
     btnClose: TSpeedButton;
     btnSelect: TSpeedButton;
+    btnAddDirectory: TSpeedButton;
     edCurrentPath: TEdit;
     stvDirectoryTree: TShellTreeView;
+    procedure btnAddDirectoryClick(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
     procedure btnSelectClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
@@ -22,6 +24,8 @@ type
   private
     const
       LANGUAGE_PREFIX = 'Dialogs.SelectDirectory.';
+  private
+    procedure SetPath(APath: String);
   protected
     procedure PrepareInterface; override;
     procedure SetLanguage; override;
@@ -36,7 +40,7 @@ implementation
 {$R *.lfm}
 
 uses
-  DialogParameters;
+  DialogParameters, InputDialogUnit;
 
 type
   TSelectDirectoryDialogParameters = class(TDialogParameters)
@@ -78,6 +82,32 @@ begin
 end;
 
 
+procedure TSelectDirectoryDialogForm.btnAddDirectoryClick(Sender: TObject);
+var
+  Dir, DirName: String;
+begin
+  DirName := '';
+  if InputDialogExecute(
+    FParameters.Language,
+    FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'InputName', 'Введите имя каталога'),
+    DirName) then
+  begin
+    Dir := IncludeTrailingBackslash(stvDirectoryTree.Path + DirName);
+
+    if not DirectoryExists(Dir) then
+    begin
+      ForceDirectories(Dir);
+
+      { #todo : Не обновляется дерево если добавить папку в пустой каталог }
+      stvDirectoryTree.Refresh(stvDirectoryTree.Selected);
+    end;
+
+    stvDirectoryTree.Path := Dir;
+    SetPath(Dir);
+  end;
+end;
+
+
 procedure TSelectDirectoryDialogForm.btnSelectClick(Sender: TObject);
 begin
   Tag := 1;
@@ -99,8 +129,19 @@ end;
 
 procedure TSelectDirectoryDialogForm.stvDirectoryTreeClick(Sender: TObject);
 begin
-  btnSelect.Enabled := DirectoryExists(stvDirectoryTree.Path);
-  edCurrentPath.Text := stvDirectoryTree.Path;
+  SetPath(stvDirectoryTree.Path);
+end;
+
+
+procedure TSelectDirectoryDialogForm.SetPath(APath: String);
+var
+  Exist: Boolean;
+begin
+  edCurrentPath.Text := APath;
+
+  Exist := DirectoryExists(stvDirectoryTree.Path);
+  btnSelect.Enabled := Exist;
+  btnAddDirectory.Enabled := Exist;
 end;
 
 
@@ -115,8 +156,7 @@ begin
   if DirectoryExists(Params.Path) then
   begin
     stvDirectoryTree.Path := Params.Path;
-    edCurrentPath.Text := Params.Path;
-    btnSelect.Enabled := True;
+    SetPath(Params.Path);
   end;
 end;
 
@@ -126,6 +166,7 @@ begin
   Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Caption', 'Выбор каталога');
   btnSelect.Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Select', 'Выбрать');
   btnClose.Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Close', 'Закрыть');
+  btnAddDirectory.Hint := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'AddDirectory', 'Создать каталог');
 end;
 
 
