@@ -51,27 +51,31 @@ uses
 
 function Translate_GoogleApp(SrcLng: TTranslatorLanguages; DstLng: TTranslatorLanguages; Msg: String): String;
 
-  function GetResult(JSONStr: String): String;
+  function GetResult(JSONString: String): String;
   var
     JSonParser: TJSONParser;
     JSONArr: TJSONArray;
     JSonBody, J: TJSONObject;
+    JSonStr: TJSONString;
+    i: Integer;
   begin
     Result := '';
 
     JSonBody := nil;
-    JSonParser := TJSONParser.Create(JSONStr, DefaultOptions);
+    JSonParser := TJSONParser.Create(JSONString, DefaultOptions);
     JSonBody := JsonParser.Parse as TJSONObject;
     try
-
       JSONArr := JSonBody.Find('sentences', jtArray) as TJSONArray;
       if JSONArr <> nil then
       begin
-        if JSONArr.Count > 0 then
+        for i := 0 to JSONArr.Count - 1 do
         begin
-          J := JSONArr.Items[0] as TJSONObject;
+          J := JSONArr.Items[i] as TJSONObject;
           if J <> nil then
-            Result := J.Get('trans');
+          begin
+            if J.Find('trans', JSonStr) then
+              Result := Result + JSonStr.AsString;
+          end;
         end;
       end;
 
