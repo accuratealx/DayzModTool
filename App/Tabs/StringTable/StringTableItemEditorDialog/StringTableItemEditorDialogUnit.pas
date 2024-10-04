@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons, StdCtrls, windows,
   DialogParameters, Language, Translator,
-  StringTableItem, DialogCommonUnit, DirectoryItemEditorDialogItemUnit, MessageDialogUnit,
+  StringTableItem, DialogCommonUnit, StringTableItemEditorDialogItemUnit, MessageDialogUnit,
   StringTableProcessDialogUnit, TranslationWorker;
 
 type
@@ -35,7 +35,7 @@ type
       LANGUAGE_PREFIX = 'Dialogs.StringTableItemEditor.';
       LANGUAGE_PREFIX_LNGNAME = 'StringTable.Column.';
   private
-    FItemList: TDirectoryItemEditorDialogItemFrameList;
+    FItemList: TStringTableItemEditorDialogItemFrameList;
     FThreadWorkerError: String;
 
     procedure CreateItems;
@@ -143,7 +143,7 @@ end;
 
 procedure TStringTableItemEditorDialogForm.CreateItems;
 
-  procedure AddToList(Item: TDirectoryItemEditorDialogItemFrame);
+  procedure AddToList(Item: TStringTableItemEditorDialogItemFrame);
   var
     c: Integer;
   begin
@@ -156,7 +156,7 @@ var
   i: TStringTableLanguageTypes;
   Y: Integer;
   cpt: String;
-  Item: TDirectoryItemEditorDialogItemFrame;
+  Item: TStringTableItemEditorDialogItemFrame;
   Params: TStringTableItemEditorDialogParameters;
 begin
   Params := FParameters as TStringTableItemEditorDialogParameters;
@@ -166,7 +166,7 @@ begin
   for i := Low(TStringTableLanguageTypes) to High(TStringTableLanguageTypes) do
   begin
     cpt := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX_LNGNAME + StringTableLanguageNames[i], StringTableLanguageNames[i]);
-    Item := TDirectoryItemEditorDialogItemFrame.Create(FParameters.Language, i, cpt, Params.EditItem.Table[i]);
+    Item := TStringTableItemEditorDialogItemFrame.Create(FParameters.Language, i, cpt, Params.EditItem.Table[i]);
     Item.Left := 0;
     Item.Top := Y;
     Item.Width := pnlContent.Width - pnlContent.BevelWidth;
@@ -343,6 +343,7 @@ begin
     TRANSLATOR_WPARAM_FINISH:
     begin
       StringTableProcessDialogHide;
+      BringToFront;
       Enabled := True;
 
       //Заполнить элементы
@@ -353,6 +354,7 @@ begin
     TRANSLATOR_WPARAM_ERROR:
     begin
       StringTableProcessDialogHide;
+      BringToFront;
       Enabled := True;
 
       //Покажем ошибку переводчика

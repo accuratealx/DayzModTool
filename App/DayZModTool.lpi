@@ -376,6 +376,13 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit>
+      <Unit>
+        <Filename Value="Tabs\StringTable\StringTableItemEditorDialog\StringTableItemEditorDialogItemUnit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="StringTableItemEditorDialogItemFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
