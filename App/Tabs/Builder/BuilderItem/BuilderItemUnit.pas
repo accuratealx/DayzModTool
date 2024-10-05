@@ -11,6 +11,7 @@ uses
 type
   TBuilderItemFrame = class(TFrame)
     btnBuild: TSpeedButton;
+    btnVersionClearValue: TSpeedButton;
     btnPrivateKeyClearValue: TSpeedButton;
     btnPrivateKeyOpenDirectory: TSpeedButton;
     btnPrefixClearValue: TSpeedButton;
@@ -22,6 +23,8 @@ type
     btnDestinationDirectoryOpenDir: TSpeedButton;
     btnSourceDirectorySelect: TSpeedButton;
     btnDestinationDirectorySelect: TSpeedButton;
+    cbSign: TCheckBox;
+    edVersion: TEdit;
     edPrivateKey: TEdit;
     edPrefix: TEdit;
     edFileExtensions: TEdit;
@@ -30,6 +33,7 @@ type
     ilCollapse: TImageList;
     imgCollapse: TImage;
     imgIcon: TImage;
+    lblVersion: TLabel;
     lblPrivateKey: TLabel;
     lblPrefix: TLabel;
     lblFileExtensions: TLabel;
@@ -38,6 +42,7 @@ type
     lblTitle: TLabel;
     OpenDialog: TOpenDialog;
     pnlCollapse: TPanel;
+    procedure btnBuildClick(Sender: TObject);
     procedure btnDestinationDirectoryClearValueClick(Sender: TObject);
     procedure btnDestinationDirectoryOpenDirClick(Sender: TObject);
     procedure btnDestinationDirectorySelectClick(Sender: TObject);
@@ -49,6 +54,9 @@ type
     procedure btnSourceDirectoryClearValueClick(Sender: TObject);
     procedure btnSourceDirectoryOpenDirClick(Sender: TObject);
     procedure btnSourceDirectorySelectClick(Sender: TObject);
+    procedure btnVersionClearValueClick(Sender: TObject);
+    procedure edPrivateKeyChange(Sender: TObject);
+    procedure edEditChange(Sender: TObject);
     procedure FrameClick(Sender: TObject);
     procedure pnlCollapseClick(Sender: TObject);
     procedure pnlCollapsePaint(Sender: TObject);
@@ -75,6 +83,11 @@ type
     procedure SetHighlight(AHighlight: Boolean);
     procedure SetCollapsed(ACollapsed: Boolean);
     procedure SetIconName(AIconName: String);
+
+    function  GetStartParam: String;
+    function  GetPackToolFile: String;
+    function  GetIncludeFilePath: String;
+    function  CreateIncludeFile(Path: String; Line: String): Boolean;
 
     procedure DoOnSelect;
     procedure DoHeightChange;
@@ -104,8 +117,8 @@ implementation
 {$R *.lfm}
 
 uses
-  DayZUtils,
-  SelectDirectoryDialogUnit;
+  DayZUtils, SteamUtils,
+  SelectDirectoryDialogUnit, BuildDialogUnit, MessageDialogUnit;
 
 const
   SEPARATOR = ';;;';
@@ -158,7 +171,29 @@ begin
   Dir := edSourceDirectory.Text;
 
   if SelectDirectoryDialogExecute(FLanguage, Dir) then
+  begin
+    edSourceDirectory.Text := '';
     edSourceDirectory.Text := Dir;
+  end;
+end;
+
+
+procedure TBuilderItemFrame.btnVersionClearValueClick(Sender: TObject);
+begin
+  edVersion.Text := '';
+end;
+
+
+procedure TBuilderItemFrame.edPrivateKeyChange(Sender: TObject);
+begin
+  cbSign.Enabled := FileExists(edPrivateKey.Text);
+end;
+
+
+procedure TBuilderItemFrame.edEditChange(Sender: TObject);
+begin
+  btnBuild.Enabled := DirectoryExists(edSourceDirectory.Text) and
+    DirectoryExists(edDestinationDirectory.Text) and (Trim(edFileExtensions.Text) <> '');
 end;
 
 
@@ -184,6 +219,37 @@ begin
 end;
 
 
+procedure TBuilderItemFrame.btnBuildClick(Sender: TObject);
+var
+  exe, params, IncFile: String;
+begin
+  exe := GetPackToolFile;
+  if not FileExists(exe) then
+  begin
+    MessageDialogExecute(
+      FLanguage,
+      FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'CantFindAddonBuilder', 'Не найден Addon Builder. Переустановите Dayz Tools.')
+    );
+    Exit;
+  end;
+
+  IncFile := GetIncludeFilePath;
+  if not CreateIncludeFile(IncFile, Trim(edFileExtensions.Text)) then
+  begin
+    MessageDialogExecute(
+      FLanguage,
+      Format(FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'CantCreateIncFile', 'Ошибка создания файла "%s"'), [IncFile])
+    );
+    Exit;
+  end;
+
+  params := GetStartParam + ' ' + '"-include=' + IncFile + '"';
+
+  //Показать диалог сборки
+  BuildDialogExecute(FLanguage, exe, params);
+end;
+
+
 procedure TBuilderItemFrame.btnDestinationDirectorySelectClick(Sender: TObject);
 var
   Dir: String;
@@ -191,7 +257,10 @@ begin
   Dir := edDestinationDirectory.Text;
 
   if SelectDirectoryDialogExecute(FLanguage, Dir) then
+  begin
+    edDestinationDirectory.Text := '';
     edDestinationDirectory.Text := Dir;
+  end;
 end;
 
 
@@ -239,7 +308,7 @@ end;
 
 function TBuilderItemFrame.GetTotalFrameHeight: Integer;
 begin
-  Result := 200;
+  Result := cbSign.Top + cbSign.Height + 10;
 end;
 
 
@@ -333,6 +402,62 @@ begin
 end;
 
 
+function TBuilderItemFrame.GetStartParam: String;
+var
+  List: TStringList;
+begin
+  List := TStringList.Create;
+  List.LineBreak := ' ';
+  try
+    List.Add(Format('%s', [edSourceDirectory.Text]));
+    List.Add(Format('%s', [edDestinationDirectory.Text]));
+    List.Add('-clear');
+    List.Add('-binarizeFullLogs');
+
+    if edPrefix.Text <> '' then
+      List.Add(Format('"-prefix=%s"', [Trim(edPrefix.Text)]));
+
+    if cbSign.Checked and FileExists(edPrivateKey.Text) then
+      List.Add(Format('"-sign=%s"', [edPrivateKey.Text]));
+
+    Result := Trim(List.Text);
+
+  finally
+    List.Free;
+  end;
+end;
+
+
+function TBuilderItemFrame.GetPackToolFile: String;
+begin
+  Result := GetDayZToolsInstallPathFromRegistry + 'Bin\AddonBuilder\AddonBuilder.exe';
+end;
+
+
+function TBuilderItemFrame.GetIncludeFilePath: String;
+begin
+  Result := IncludeTrailingBackslash(SysUtils.GetEnvironmentVariable('TEMP')) + 'include.txt';
+end;
+
+
+function TBuilderItemFrame.CreateIncludeFile(Path: String; Line: String): Boolean;
+var
+  F: TFileStream;
+begin
+  Result := False;
+
+  F := nil;
+  try
+    F := TFileStream.Create(Path, fmCreate);
+    F.Write(Line[1], Length(Line));
+    F.Free;
+
+    Result := True;
+  except;
+  end;
+end;
+
+
 procedure TBuilderItemFrame.DoOnSelect;
 begin
   if Assigned(FOnSelect) then
@@ -380,19 +505,25 @@ begin
       SetTitle(List.Strings[2]);
 
     if List.Count > 3 then
-      edSourceDirectory.Text := List.Strings[3];
+      edSourceDirectory.Text := Trim(List.Strings[3]);
 
     if List.Count > 4 then
-      edDestinationDirectory.Text := List.Strings[4];
+      edDestinationDirectory.Text := Trim(List.Strings[4]);
 
     if List.Count > 5 then
-      edPrefix.Text := List.Strings[5];
+      edPrefix.Text := Trim(List.Strings[5]);
 
     if List.Count > 6 then
-      edFileExtensions.Text := List.Strings[6];
+      edFileExtensions.Text := Trim(List.Strings[6]);
 
-    if List.Count > 7 then
-      edPrivateKey.Text := List.Strings[7];
+     if List.Count > 7 then
+      edVersion.Text := Trim(List.Strings[7]);
+
+    if List.Count > 8 then
+      edPrivateKey.Text := Trim(List.Strings[8]);
+
+    if List.Count > 9 then
+      cbSign.Checked := StrToBool(List.Strings[9]);
 
   finally
     List.Free;
@@ -410,7 +541,9 @@ begin
     edDestinationDirectory.Text + SEPARATOR +
     edPrefix.Text + SEPARATOR +
     edFileExtensions.Text + SEPARATOR +
-    edPrivateKey.Text;
+    edVersion.Text + SEPARATOR +
+    edPrivateKey.Text + SEPARATOR +
+    BoolToStr(cbSign.Checked);
 end;
 
 
@@ -419,6 +552,8 @@ begin
   FLanguage := Language;
 
   //Элементы управления
+  btnBuild.Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'Build', 'Собрать');
+
   lblSourceDirectory.Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'SourceDirectory', 'Исходный каталог');
   btnSourceDirectoryOpenDir.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'OpenDirectory', 'Открыть каталог в проводнике');
   btnSourceDirectorySelect.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'SelectDirectory', 'Выбрать каталог');
@@ -435,12 +570,15 @@ begin
   lblFileExtensions.Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'FileExtensions', 'Типы файлов');
   btnFileExtensionsClearValue.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'ClearValue', 'Очистить значение');
 
+  lblVersion.Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'Version', 'Версия');
+  btnVersionClearValue.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'ClearValue', 'Очистить значение');
+
   lblPrivateKey.Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'PrivateKey', 'Приватный ключ');
   btnPrivateKeyOpenDirectory.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'OpenDirectory', 'Открыть каталог в проводнике');
   btnPrivateKeySelect.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'SelectKey', 'Выбрать ключ');
   btnPrivateKeyClearValue.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'ClearValue', 'Очистить значение');
+  cbSign.Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'Sign', 'Подписывать PBO');
   OpenDialog.Filter := Format('%s (*.biprivatekey)|*.biprivatekey', [FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'PrivateKeys', 'Приватные ключи')]);
-
 end;
 
 

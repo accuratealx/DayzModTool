@@ -29,6 +29,7 @@ object LaunchItemFrame: TLaunchItemFrame
       Caption = 'Запустить'
       Enabled = False
       Flat = True
+      Font.Style = [fsBold]
       Glyph.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
         2000000000000004000064000000640000000000000000000000000000000000
@@ -66,6 +67,7 @@ object LaunchItemFrame: TLaunchItemFrame
         0000000000000000000000000000000000000000000000000000
       }
       OnClick = btnLaunchClick
+      ParentFont = False
     end
     object btnShowCommandLine: TSpeedButton
       Cursor = crHandPoint
@@ -415,6 +417,7 @@ object LaunchItemFrame: TLaunchItemFrame
       Caption = 'Остановить'
       Enabled = False
       Flat = True
+      Font.Style = [fsBold]
       Glyph.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
         2000000000000004000064000000640000000000000000000000000000000000
@@ -452,6 +455,7 @@ object LaunchItemFrame: TLaunchItemFrame
         C0F72A3BC19500000000000000000000000000000000FFFFFF00
       }
       OnClick = btnStopClick
+      ParentFont = False
     end
     object btnClearValue: TSpeedButton
       Cursor = crHandPoint

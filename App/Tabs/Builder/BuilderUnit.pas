@@ -15,7 +15,6 @@ type
     btnChangeIcon: TSpeedButton;
     btnDown: TSpeedButton;
     btnRename: TSpeedButton;
-    btnExplore: TSpeedButton;
     btnUp: TSpeedButton;
     pnlTools: TPanel;
     sbContent: TScrollBox;

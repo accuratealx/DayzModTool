@@ -7,7 +7,7 @@ interface
 uses
   sgeStringList;
 
-function  ExecuteFileAndWait(const FileName, Params: String; StartDir: String = ''): Integer;
+function  ExecuteFileAndWait(const FileName, Params: String; Hide: Boolean = True; StartDir: String = ''): Integer;
 function  DeleteFileToRecycle(FileName: String): Boolean;
 procedure OpenFolderInExplorer(const Folder: String);
 procedure DeleteFolderToRecycle(const Folder: String);
@@ -18,6 +18,7 @@ procedure GetDayZTrashDirectoryList(List: TsgeStringList);
 procedure GetDayzTrashFileList(list: TsgeStringList);
 function  IsDirectoryEmpty(Dir: String): Boolean;
 
+
 implementation
 
 uses
@@ -25,7 +26,7 @@ uses
   LazUTF8, SysUtils, JwaTlHelp32, windows, ShellApi, SteamUtils;
 
 
-function ExecuteFileAndWait(const FileName, Params: String; StartDir: String): Integer;
+function ExecuteFileAndWait(const FileName, Params: String; Hide: Boolean; StartDir: String): Integer;
 var
   Info: TShellExecuteInfo;
   ExitCode: DWORD;
@@ -42,7 +43,10 @@ begin
     lpFile := PChar(FileName);
     lpParameters := PChar(Params);
     lpDirectory := PChar(StartDir);
-    nShow := SW_HIDE;
+    if Hide then
+      nShow := SW_HIDE
+    else
+      nShow := SW_SHOWNORMAL;
   end;
 
   if ShellExecuteExA(@Info) then
@@ -199,7 +203,7 @@ begin
 end;
 
 
-procedure GetDayzTrashFileList(List: TsgeStringList);
+procedure GetDayzTrashFileList(list: TsgeStringList);
 var
   DirList: TsgeStringList;
   i: Integer;
