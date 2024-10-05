@@ -6,19 +6,55 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, ExtCtrls, StdCtrls, Buttons, Graphics,
-  Language;
+  Dialogs, Language;
 
 type
   TBuilderItemFrame = class(TFrame)
     btnBuild: TSpeedButton;
+    btnPrivateKeyClearValue: TSpeedButton;
+    btnPrivateKeyOpenDirectory: TSpeedButton;
+    btnPrefixClearValue: TSpeedButton;
+    btnFileExtensionsClearValue: TSpeedButton;
+    btnPrivateKeySelect: TSpeedButton;
+    btnSourceDirectoryClearValue: TSpeedButton;
+    btnDestinationDirectoryClearValue: TSpeedButton;
+    btnSourceDirectoryOpenDir: TSpeedButton;
+    btnDestinationDirectoryOpenDir: TSpeedButton;
+    btnSourceDirectorySelect: TSpeedButton;
+    btnDestinationDirectorySelect: TSpeedButton;
+    edPrivateKey: TEdit;
+    edPrefix: TEdit;
+    edFileExtensions: TEdit;
+    edSourceDirectory: TEdit;
+    edDestinationDirectory: TEdit;
     ilCollapse: TImageList;
     imgCollapse: TImage;
     imgIcon: TImage;
+    lblPrivateKey: TLabel;
+    lblPrefix: TLabel;
+    lblFileExtensions: TLabel;
+    lblSourceDirectory: TLabel;
+    lblDestinationDirectory: TLabel;
     lblTitle: TLabel;
+    OpenDialog: TOpenDialog;
     pnlCollapse: TPanel;
+    procedure btnDestinationDirectoryClearValueClick(Sender: TObject);
+    procedure btnDestinationDirectoryOpenDirClick(Sender: TObject);
+    procedure btnDestinationDirectorySelectClick(Sender: TObject);
+    procedure btnFileExtensionsClearValueClick(Sender: TObject);
+    procedure btnPrefixClearValueClick(Sender: TObject);
+    procedure btnPrivateKeyClearValueClick(Sender: TObject);
+    procedure btnPrivateKeyOpenDirectoryClick(Sender: TObject);
+    procedure btnPrivateKeySelectClick(Sender: TObject);
+    procedure btnSourceDirectoryClearValueClick(Sender: TObject);
+    procedure btnSourceDirectoryOpenDirClick(Sender: TObject);
+    procedure btnSourceDirectorySelectClick(Sender: TObject);
     procedure FrameClick(Sender: TObject);
     procedure pnlCollapseClick(Sender: TObject);
     procedure pnlCollapsePaint(Sender: TObject);
+  private
+    const
+      LANGUAGE_PREFIX = 'TabBuilder.';
   private
     FLanguage: TLanguage;
     FIconDirectory: String;
@@ -67,6 +103,10 @@ implementation
 
 {$R *.lfm}
 
+uses
+  DayZUtils,
+  SelectDirectoryDialogUnit;
+
 const
   SEPARATOR = ';;;';
 
@@ -98,6 +138,102 @@ end;
 procedure TBuilderItemFrame.FrameClick(Sender: TObject);
 begin
   Selected := True;
+end;
+
+
+procedure TBuilderItemFrame.btnSourceDirectoryOpenDirClick(Sender: TObject);
+var
+  Dir: String;
+begin
+  Dir := edSourceDirectory.Text;
+  if DirectoryExists(Dir) then
+    OpenFolderInExplorer(Dir);
+end;
+
+
+procedure TBuilderItemFrame.btnSourceDirectorySelectClick(Sender: TObject);
+var
+  Dir: String;
+begin
+  Dir := edSourceDirectory.Text;
+
+  if SelectDirectoryDialogExecute(FLanguage, Dir) then
+    edSourceDirectory.Text := Dir;
+end;
+
+
+procedure TBuilderItemFrame.btnSourceDirectoryClearValueClick(Sender: TObject);
+begin
+  edSourceDirectory.Text := '';
+end;
+
+
+procedure TBuilderItemFrame.btnDestinationDirectoryOpenDirClick(Sender: TObject);
+var
+  Dir: String;
+begin
+  Dir := edDestinationDirectory.Text;
+  if DirectoryExists(Dir) then
+    OpenFolderInExplorer(Dir);
+end;
+
+
+procedure TBuilderItemFrame.btnDestinationDirectoryClearValueClick(Sender: TObject);
+begin
+  edDestinationDirectory.Text := '';
+end;
+
+
+procedure TBuilderItemFrame.btnDestinationDirectorySelectClick(Sender: TObject);
+var
+  Dir: String;
+begin
+  Dir := edDestinationDirectory.Text;
+
+  if SelectDirectoryDialogExecute(FLanguage, Dir) then
+    edDestinationDirectory.Text := Dir;
+end;
+
+
+procedure TBuilderItemFrame.btnFileExtensionsClearValueClick(Sender: TObject);
+begin
+  edFileExtensions.Text := '';
+end;
+
+
+procedure TBuilderItemFrame.btnPrefixClearValueClick(Sender: TObject);
+begin
+  edPrefix.Text := '';
+end;
+
+
+procedure TBuilderItemFrame.btnPrivateKeyClearValueClick(Sender: TObject);
+begin
+  edPrivateKey.Text := '';
+end;
+
+
+procedure TBuilderItemFrame.btnPrivateKeyOpenDirectoryClick(Sender: TObject);
+var
+  Dir: String;
+begin
+  Dir := ExtractFilePath(edPrivateKey.Text);
+  if DirectoryExists(Dir) then
+    OpenFolderInExplorer(Dir);
+end;
+
+
+procedure TBuilderItemFrame.btnPrivateKeySelectClick(Sender: TObject);
+var
+  Dir, Fn: String;
+begin
+  Dir := ExtractFilePath(edPrivateKey.Text);
+  Fn := ExtractFileName(edPrivateKey.Text);
+
+  OpenDialog.InitialDir := Dir;
+  OpenDialog.FileName := Fn;
+  if OpenDialog.Execute then
+    edPrivateKey.Text := OpenDialog.FileName;
 end;
 
 
@@ -243,6 +379,21 @@ begin
     if List.Count > 2 then
       SetTitle(List.Strings[2]);
 
+    if List.Count > 3 then
+      edSourceDirectory.Text := List.Strings[3];
+
+    if List.Count > 4 then
+      edDestinationDirectory.Text := List.Strings[4];
+
+    if List.Count > 5 then
+      edPrefix.Text := List.Strings[5];
+
+    if List.Count > 6 then
+      edFileExtensions.Text := List.Strings[6];
+
+    if List.Count > 7 then
+      edPrivateKey.Text := List.Strings[7];
+
   finally
     List.Free;
   end;
@@ -254,7 +405,12 @@ begin
   Result :=
     BoolToStr(FCollapsed) + SEPARATOR +
     FIconName + SEPARATOR +
-    lblTitle.Caption;
+    lblTitle.Caption + SEPARATOR +
+    edSourceDirectory.Text + SEPARATOR +
+    edDestinationDirectory.Text + SEPARATOR +
+    edPrefix.Text + SEPARATOR +
+    edFileExtensions.Text + SEPARATOR +
+    edPrivateKey.Text;
 end;
 
 
@@ -263,6 +419,27 @@ begin
   FLanguage := Language;
 
   //Элементы управления
+  lblSourceDirectory.Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'SourceDirectory', 'Исходный каталог');
+  btnSourceDirectoryOpenDir.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'OpenDirectory', 'Открыть каталог в проводнике');
+  btnSourceDirectorySelect.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'SelectDirectory', 'Выбрать каталог');
+  btnSourceDirectoryClearValue.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'ClearValue', 'Очистить значение');
+
+  lblDestinationDirectory.Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'DestinationDirectory', 'Выходной каталог');
+  btnDestinationDirectoryOpenDir.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'OpenDirectory', 'Открыть каталог в проводнике');
+  btnDestinationDirectorySelect.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'SelectDirectory', 'Выбрать каталог');
+  btnDestinationDirectoryClearValue.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'ClearValue', 'Очистить значение');
+
+  lblPrefix.Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'Prefix', 'Префикс');
+  btnPrefixClearValue.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'ClearValue', 'Очистить значение');
+
+  lblFileExtensions.Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'FileExtensions', 'Типы файлов');
+  btnFileExtensionsClearValue.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'ClearValue', 'Очистить значение');
+
+  lblPrivateKey.Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'PrivateKey', 'Приватный ключ');
+  btnPrivateKeyOpenDirectory.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'OpenDirectory', 'Открыть каталог в проводнике');
+  btnPrivateKeySelect.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'SelectKey', 'Выбрать ключ');
+  btnPrivateKeyClearValue.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'ClearValue', 'Очистить значение');
+  OpenDialog.Filter := Format('%s (*.biprivatekey)|*.biprivatekey', [FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'PrivateKeys', 'Приватные ключи')]);
 
 end;
 

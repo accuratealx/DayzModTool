@@ -107,7 +107,7 @@ inherited StringTableItemEditorDialogForm: TStringTableItemEditorDialogForm
     ClientHeight = 305
     ClientWidth = 500
     object lblIDTitle: TLabel[0]
-      Left = 15
+      Left = 10
       Height = 17
       Top = 13
       Width = 101

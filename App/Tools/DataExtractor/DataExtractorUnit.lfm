@@ -1,9 +1,9 @@
 inherited DataExtractorForm: TDataExtractorForm
-  Height = 120
+  Height = 110
   Width = 400
-  ClientHeight = 120
+  ClientHeight = 110
   ClientWidth = 400
-  Constraints.MinHeight = 120
+  Constraints.MinHeight = 110
   Constraints.MinWidth = 400
   Icon.Data = {
     7E04000000000100010010100000010020006804000016000000280000001000
@@ -47,7 +47,7 @@ inherited DataExtractorForm: TDataExtractorForm
   OnCloseQuery = FormCloseQuery
   OnResize = FormResize
   inherited pnlButton: TPanel
-    Top = 75
+    Top = 65
     Width = 400
     ClientWidth = 400
     object btnExtract: TSpeedButton[0]
@@ -142,24 +142,24 @@ inherited DataExtractorForm: TDataExtractorForm
     end
   end
   inherited pnlContent: TPanel
-    Height = 75
+    Height = 65
     Width = 400
-    ClientHeight = 75
+    ClientHeight = 65
     ClientWidth = 400
     object pbExtract: TProgressBar[0]
-      Left = 20
+      Left = 10
       Height = 20
-      Top = 20
-      Width = 360
+      Top = 10
+      Width = 380
       Anchors = [akTop, akLeft, akRight]
       Step = 1
       TabOrder = 0
     end
     object lblProgressInfo: TLabel[1]
-      Left = 20
+      Left = 10
       Height = 15
-      Top = 50
-      Width = 360
+      Top = 40
+      Width = 380
       Alignment = taCenter
       AutoSize = False
       Caption = 'Этап [0/200]'

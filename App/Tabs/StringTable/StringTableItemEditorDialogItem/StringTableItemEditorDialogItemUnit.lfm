@@ -1,9 +1,9 @@
 object StringTableItemEditorDialogItemFrame: TStringTableItemEditorDialogItemFrame
   Left = 0
-  Height = 33
+  Height = 29
   Top = 0
   Width = 500
-  ClientHeight = 33
+  ClientHeight = 29
   ClientWidth = 500
   TabOrder = 0
   DesignLeft = 595
@@ -11,8 +11,8 @@ object StringTableItemEditorDialogItemFrame: TStringTableItemEditorDialogItemFra
   object edValue: TEdit
     Left = 180
     Height = 23
-    Top = 5
-    Width = 245
+    Top = 3
+    Width = 259
     Anchors = [akTop, akLeft, akRight]
     Font.CharSet = RUSSIAN_CHARSET
     Font.Pitch = fpVariable
@@ -22,9 +22,9 @@ object StringTableItemEditorDialogItemFrame: TStringTableItemEditorDialogItemFra
     OnChange = edValueChange
   end
   object lblTitle: TLabel
-    Left = 15
+    Left = 10
     Height = 15
-    Top = 9
+    Top = 7
     Width = 92
     Caption = 'Идентификатор'
     Font.CharSet = RUSSIAN_CHARSET
@@ -35,11 +35,11 @@ object StringTableItemEditorDialogItemFrame: TStringTableItemEditorDialogItemFra
   end
   object btnTranslate: TSpeedButton
     Cursor = crHandPoint
-    Left = 465
-    Height = 25
+    Left = 467
+    Height = 23
     Hint = 'Перевести'
-    Top = 4
-    Width = 25
+    Top = 3
+    Width = 23
     Anchors = [akTop, akRight]
     Flat = True
     Glyph.Data = {
@@ -84,11 +84,11 @@ object StringTableItemEditorDialogItemFrame: TStringTableItemEditorDialogItemFra
   end
   object btnClear: TSpeedButton
     Cursor = crHandPoint
-    Left = 435
-    Height = 25
+    Left = 444
+    Height = 23
     Hint = 'Очистить'
-    Top = 4
-    Width = 25
+    Top = 3
+    Width = 23
     Anchors = [akTop, akRight]
     Flat = True
     Glyph.Data = {

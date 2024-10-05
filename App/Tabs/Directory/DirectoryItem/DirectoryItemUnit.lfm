@@ -1,11 +1,11 @@
 object DirectoryItemFrame: TDirectoryItemFrame
   Cursor = crHandPoint
   Left = 0
-  Height = 40
+  Height = 42
   Top = 0
-  Width = 541
-  ClientHeight = 40
-  ClientWidth = 541
+  Width = 540
+  ClientHeight = 42
+  ClientWidth = 540
   OnClick = FrameClick
   OnDblClick = FrameDblClick
   TabOrder = 0
@@ -13,9 +13,9 @@ object DirectoryItemFrame: TDirectoryItemFrame
   DesignTop = 219
   object imgIcon: TImage
     Cursor = crHandPoint
-    Left = 4
+    Left = 10
     Height = 32
-    Top = 4
+    Top = 5
     Width = 32
     Center = True
     OnClick = FrameClick
@@ -163,9 +163,9 @@ object DirectoryItemFrame: TDirectoryItemFrame
   end
   object lblCaption: TLabel
     Cursor = crHandPoint
-    Left = 45
+    Left = 47
     Height = 17
-    Top = 10
+    Top = 11
     Width = 86
     Caption = 'Имя каталога'
     Font.CharSet = RUSSIAN_CHARSET
@@ -179,9 +179,9 @@ object DirectoryItemFrame: TDirectoryItemFrame
   end
   object lblPath: TLabel
     Cursor = crHandPoint
-    Left = 460
+    Left = 457
     Height = 15
-    Top = 12
+    Top = 13
     Width = 73
     Anchors = [akTop, akRight]
     Caption = 'Полный путь'
