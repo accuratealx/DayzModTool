@@ -4,7 +4,7 @@ program DayZModTool;
 
 uses
   AdvancedSingleInstance, Windows,
-  Interfaces, Forms, MainUnit;
+  Interfaces, Forms, MainUnit, BuilderItemFrameCommonUnit;
 
 {$R *.res}
 

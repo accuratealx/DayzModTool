@@ -126,7 +126,6 @@ uses
   DayZUtils, SteamUtils,
   MemoDialogUnit, SelectDirectoryDialogUnit, YesNoQuestionDialogUnit,
   StartParamSimple,
-  ParamFrameCommonUnit,
   ParamFrameSimpleUnit, ParamFrameIntegerUnit, ParamFrameStringUnit,
   ParamFrameDirectoryUnit, ParamFrameFileUnit, ParamFrameDirectoryListUnit;
 
@@ -266,7 +265,7 @@ procedure TLaunchItemFrame.PrepareInterface(Items: TStartParamArray);
 var
   i: Integer;
   Item: TStartParamSimple;
-  FrameItem: TParamFrameCommonFrame;
+  FrameItem: TParamFrameSimpleFrame;
 begin
   imgIcon.Picture.Assign(Icon);
   lblTitle.Caption := Caption;
@@ -323,17 +322,17 @@ end;
 
 procedure TLaunchItemFrame.ArrangeContentPanelItems;
 var
-  FrameItem: TParamFrameCommonFrame;
+  FrameItem: TParamFrameSimpleFrame;
   i, Y: Integer;
 begin
   Y := 0;
 
   for i := 0 to pnlContent.ControlCount - 1 do
   begin
-    if not (pnlContent.Controls[i] is TParamFrameCommonFrame) then
+    if not (pnlContent.Controls[i] is TParamFrameSimpleFrame) then
       Continue;
 
-    FrameItem := pnlContent.Controls[i] as TParamFrameCommonFrame;
+    FrameItem := pnlContent.Controls[i] as TParamFrameSimpleFrame;
 
     FrameItem.Left := 0;
     FrameItem.Width := pnlContent.Width;

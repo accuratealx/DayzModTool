@@ -1,17 +1,17 @@
 inherited ParamFrameStringFrame: TParamFrameStringFrame
   Anchors = [akTop, akLeft, akRight]
-  inherited ContentPanel: TPanel
-    inherited btnDefault: TSpeedButton
-      Visible = True
-    end
-    object edValue: TEdit[2]
-      Left = 178
-      Height = 23
-      Top = 1
-      Width = 312
-      Anchors = [akTop, akLeft, akRight]
-      TabOrder = 1
-      OnChange = edValueChange
-    end
+  DesignLeft = 533
+  DesignTop = 266
+  inherited btnDefault: TSpeedButton
+    Visible = True
+  end
+  object edValue: TEdit[2]
+    Left = 178
+    Height = 23
+    Top = 1
+    Width = 312
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 1
+    OnChange = edValueChange
   end
 end

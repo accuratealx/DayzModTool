@@ -5,13 +5,12 @@ unit ParamFrameSimpleUnit;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Dialogs, StdCtrls, Buttons,
+  Classes, SysUtils, Forms, Controls, Dialogs, StdCtrls, Buttons, ExtCtrls,
   Language,
-  StartParamSimple,
-  ParamFrameCommonUnit;
+  StartParamSimple;
 
 type
-  TParamFrameSimpleFrame = class(TParamFrameCommonFrame)
+  TParamFrameSimpleFrame = class(TFrame)
     cbParamName: TCheckBox;
     btnDefault: TSpeedButton;
     procedure btnDefaultClick(Sender: TObject);

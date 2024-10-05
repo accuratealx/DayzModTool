@@ -1,17 +1,17 @@
 inherited ParamFrameIntegerFrame: TParamFrameIntegerFrame
-  inherited ContentPanel: TPanel
-    inherited btnDefault: TSpeedButton
-      Visible = True
-    end
-    object seValue: TSpinEdit[2]
-      Left = 178
-      Height = 23
-      Top = 1
-      Width = 312
-      Anchors = [akTop, akLeft, akRight]
-      OnChange = seValueChange
-      OnMouseWheel = seValueMouseWheel
-      TabOrder = 1
-    end
+  DesignLeft = 579
+  DesignTop = 285
+  inherited btnDefault: TSpeedButton
+    Visible = True
+  end
+  object seValue: TSpinEdit[2]
+    Left = 178
+    Height = 23
+    Top = 1
+    Width = 312
+    Anchors = [akTop, akLeft, akRight]
+    OnChange = seValueChange
+    OnMouseWheel = seValueMouseWheel
+    TabOrder = 1
   end
 end

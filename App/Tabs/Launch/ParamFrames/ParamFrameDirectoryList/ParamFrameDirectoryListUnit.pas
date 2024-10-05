@@ -5,7 +5,7 @@ unit ParamFrameDirectoryListUnit;
 interface
 
 uses
-  Classes, SysUtils, Controls, Graphics, Dialogs, StdCtrls, Buttons,
+  Classes, SysUtils, Controls, Graphics, Dialogs, StdCtrls, Buttons, ExtCtrls,
   StartParamSimple, StartParamDirectoryList,
   Language,
   ParamFrameSimpleUnit, ParamFrameDirectoryListModEditorUnit;
@@ -127,7 +127,7 @@ begin
 
   inherited Create(AItem);
 
-  FModList.Parent := ContentPanel;
+  FModList.Parent := Self;
   FModList.Top := edValue.Top + edValue.Height;
   FModList.Left := 180;
   FModList.Width := Self.Width - FModList.Left - 10;
