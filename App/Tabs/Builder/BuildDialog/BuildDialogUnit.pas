@@ -30,7 +30,7 @@ type
   end;
 
 
-procedure BuildDialogExecute(Language: TLanguage; const AppFile, AParams: String);
+procedure BuildDialogExecute(Language: TLanguage; const ATitle, AppFile, AParams: String);
 
 
 implementation
@@ -43,17 +43,19 @@ uses
 
 type
   TBuildDialogParameters = class(TDialogParameters)
+    Title: String;
     AppFile: String;
     Params: String;
   end;
 
 
-procedure BuildDialogExecute(Language: TLanguage; const AppFile, AParams: String);
+procedure BuildDialogExecute(Language: TLanguage; const ATitle, AppFile, AParams: String);
 var
   Params: TBuildDialogParameters;
 begin
   Params := TBuildDialogParameters.Create;
   Params.Language := Language;
+  Params.Title := ATitle;
   Params.AppFile := AppFile;
   Params.Params := AParams;
   try
@@ -163,7 +165,7 @@ end;
 
 procedure TBuildDialogForm.SetLanguage;
 begin
-  Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Title', 'Рузультат сборки');
+  Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Title', 'Рузультат сборки') + ' - ' + (FParameters as TBuildDialogParameters).Title;
   btnClose.Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Close', 'Закрыть');
   btnCopyContent.Hint := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'CopyContent', 'Скопировать текст в буфер обмена');
 end;

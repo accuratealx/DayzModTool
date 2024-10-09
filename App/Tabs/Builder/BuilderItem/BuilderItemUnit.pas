@@ -107,6 +107,7 @@ type
     property IconName: String read FIconName write SetIconName;
 
     property OnSelect: TNotifyEvent read FOnSelect write FOnSelect;
+    property OnHeightChange: TNotifyEvent read FOnHeightChange write FOnHeightChange;
   end;
 
   TBuilderItemFrameList = array of TBuilderItemFrame;
@@ -246,7 +247,7 @@ begin
   params := GetStartParam + ' ' + '"-include=' + IncFile + '"';
 
   //Показать диалог сборки
-  BuildDialogExecute(FLanguage, exe, params);
+  BuildDialogExecute(FLanguage, GetTitle, exe, params);
 end;
 
 
@@ -415,7 +416,7 @@ begin
     List.Add('-binarizeFullLogs');
 
     if edPrefix.Text <> '' then
-      List.Add(Format('"-prefix=%s"', [Trim(edPrefix.Text)]));
+      List.Add(Format('-prefix=%s', [Trim(edPrefix.Text)]));
 
     if cbSign.Checked and FileExists(edPrivateKey.Text) then
       List.Add(Format('"-sign=%s"', [edPrivateKey.Text]));

@@ -238,8 +238,9 @@ var
   c: Integer;
 begin
   //Установим обработчики
-  AFrame.OnChangeBounds := @OnChangeBuilderContentHeight;
+  AFrame.OnHeightChange := @OnChangeBuilderContentHeight;
   AFrame.OnSelect := @OnItemSelect;
+  AFrame.ChangeLanguage(FParams.Language);
 
   //Добавим в массив
   c := Length(FFrames);
