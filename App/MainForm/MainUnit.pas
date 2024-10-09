@@ -316,7 +316,7 @@ begin
   begin
     try
       //Обновим настройки на диске, что бы экспортировать по факту
-      SaveSettings;
+      GlobalSaveSettings;
 
       //Экспорт
       SettingsManager_Export(FSettingsDir, SaveDialog.FileName);
