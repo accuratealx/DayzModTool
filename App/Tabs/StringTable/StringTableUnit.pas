@@ -44,7 +44,7 @@ type
       SECTION_COLUMN_WIDTH = 'ColumnWidth';
       SECTION_COLUMN_VISIBLE = 'ColumnVisible';
 
-      LANGUAGE_PREFIX = 'StringTable.';
+      LANGUAGE_PREFIX = 'TabStringTable.';
   private
     FLangTable: TStringTableItemList;
     FSettingsFile: String;

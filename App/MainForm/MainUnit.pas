@@ -11,7 +11,7 @@ uses
   sgeStringList,
   Language, TabParameters, TabCommonUnit,
   LaunchUnit, LaunchItemUnit, DirectoryUnit, DirectoryItemUnit, StringTableUnit, BuilderUnit,
-  WorkDriveUnit, TrashCleanerUnit;
+  WorkDriveUnit, TrashCleanerUnit, ItemBaseUnit;
 
 const
   VERSION = '0.12';
@@ -75,6 +75,7 @@ type
     tabLaunch: TTabSheet;
     tabDirectory: TTabSheet;
     tabBuilder: TTabSheet;
+    tabItemBase: TTabSheet;
     tabStringTable: TTabSheet;
     TrayMenu: TPopupMenu;
     TrayIcon: TTrayIcon;
@@ -113,7 +114,8 @@ type
         tftLaunch,
         tftDirectory,
         tftBuilder,
-        tftStringTable
+        tftStringTable,
+        tftItemBase
       );
     const
       WM_AFTER_SHOW = WM_USER + 1;
@@ -138,9 +140,9 @@ type
     FCloseApplication: Boolean;
 
     //Каталоги
-    FMainDir: String;       //Каталог запуска приложения
-    FSettingsDir: String;   //Каталог настроек
-    FLanguageDir: String;   //Каталог языков
+    FMainDir: String;           //Каталог запуска приложения
+    FSettingsDir: String;       //Каталог настроек
+    FLanguageDir: String;       //Каталог языков
 
     //Язык
     FCurrentLanguage: String;
@@ -503,10 +505,7 @@ begin
   CreateLanguageMenuItems;
 
   //Загрузить язык
-  LoadLanguage(FCurrentLanguage);
-
-  //Применить язык
-  ApplyLanguage;
+  ChangeLanguage(FCurrentLanguage);
 end;
 
 
@@ -520,7 +519,7 @@ begin
   //Удалить закладки
   DestroyTabs;
 
-  //Почистить язык
+  //Почистить объекты
   FLanguageFileList.Free;
   FLanguage.Free;
 end;
@@ -655,14 +654,11 @@ end;
 
 procedure TMainForm.ChangeLanguage(LanguageName: String);
 begin
-  if LowerCase(FCurrentLanguage) = LowerCase(LanguageName) then
-    Exit;
-
   FCurrentLanguage := LanguageName;
   LoadLanguage(FCurrentLanguage);
-  ApplyLanguage;
 
   //Поправить текущий язык
+  ApplyLanguage;
   CorrectLanguageMenuItemSelected;
 end;
 
@@ -673,6 +669,7 @@ begin
   FFrames[tftDirectory] := TDirectoryFrame.Create(AParams, tabDirectory);
   FFrames[tftBuilder] := TBuilderFrame.Create(AParams, tabBuilder);
   FFrames[tftStringTable] := TStringTableFrame.Create(AParams, tabStringTable);
+  FFrames[tftItemBase] := TItemBaseFrame.Create(AParams, tabItemBase);
 end;
 
 
