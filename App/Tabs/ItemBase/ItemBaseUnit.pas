@@ -19,6 +19,7 @@ type
     btnOpen: TSpeedButton;
     btnImport: TSpeedButton;
     btnSave: TSpeedButton;
+    btnCopyObjName: TSpeedButton;
     edFilter: TEdit;
     OpenDialog: TOpenDialog;
     pnlTools: TPanel;
@@ -29,14 +30,15 @@ type
     procedure btnAddClick(Sender: TObject);
     procedure btnClearFilterClick(Sender: TObject);
     procedure btnClearTableClick(Sender: TObject);
+    procedure btnCopyObjNameClick(Sender: TObject);
     procedure btnDeleteClick(Sender: TObject);
     procedure btnEditClick(Sender: TObject);
     procedure btnImportClick(Sender: TObject);
     procedure btnOpenClick(Sender: TObject);
     procedure btnSaveClick(Sender: TObject);
     procedure edFilterChange(Sender: TObject);
-    procedure TableGridClick(Sender: TObject);
     procedure TableGridDblClick(Sender: TObject);
+    procedure TableGridSelection(Sender: TObject; aCol, aRow: Integer);
   private
     const
       LANGUAGE_PREFIX = 'TabItemBase.';
@@ -75,6 +77,9 @@ type
     procedure ApplyLanguage; override;
     procedure SaveSettings; override;
     procedure LoadSettings; override;
+
+    procedure FitColumns;
+    procedure Sort;
   end;
 
 
@@ -83,7 +88,7 @@ implementation
 {$R *.lfm}
 
 uses
-  IniFiles,
+  IniFiles, Clipbrd,
   MessageDialogUnit, ItemBaseEditorDialogUnit, YesNoQuestionDialogUnit;
 
 
@@ -116,6 +121,18 @@ begin
     //Поправить кнопки
     CorrectToolButtons;
   end;
+end;
+
+
+procedure TItemBaseFrame.btnCopyObjNameClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  i := GetSelectedRow + 1;
+  if i = -1 then
+    Exit;
+
+  Clipboard.AsText := TableGrid.Cells[1, i];
 end;
 
 
@@ -245,15 +262,15 @@ begin
 end;
 
 
-procedure TItemBaseFrame.TableGridClick(Sender: TObject);
-begin
-  CorrectToolButtons;
-end;
-
-
 procedure TItemBaseFrame.TableGridDblClick(Sender: TObject);
 begin
   EditItem;
+end;
+
+
+procedure TItemBaseFrame.TableGridSelection(Sender: TObject; aCol, aRow: Integer);
+begin
+  CorrectToolButtons;
 end;
 
 
@@ -387,6 +404,7 @@ procedure TItemBaseFrame.CorrectToolButtons;
 begin
   btnEdit.Enabled := (GetSelectedRow <> -1);
   btnDelete.Enabled := btnEdit.Enabled;
+  btnCopyObjName.Enabled := btnEdit.Enabled;
 end;
 
 
@@ -462,11 +480,11 @@ begin
   //База предметов
   FItemBase := TObjectItemList.Create;
 
-  //Загрузка настроек
-  LoadSettings;
-
   //Записать ссылку на таблицу для других закладок
   FParams.ItemBase := FItemBase;
+
+  //Загрузка настроек
+  LoadSettings;
 
   //Построить таблицу
   LoadItemsToTableGrid(GetFilter);
@@ -487,10 +505,11 @@ end;
 procedure TItemBaseFrame.ApplyLanguage;
 begin
   //Кнопки
-  btnClearTable.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Clear', 'Очистить таблицу');
+  btnClearTable.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'ClearTable', 'Очистить таблицу');
   btnOpen.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Open', 'Открыть');
   btnImport.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Import', 'Импортировать');
   btnSave.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Save', 'Сохранить');
+  btnCopyObjName.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'CopyObjectName', 'Скопировать имя объекта');
   btnAdd.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Add', 'Добавить');
   btnEdit.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Edit', 'Изменить');
   btnDelete.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Delete', 'Удалить');
@@ -551,7 +570,35 @@ begin
 
   //База предметов
   if FileExists(FItemBaseFile) then
+  begin
     LoadBase(FItemBaseFile);
+
+    LoadItemsToTableGrid(GetFilter);
+
+    CorrectToolButtons;
+  end;
+end;
+
+
+procedure TItemBaseFrame.FitColumns;
+var
+  i: Integer;
+begin
+  for i := 1 to TableGrid.Columns.Count - 1 do
+    TableGrid.AutoSizeColumn(i);
+end;
+
+
+procedure TItemBaseFrame.Sort;
+begin
+  //Упорядочить базу
+  FItemBase.Sort(stName, sdForward);
+
+  //Сохранить на диске
+  SaveBase(FItemBaseFile);
+
+  //Перечитать таблицу
+  LoadItemsToTableGrid(GetFilter);
 end;
 
 

@@ -5,7 +5,7 @@ unit ObjectItemList;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, LazUTF8, windows, shlwapi;
 
 type
   TObjectItem = class
@@ -22,6 +22,19 @@ type
     procedure FromString(Str: String);
     function  ToString: String; reintroduce;
   end;
+
+
+  TObjectItemListSortType = (
+    stName,
+    stTitle,
+    stDescription
+  );
+
+
+  TObjectItemListSortDirection = (
+    sdForward,
+    sdBackward
+  );
 
 
   TObjectItemList = class
@@ -48,6 +61,8 @@ type
     procedure SaveToFile(FileName: String);
 
     procedure AddFromFile(FileName: String);
+
+    procedure Sort(SortType: TObjectItemListSortType = stName; SortDirection: TObjectItemListSortDirection = sdForward);
 
     property Count: Integer read FCount;
     property Item[Index: Integer]: TObjectItem read GetItem;
@@ -266,6 +281,62 @@ begin
 
   finally
     List.Free;
+  end;
+end;
+
+
+procedure TObjectItemList.Sort(SortType: TObjectItemListSortType; SortDirection: TObjectItemListSortDirection);
+
+  function GetCompareData(AItem: TObjectItem): String;
+  begin
+    case SortType of
+      stName:
+        Result := AItem.ObjName;
+      stTitle:
+        Result := AItem.ObjTitle;
+      stDescription:
+        Result := AItem.ObjDescription;
+    end;
+  end;
+
+  function ACompareString(Sa, Sb: String): Integer;
+  begin
+    Result := StrCmpLogicalW(PWideChar(UTF8Decode(Sa)), PWideChar(UTF8Decode(Sb)));
+  end;
+
+var
+  i, j, ci, cj: Integer;
+  s1, s2: String;
+  AItem: TObjectItem;
+begin
+  ci := FCount - 1;
+  cj := ci - 1;
+  for i := 0 to ci do
+  begin
+    for j := 0 to cj - i do
+    begin
+      s1 := GetCompareData(FItems[j]);
+      s2 := GetCompareData(FItems[j + 1]);
+
+      if ACompareString(s1, s2) > 0 then
+      begin
+        AItem := FItems[j];
+        FItems[j] := FItems[j + 1];
+        FItems[j + 1] := AItem;
+      end;
+    end;
+  end;
+
+  ci := FCount - 1;
+  if (SortDirection = sdBackward) and (ci > 0) then
+  begin
+    cj := ci div 2;
+    for i := 0 to cj do
+    begin
+      AItem := FItems[i];
+      FItems[i] := FItems[ci - i];
+      FItems[ci - i] := AItem;
+    end;
   end;
 end;
 

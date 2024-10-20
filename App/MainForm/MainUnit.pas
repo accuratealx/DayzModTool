@@ -25,6 +25,10 @@ type
     ilTrayDirectory: TImageList;
     ilLanguages: TImageList;
     MainMenu: TMainMenu;
+    miMainSeparator4: TMenuItem;
+    miMainTabItemBaseFitColomns: TMenuItem;
+    miMainTabItemBaseSort: TMenuItem;
+    miMainTabItemBase: TMenuItem;
     miMainToolsOpenSettings: TMenuItem;
     miMainToolsImportSettings: TMenuItem;
     miMainToolsExportSettings: TMenuItem;
@@ -91,6 +95,8 @@ type
     procedure miMainTabDirectoryAddDefaultClick(Sender: TObject);
     procedure miMainTabDirectoryEraseAllClick(Sender: TObject);
     procedure miMainTabDirectoryEraseIncorrectClick(Sender: TObject);
+    procedure miMainTabItemBaseFitColomnsClick(Sender: TObject);
+    procedure miMainTabItemBaseSortClick(Sender: TObject);
     procedure miMainTabLaunchCollapseAllClick(Sender: TObject);
     procedure miMainTabLaunchExpandAllClick(Sender: TObject);
     procedure miMainTabLaunchFindExecutablesClick(Sender: TObject);
@@ -281,6 +287,18 @@ end;
 procedure TMainForm.miMainTabDirectoryEraseIncorrectClick(Sender: TObject);
 begin
   (FFrames[tftDirectory] as TDirectoryFrame).DeleteIncorrectDirectory;
+end;
+
+
+procedure TMainForm.miMainTabItemBaseFitColomnsClick(Sender: TObject);
+begin
+  (FFrames[tftItemBase] as TItemBaseFrame).FitColumns;
+end;
+
+
+procedure TMainForm.miMainTabItemBaseSortClick(Sender: TObject);
+begin
+  (FFrames[tftItemBase] as TItemBaseFrame).Sort;
 end;
 
 
