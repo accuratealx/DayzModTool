@@ -912,7 +912,7 @@ var
   i: TTabFrameType;
 begin
   //Основная форма
-  SaveSettings;
+  LoadSettings;
 
   //Фреймы
   for i := Low(TTabFrameType) to High(TTabFrameType) do
