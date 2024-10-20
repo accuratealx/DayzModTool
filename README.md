@@ -39,6 +39,8 @@
 - Автоматический перевод строк на другие языки
 - Очистка ненужных файлов, оставшихся после запуска DayZ и утилит
 - Калькулятор времени дня и ночи
+- Быстрая сборка PBO
+- База предметов
 
 ## Зависимости:
 - [Simple Game Engine 2](https://github.com/accuratealx/SimpleGameEngine2)
@@ -50,8 +52,11 @@
 ![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot001.png)
 ![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot002.png)
 ![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot003.png)
+![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot004.png)
+![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot005.png)
 ![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot010.png)
 ![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot011.png)
 ![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot012.png)
+![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot013.png)
 ![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/ScreenshotTray.png)
 
