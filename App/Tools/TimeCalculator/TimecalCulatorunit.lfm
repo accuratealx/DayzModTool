@@ -173,7 +173,7 @@ inherited TimeCalculatorForm: TTimeCalculatorForm
       Caption = 'Длительность дня'
     end
     object teNight: TTimeEdit[2]
-      Left = 175
+      Left = 176
       Height = 23
       Top = 40
       Width = 94

@@ -257,7 +257,7 @@ end;
 
 procedure TItemBaseFrame.edFilterChange(Sender: TObject);
 begin
-  LoadItemsToTableGrid(edFilter.Text);
+  LoadItemsToTableGrid(GetFilter);
   CorrectToolButtons;
 end;
 
@@ -343,13 +343,13 @@ procedure TItemBaseFrame.LoadItemsToTableGrid(Filter: String);
       Exit(True);
 
     //Проверить данные
-    if Pos(AFilter, LowerCase(AItem.ObjName)) > 0 then
+    if Pos(AFilter, UnicodeLowerCase(AItem.ObjName)) > 0 then
       Exit(True);
 
-    if Pos(AFilter, LowerCase(AItem.ObjTitle)) > 0 then
+    if Pos(AFilter, UnicodeLowerCase(AItem.ObjTitle)) > 0 then
       Exit(True);
 
-    if Pos(AFilter, LowerCase(AItem.ObjDescription)) > 0 then
+    if Pos(AFilter, UnicodeLowerCase(AItem.ObjDescription)) > 0 then
       Exit(True);
   end;
 
@@ -364,7 +364,7 @@ begin
 
   TableGrid.BeginUpdate;
   try
-    Filter := LowerCase(Trim(Filter));
+    Filter := UnicodeLowerCase(Trim(Filter));
 
     for i := 0 to FParams.ItemBase.Count - 1 do
     begin
