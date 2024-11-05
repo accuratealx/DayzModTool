@@ -404,6 +404,7 @@ end;
 
 destructor TDirectoryFrame.Destroy;
 begin
+  //Сохранить настройки
   SaveSettings;
 
   ClearItemFrames;

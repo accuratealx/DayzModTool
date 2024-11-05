@@ -11,7 +11,7 @@ uses
   sgeStringList,
   Language, TabParameters, TabCommonUnit,
   LaunchUnit, LaunchItemUnit, DirectoryUnit, DirectoryItemUnit, StringTableUnit, BuilderUnit,
-  WorkDriveUnit, TrashCleanerUnit, ItemBaseUnit;
+  WorkDriveUnit, TrashCleanerUnit, ItemBaseUnit, NoteUnit;
 
 const
   VERSION = '0.13';
@@ -80,6 +80,7 @@ type
     tabDirectory: TTabSheet;
     tabBuilder: TTabSheet;
     tabItemBase: TTabSheet;
+    tabNote: TTabSheet;
     tabStringTable: TTabSheet;
     TrayMenu: TPopupMenu;
     TrayIcon: TTrayIcon;
@@ -121,7 +122,8 @@ type
         tftDirectory,
         tftBuilder,
         tftStringTable,
-        tftItemBase
+        tftItemBase,
+        tftNote
       );
     const
       WM_AFTER_SHOW = WM_USER + 1;
@@ -688,6 +690,7 @@ begin
   FFrames[tftBuilder] := TBuilderFrame.Create(AParams, tabBuilder);
   FFrames[tftStringTable] := TStringTableFrame.Create(AParams, tabStringTable);
   FFrames[tftItemBase] := TItemBaseFrame.Create(AParams, tabItemBase);
+  FFrames[tftNote] := TNoteFrame.Create(AParams, tabNote);
 end;
 
 
