@@ -34,6 +34,7 @@ begin
   Result.URL := '';
 
   Client := TFPHTTPClient.Create(nil);
+  //Без этой строки всегда возвращается 403 ошибка
   Client.AddHeader('User-Agent','Mozilla/5.0 (compatible; fpweb)');
   Client.AllowRedirect := True;
   try
