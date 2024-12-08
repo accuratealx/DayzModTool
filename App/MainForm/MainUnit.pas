@@ -8,7 +8,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus,
   ExtCtrls, ComCtrls, windows, IniFiles, LCLIntf,
-  sgeStringList,
+  sgeStringList, EventSystem, GitVersion,
   Language, TabParameters, TabCommonUnit,
   LaunchUnit, LaunchItemUnit, DirectoryUnit, DirectoryItemUnit, StringTableUnit, BuilderUnit,
   WorkDriveUnit, TrashCleanerUnit, ItemBaseUnit, NoteUnit;
@@ -19,12 +19,12 @@ const
 type
   TMainForm = class(TForm)
     ilTray: TImageList;
-    ilMainMenu: TImageList;
     ilTab: TImageList;
     ilTrayLaunch: TImageList;
     ilTrayDirectory: TImageList;
     ilLanguages: TImageList;
     MainMenu: TMainMenu;
+    miMainInfoCheckVersion:TMenuItem;
     miMainSeparator4: TMenuItem;
     miMainTabItemBaseFitColomns: TMenuItem;
     miMainTabItemBaseSort: TMenuItem;
@@ -90,6 +90,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure miMainHideClick(Sender: TObject);
     procedure miExitClick(Sender: TObject);
+    procedure miMainInfoCheckVersionClick(Sender:TObject);
     procedure miMainInfoDonateClick(Sender: TObject);
     procedure miMainTabBuilderCollapseAllClick(Sender: TObject);
     procedure miMainTabBuilderExpandAllClick(Sender: TObject);
@@ -160,6 +161,9 @@ type
     //Закладки
     FTabParams: TTabParameters;
     FFrames: array[TTabFrameType] of TTabCommonFrame;
+
+    //Система событий
+    FEventSystem: TEventSystem;
 
     procedure Init;
     procedure Done;
@@ -253,6 +257,62 @@ procedure TMainForm.miExitClick(Sender: TObject);
 begin
   FCloseApplication := True;
   Close;
+end;
+
+
+procedure TMainForm.miMainInfoCheckVersionClick(Sender:TObject);
+const
+  vError = 0;
+  vNoUpdate = 1;
+  vUpdate = 2;
+var
+  ver: TGitHubVersion;
+  mode: Byte;
+begin
+  mode := vError;
+
+  ver := GetGithubVersion;
+  if ver.Version = '' then
+    mode := vError
+  else
+  begin
+    if VERSION < ver.Version then
+      mode := vUpdate
+    else
+      mode := vNoUpdate;
+  end;
+
+  case mode of
+    vError:
+    begin
+      MessageDialogExecute(
+        FLanguage,
+        FLanguage.GetLocalizedString('MainForm.UpdateError', 'Ошибка обновления, попробуйте позже')
+      );
+    end;
+
+    vNoUpdate:
+    begin
+      MessageDialogExecute(
+        FLanguage,
+        FLanguage.GetLocalizedString('MainForm.NoUpdate', 'Обновлений не найдено')
+      );
+    end;
+
+    vUpdate:
+    begin
+      //Есть обновление, открыть ссылку
+      if YesNoQuestionDialogExecute(
+        FLanguage,
+        Format(
+          FLanguage.GetLocalizedString('MainForm.Update', 'Обнаружена новая версия %s, открыть ссылку?'),
+          [ver.Version]
+        )
+      ) then
+        if ver.URL <> '' then
+          OpenURL(ver.URL);
+    end;
+  end;
 end;
 
 
@@ -483,6 +543,9 @@ begin
 
   FIsFirstRun := True;
 
+  //Система событий
+  FEventSystem := TEventSystem.Create;
+
   //Объекты
   FLanguage := TLanguage.Create;
   FLanguageFileList := TsgeStringList.Create;
@@ -501,6 +564,7 @@ begin
   //Параметры закладок
   FTabParams := TTabParameters.Create;
   FTabParams.Language := FLanguage;
+  FTabParams.EventSystem := FEventSystem;
   FTabParams.TabDirectory := FMainDir + 'Data\Tabs\';
   FTabParams.IconDirectory := FMainDir + 'Data\Icons\';
   FTabParams.SettingsDirectory := FSettingsDir;
@@ -542,6 +606,9 @@ begin
   //Почистить объекты
   FLanguageFileList.Free;
   FLanguage.Free;
+
+  //Система событий
+  FEventSystem.Free;
 end;
 
 

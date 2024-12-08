@@ -6,11 +6,12 @@ interface
 
 uses
   SysUtils,
-  Language, ObjectItemList;
+  Language, ObjectItemList, EventSystem;
 
 type
   TTabParameters = class
     Language: TLanguage;        //Ссылка на текущий перевод
+    EventSystem: TEventSystem;  //Ссылка на систему событий
     ItemBase: TObjectItemList;  //База предметов
     TabDirectory: String;       //Каталог закладок
     IconDirectory: String;      //Каталог иконок

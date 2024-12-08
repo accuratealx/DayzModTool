@@ -6,16 +6,16 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, Buttons,
-  StdCtrls,
+  SynEdit, SynHighlighterAny,
   TabCommonUnit, TabParameters;
 
 type
   TNoteFrame = class(TTabCommonFrame)
     btnClear: TSpeedButton;
     btnSave: TSpeedButton;
-    mNote: TMemo;
     Panel1: TPanel;
     pnlTools: TPanel;
+    mNote: TSynEdit;
     procedure btnClearClick(Sender: TObject);
     procedure btnSaveClick(Sender: TObject);
   private
