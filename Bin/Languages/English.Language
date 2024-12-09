@@ -1,7 +1,7 @@
 # DayZ Mod Tool language file
 
 #Language info
-Info.AppVersion = 0.12
+Info.AppVersion = 0.13
 Info.FileVersion = 1.5
 Info.Autor = accuratealx@gmail.com
 Info.Date = 21.02.2024
@@ -12,6 +12,7 @@ MainForm.MainMenu.miMainExit = Exit
 MainForm.MainMenu.miMainHide = Minimize
 MainForm.MainMenu.miMainInfo = Information
 MainForm.MainMenu.miMainInfoDonate = Donation
+MainForm.MainMenu.miMainInfoCheckVersion = Check for update
 MainForm.MainMenu.miMainLanguage = Language
 MainForm.MainMenu.miMainSystem = System
 MainForm.MainMenu.miMainTabDirectory = Directory
@@ -56,6 +57,7 @@ MainForm.Tabs.tabDirectory = Directory
 MainForm.Tabs.tabBuilder = Builder
 MainForm.Tabs.tabStringTable = String table
 MainForm.Tabs.tabItemBase = Items
+MainForm.Tabs.tabNote = Note
 
 #MainForm
 MainForm.FirstLaunchQuestion = Application settings not found %sDo automatic configuration?
@@ -64,6 +66,10 @@ MainForm.ExportConfigSuccess = Settings exported successfully
 MainForm.ExportConfigError = An error occurred while exporting settings
 MainForm.ImportConfigSuccess = Settings successfully imported
 MainForm.ImportConfigError = An error occurred while importing settings
+MainForm.NoUpdate = No updates found
+MainForm.UpdateError = Update error, try again later
+MainForm.Update = New version %s found, open link?
+
 
 #Dialogs
 Dialogs.YesNo.Caption = Question
@@ -175,6 +181,7 @@ TabBuilder.Sign = Sign PBO
 TabBuilder.BuildDialog.Title = Build result
 TabBuilder.BuildDialog.Close = Close
 TabBuilder.BuildDialog.CopyContent = Copy contetnt to clipboard
+TabBuilder.BuildDialog.Repeat = Repeat build
 
 #Tab StringTable
 TabStringTable.Clear = Clear table
@@ -226,6 +233,12 @@ TabItemBase.VisibleItems = Visible items
 TabItemBase.Column.Name = Name
 TabItemBase.Column.Title = Title
 TabItemBase.Column.Description = Description
+
+#Tab note
+TabNote.Clear = Clear
+TabNote.Save = Save
+TabNote.FileAccessError = An error occurred while accessing file "%s"
+TabNote.ProceedClear = Notes will be cleared, continue?
 
 #Launch Applications
 TabLaunch.Application.DayZServer = DayZ Server
