@@ -42,6 +42,7 @@
 - Калькулятор времени дня и ночи
 - Быстрая сборка PBO
 - База предметов
+- Заметки
 
 ## Базы предметов: 
 - [AccurateAlx](https://github.com/accuratealx/DayzModTool/raw/master/ItemBases/AccurateAlx.dzmtib)
@@ -50,7 +51,7 @@
 - [Simple Game Engine 2](https://github.com/accuratealx/SimpleGameEngine2)
 
 ## Поддержать автора:
-- https://donation.ntlab.su
+- [https://donation.ntlab.su](https://donation.ntlab.su)
 
 ## Скриншоты:
 ![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot001.png)
@@ -58,6 +59,7 @@
 ![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot003.png)
 ![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot004.png)
 ![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot005.png)
+![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot006.png)
 ![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot010.png)
 ![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot011.png)
 ![](https://github.com/accuratealx/DayzModTool/raw/master/Doc/Screenshots/Screenshot012.png)
