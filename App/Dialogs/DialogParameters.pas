@@ -5,11 +5,12 @@ unit DialogParameters;
 interface
 
 uses
-  Language;
+  Language, EventSystem;
 
 type
   TDialogParameters = class
-    Language: TLanguage; //Ссылка на перевод
+    Language: TLanguage;        //Ссылка на перевод
+    EventSystem: TEventSystem;  //Ссылка на систему событий
   end;
 
 implementation

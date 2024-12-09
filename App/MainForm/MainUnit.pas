@@ -470,7 +470,7 @@ end;
 
 procedure TMainForm.miMainToolsWorkDriveClick(Sender: TObject);
 begin
-  WorkDriveExecute(FLanguage, FSettingsDir + CONFIG_FILE_NAME);
+  WorkDriveExecute(FLanguage, FEventSystem, FSettingsDir + CONFIG_FILE_NAME);
 end;
 
 

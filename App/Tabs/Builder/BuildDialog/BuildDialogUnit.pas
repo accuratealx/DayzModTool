@@ -10,6 +10,7 @@ uses
 
 type
   TBuildDialogForm = class(TDialogCommonForm)
+    btnRepeat: TSpeedButton;
     ilResult: TImageList;
     mContent: TMemo;
     btnClose: TSpeedButton;
@@ -17,6 +18,7 @@ type
     Timer: TTimer;
     procedure btnCloseClick(Sender: TObject);
     procedure btnCopyContentClick(Sender: TObject);
+    procedure btnRepeatClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure TimerTimer(Sender: TObject);
   private
@@ -72,8 +74,11 @@ end;
 
 
 procedure TBuildDialogForm.FormResize(Sender: TObject);
+const
+  INDENT = 10;
 begin
   btnClose.Left := (pnlButton.Width - btnClose.Width) div 2;
+  btnRepeat.Left := btnClose.Left - btnRepeat.Width - INDENT;
 end;
 
 
@@ -81,14 +86,7 @@ procedure TBuildDialogForm.TimerTimer(Sender: TObject);
 begin
   Timer.Enabled := False;
 
-  //Запустим сборку
-  Build;
-
-  //Поправим результат операции
-  btnClose.ImageIndex := Ord(not IsOperationSucceed);
-
-  //Разблокируем кнопку
-  btnClose.Enabled := True;
+  btnRepeatClick(Self);
 end;
 
 
@@ -107,6 +105,9 @@ var
   Params: TBuildDialogParameters;
   Proc: TProcess;
 begin
+  //Почистим журнал
+  mContent.Lines.Clear;
+
   Params := FParameters as TBuildDialogParameters;
 
   Proc := TProcess.Create(nil);
@@ -163,11 +164,29 @@ begin
 end;
 
 
+procedure TBuildDialogForm.btnRepeatClick(Sender: TObject);
+begin
+  btnClose.Enabled := False;
+  btnCopyContent.Enabled := False;
+  btnRepeat.Visible := False;
+
+  //Запустим сборку
+  Build;
+
+  //Поправим результат операции
+  btnClose.ImageIndex := Ord(not IsOperationSucceed);
+  btnClose.Enabled := True;
+  btnCopyContent.Enabled := True;
+  btnRepeat.Visible := btnClose.ImageIndex = 1;
+end;
+
+
 procedure TBuildDialogForm.SetLanguage;
 begin
   Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Title', 'Рузультат сборки') + ' - ' + (FParameters as TBuildDialogParameters).Title;
   btnClose.Caption := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Close', 'Закрыть');
   btnCopyContent.Hint := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'CopyContent', 'Скопировать текст в буфер обмена');
+  btnRepeat.Hint := FParameters.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Repeat', 'Повторить сборку');
 end;
 
 

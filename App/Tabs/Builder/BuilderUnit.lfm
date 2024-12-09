@@ -3,8 +3,8 @@ inherited BuilderFrame: TBuilderFrame
   Width = 460
   ClientHeight = 299
   ClientWidth = 460
-  OnResize = FrameResize
   TabOrder = 0
+  OnResize = FrameResize
   DesignLeft = 662
   DesignTop = 288
   object pnlTools: TPanel[0]
@@ -108,9 +108,9 @@ inherited BuilderFrame: TBuilderFrame
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
-      OnClick = btnRenameClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnRenameClick
     end
     object btnUp: TSpeedButton
       Cursor = crHandPoint
@@ -157,9 +157,9 @@ inherited BuilderFrame: TBuilderFrame
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
-      OnClick = btnUpClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnUpClick
     end
     object btnDown: TSpeedButton
       Cursor = crHandPoint
@@ -206,9 +206,9 @@ inherited BuilderFrame: TBuilderFrame
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
-      OnClick = btnDownClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnDownClick
     end
     object btnDelete: TSpeedButton
       Cursor = crHandPoint
@@ -255,9 +255,9 @@ inherited BuilderFrame: TBuilderFrame
         0000000000003040C4FF3040C4FF000000000000000000000000000000000000
         0000000000003040C4FF3040C4FF0000000000000000FFFFFF00
       }
-      OnClick = btnDeleteClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnDeleteClick
     end
     object btnChangeIcon: TSpeedButton
       Cursor = crHandPoint
@@ -304,9 +304,9 @@ inherited BuilderFrame: TBuilderFrame
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
-      OnClick = btnChangeIconClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnChangeIconClick
     end
   end
   object sbContent: TScrollBox[1]

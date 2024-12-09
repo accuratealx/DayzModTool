@@ -3,8 +3,8 @@ inherited DirectoryFrame: TDirectoryFrame
   Width = 460
   ClientHeight = 302
   ClientWidth = 460
-  OnClick = FrameClick
   TabOrder = 0
+  OnClick = FrameClick
   DesignLeft = 564
   DesignTop = 285
   object pnlTools: TPanel[0]
@@ -108,9 +108,9 @@ inherited DirectoryFrame: TDirectoryFrame
         0000000000000000000000000000000000000000000000000000000000000000
         000000000000C38AD9FFBD88D3FF0000000000000000FFFFFF00
       }
-      OnClick = btnEditClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnEditClick
     end
     object btnUp: TSpeedButton
       Cursor = crHandPoint
@@ -157,9 +157,9 @@ inherited DirectoryFrame: TDirectoryFrame
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
-      OnClick = btnUpClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnUpClick
     end
     object btnDown: TSpeedButton
       Cursor = crHandPoint
@@ -206,9 +206,9 @@ inherited DirectoryFrame: TDirectoryFrame
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
-      OnClick = btnDownClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnDownClick
     end
     object btnDelete: TSpeedButton
       Cursor = crHandPoint
@@ -255,9 +255,9 @@ inherited DirectoryFrame: TDirectoryFrame
         0000000000003040C4FF3040C4FF000000000000000000000000000000000000
         0000000000003040C4FF3040C4FF0000000000000000FFFFFF00
       }
-      OnClick = btnDeleteClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnDeleteClick
     end
     object btnExplore: TSpeedButton
       Cursor = crHandPoint
@@ -305,9 +305,9 @@ inherited DirectoryFrame: TDirectoryFrame
         D0FF3A92CFFF3A92CFFF3D94D0FF4197D1E44398D22B4498D2324498D2334498
         D2334498D2334499D2334499D337459AD300469AD300469AD300
       }
-      OnClick = btnExploreClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnExploreClick
     end
   end
   object sbContent: TScrollBox[1]

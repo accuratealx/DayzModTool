@@ -5,8 +5,8 @@ object BuilderItemFrame: TBuilderItemFrame
   Width = 550
   ClientHeight = 250
   ClientWidth = 550
-  OnClick = FrameClick
   TabOrder = 0
+  OnClick = FrameClick
   DesignLeft = 577
   DesignTop = 267
   object btnBuild: TSpeedButton
@@ -56,8 +56,8 @@ object BuilderItemFrame: TBuilderItemFrame
       D1004189D1004189D1033C86CFEE5698D8FF5698D8FF3D86CFED4189D101428A
       D100428AD100428AD100428AD100428AD100428AD100428AD100
     }
-    OnClick = btnBuildClick
     ParentFont = False
+    OnClick = btnBuildClick
   end
   object pnlCollapse: TPanel
     Cursor = crHandPoint
@@ -81,8 +81,8 @@ object BuilderItemFrame: TBuilderItemFrame
       Center = True
       ImageIndex = 1
       Images = ilCollapse
-      OnClick = pnlCollapseClick
       ParentShowHint = False
+      OnClick = pnlCollapseClick
     end
     object imgIcon: TImage
       Cursor = crHandPoint
@@ -90,7 +90,6 @@ object BuilderItemFrame: TBuilderItemFrame
       Height = 32
       Top = 6
       Width = 32
-      OnClick = pnlCollapseClick
       Picture.Data = {
         1754506F727461626C654E6574776F726B47726170686963CF06000089504E47
         0D0A1A0A0000000D4948445200000020000000200806000000737A7AF4000000
@@ -151,6 +150,7 @@ object BuilderItemFrame: TBuilderItemFrame
       }
       Stretch = True
       Transparent = True
+      OnClick = pnlCollapseClick
     end
     object lblTitle: TLabel
       Cursor = crHandPoint
@@ -224,9 +224,9 @@ object BuilderItemFrame: TBuilderItemFrame
       D0FF3A92CFFF3A92CFFF3D94D0FF4197D1E44398D22B4498D2324498D2334498
       D2334498D2334499D2334499D337459AD300469AD300469AD300
     }
-    OnClick = btnSourceDirectoryOpenDirClick
     ShowHint = True
     ParentShowHint = False
+    OnClick = btnSourceDirectoryOpenDirClick
   end
   object btnSourceDirectorySelect: TSpeedButton
     Cursor = crHandPoint
@@ -273,9 +273,9 @@ object BuilderItemFrame: TBuilderItemFrame
       D0FF3A92CFFF3A92CFFF3D94D0FF4197D1E44398D22B4498D2324498D2334498
       D2334498D2334499D2334499D337459AD300469AD300469AD300
     }
-    OnClick = btnSourceDirectorySelectClick
     ShowHint = True
     ParentShowHint = False
+    OnClick = btnSourceDirectorySelectClick
   end
   object btnSourceDirectoryClearValue: TSpeedButton
     Cursor = crHandPoint
@@ -322,9 +322,9 @@ object BuilderItemFrame: TBuilderItemFrame
       0000000000003040C4FF3040C4FF000000000000000000000000000000000000
       0000000000003040C4FF3040C4FF0000000000000000FFFFFF00
     }
-    OnClick = btnSourceDirectoryClearValueClick
     ShowHint = True
     ParentShowHint = False
+    OnClick = btnSourceDirectoryClearValueClick
   end
   object lblSourceDirectory: TLabel
     Left = 10
@@ -396,9 +396,9 @@ object BuilderItemFrame: TBuilderItemFrame
       D0FF3A92CFFF3A92CFFF3D94D0FF4197D1E44398D22B4498D2324498D2334498
       D2334498D2334499D2334499D337459AD300469AD300469AD300
     }
-    OnClick = btnDestinationDirectoryOpenDirClick
     ShowHint = True
     ParentShowHint = False
+    OnClick = btnDestinationDirectoryOpenDirClick
   end
   object btnDestinationDirectorySelect: TSpeedButton
     Cursor = crHandPoint
@@ -445,9 +445,9 @@ object BuilderItemFrame: TBuilderItemFrame
       D0FF3A92CFFF3A92CFFF3D94D0FF4197D1E44398D22B4498D2324498D2334498
       D2334498D2334499D2334499D337459AD300469AD300469AD300
     }
-    OnClick = btnDestinationDirectorySelectClick
     ShowHint = True
     ParentShowHint = False
+    OnClick = btnDestinationDirectorySelectClick
   end
   object btnDestinationDirectoryClearValue: TSpeedButton
     Cursor = crHandPoint
@@ -494,9 +494,9 @@ object BuilderItemFrame: TBuilderItemFrame
       0000000000003040C4FF3040C4FF000000000000000000000000000000000000
       0000000000003040C4FF3040C4FF0000000000000000FFFFFF00
     }
-    OnClick = btnDestinationDirectoryClearValueClick
     ShowHint = True
     ParentShowHint = False
+    OnClick = btnDestinationDirectoryClearValueClick
   end
   object edPrefix: TEdit
     Left = 155
@@ -559,9 +559,9 @@ object BuilderItemFrame: TBuilderItemFrame
       0000000000003040C4FF3040C4FF000000000000000000000000000000000000
       0000000000003040C4FF3040C4FF0000000000000000FFFFFF00
     }
-    OnClick = btnPrefixClearValueClick
     ShowHint = True
     ParentShowHint = False
+    OnClick = btnPrefixClearValueClick
   end
   object lblFileExtensions: TLabel
     Left = 10
@@ -625,9 +625,9 @@ object BuilderItemFrame: TBuilderItemFrame
       0000000000003040C4FF3040C4FF000000000000000000000000000000000000
       0000000000003040C4FF3040C4FF0000000000000000FFFFFF00
     }
-    OnClick = btnFileExtensionsClearValueClick
     ShowHint = True
     ParentShowHint = False
+    OnClick = btnFileExtensionsClearValueClick
   end
   object edPrivateKey: TEdit
     Left = 155
@@ -685,9 +685,9 @@ object BuilderItemFrame: TBuilderItemFrame
       D0FF3A92CFFF3A92CFFF3D94D0FF4197D1E44398D22B4498D2324498D2334498
       D2334498D2334499D2334499D337459AD300469AD300469AD300
     }
-    OnClick = btnPrivateKeyOpenDirectoryClick
     ShowHint = True
     ParentShowHint = False
+    OnClick = btnPrivateKeyOpenDirectoryClick
   end
   object btnPrivateKeySelect: TSpeedButton
     Cursor = crHandPoint
@@ -734,9 +734,9 @@ object BuilderItemFrame: TBuilderItemFrame
       93AC989592FF989491FF989391FF989391FF989391FF979391FF979391FF9793
       91FF979391FF979391FF979391FF989592FF989593AC9A979500
     }
-    OnClick = btnPrivateKeySelectClick
     ShowHint = True
     ParentShowHint = False
+    OnClick = btnPrivateKeySelectClick
   end
   object lblPrivateKey: TLabel
     Left = 10
@@ -790,9 +790,9 @@ object BuilderItemFrame: TBuilderItemFrame
       0000000000003040C4FF3040C4FF000000000000000000000000000000000000
       0000000000003040C4FF3040C4FF0000000000000000FFFFFF00
     }
-    OnClick = btnPrivateKeyClearValueClick
     ShowHint = True
     ParentShowHint = False
+    OnClick = btnPrivateKeyClearValueClick
   end
   object cbSign: TCheckBox
     Cursor = crHandPoint
@@ -867,9 +867,9 @@ object BuilderItemFrame: TBuilderItemFrame
       0000000000003040C4FF3040C4FF000000000000000000000000000000000000
       0000000000003040C4FF3040C4FF0000000000000000FFFFFF00
     }
-    OnClick = btnVersionClearValueClick
     ShowHint = True
     ParentShowHint = False
+    OnClick = btnVersionClearValueClick
   end
   object ilCollapse: TImageList
     Left = 310

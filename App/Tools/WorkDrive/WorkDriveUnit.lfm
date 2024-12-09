@@ -274,9 +274,9 @@ inherited WorkDriveForm: TWorkDriveForm
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
-      OnClick = btnSelectDirectoryClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnSelectDirectoryClick
     end
     object btnOpenDirectory: TSpeedButton[5]
       Cursor = crHandPoint
@@ -324,9 +324,9 @@ inherited WorkDriveForm: TWorkDriveForm
         D0FF3A92CFFF3A92CFFF3D94D0FF4197D1E44398D22B4498D2324498D2334498
         D2334498D2334499D2334499D337459AD300469AD300469AD300
       }
-      OnClick = btnOpenDirectoryClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnOpenDirectoryClick
     end
   end
 end

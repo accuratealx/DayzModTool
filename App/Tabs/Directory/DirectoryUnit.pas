@@ -48,6 +48,8 @@ type
 
     //Обработчик выделения элемента
     procedure OnItemSelect(Sender: TObject);
+
+    procedure EventHandler;
   public
     constructor Create(Parameters: TTabParameters; AParent: TWinControl); reintroduce;
     destructor  Destroy; override;
@@ -69,7 +71,8 @@ implementation
 {$R *.lfm}
 
 uses
-  YesNoQuestionDialogUnit, DirectoryItemEditorDialogUnit;
+  YesNoQuestionDialogUnit, DirectoryItemEditorDialogUnit,
+  EventSystem;
 
 
 procedure TDirectoryFrame.FrameClick(Sender: TObject);
@@ -390,6 +393,21 @@ begin
 end;
 
 
+procedure TDirectoryFrame.EventHandler;
+var
+  i: Integer;
+  Frm: TDirectoryItemFrame;
+begin
+  for i := 0 to Length(FFrames) - 1 do
+  begin
+    Frm := FFrames[i];
+    Frm.CorrectPath;
+  end;
+
+  CorrectToolButtons;
+end;
+
+
 constructor TDirectoryFrame.Create(Parameters: TTabParameters; AParent: TWinControl);
 begin
   inherited Create(Parameters, AParent);
@@ -399,6 +417,9 @@ begin
 
   //Загрузить настройки
   LoadSettings;
+
+  //Подписаться на событие
+  FParams.EventSystem.Subscribe(esMountUnmountWorkDrive, @EventHandler);
 end;
 
 

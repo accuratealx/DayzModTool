@@ -48,6 +48,8 @@ type
 
     procedure OnChangeBuilderContentHeight(Sender: TObject);
     procedure OnItemSelect(Sender: TObject);
+
+    procedure EventHandler;
   public
     constructor Create(Parameters: TTabParameters; AParent: TWinControl); reintroduce;
     destructor  Destroy; override;
@@ -68,7 +70,8 @@ implementation
 
 uses
   IniFiles,
-  InputDialogUnit, YesNoQuestionDialogUnit, IconSelectorDialogUnit;
+  InputDialogUnit, YesNoQuestionDialogUnit, IconSelectorDialogUnit,
+  EventSystem;
 
 
 procedure TBuilderFrame.btnAddClick(Sender: TObject);
@@ -381,6 +384,19 @@ begin
 end;
 
 
+procedure TBuilderFrame.EventHandler;
+var
+  i: Integer;
+  Frm: TBuilderItemFrame;
+begin
+  for i := 0 to Length(FFrames) - 1 do
+  begin
+    Frm := FFrames[i];
+    Frm.CorrectButtonVisible;
+  end;
+end;
+
+
 constructor TBuilderFrame.Create(Parameters: TTabParameters; AParent: TWinControl);
 begin
   inherited Create(Parameters, AParent);
@@ -389,6 +405,9 @@ begin
 
   //Загрузить настройки
   LoadSettings;
+
+  //Подписаться на событие
+  FParams.EventSystem.Subscribe(esMountUnmountWorkDrive, @EventHandler);
 end;
 
 

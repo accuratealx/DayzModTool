@@ -43,6 +43,7 @@ type
 
     procedure OpenDirectory;
     function  IsPathCorrect: Boolean;
+    procedure CorrectPath;
 
     property Icon: TIcon read GetIcon;
     property Caption: String read FCaption write SetCaption;
@@ -97,7 +98,7 @@ begin
   FPath := APath;
   lblPath.Caption := FPath;
 
-  lblCaption.Enabled := IsPathCorrect;
+  CorrectPath;
 end;
 
 
@@ -236,6 +237,12 @@ end;
 function TDirectoryItemFrame.IsPathCorrect: Boolean;
 begin
   Result := DirectoryExists(FPath);
+end;
+
+
+procedure TDirectoryItemFrame.CorrectPath;
+begin
+  lblCaption.Enabled := IsPathCorrect;
 end;
 
 

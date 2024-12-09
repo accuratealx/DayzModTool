@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons, StdCtrls,
-  Language, DialogParameters, DialogCommonUnit;
+  Language, EventSystem, DialogParameters, DialogCommonUnit;
 
 type
   TWorkDriveForm = class(TDialogCommonForm)
@@ -52,7 +52,7 @@ type
   end;
 
 
-procedure WorkDriveExecute(Language: TLanguage; const SettingsFile: String);
+procedure WorkDriveExecute(Language: TLanguage; EventSystem: TEventSystem; const SettingsFile: String);
 
 
 implementation
@@ -70,12 +70,13 @@ type
   end;
 
 
-procedure WorkDriveExecute(Language: TLanguage; const SettingsFile: String);
+procedure WorkDriveExecute(Language: TLanguage; EventSystem: TEventSystem; const SettingsFile: String);
 var
   Params: TWorkDriveParameters;
 begin
   Params := TWorkDriveParameters.Create;
   Params.Language := Language;
+  Params.EventSystem := EventSystem;
   Params.SettingsFile := SettingsFile;
   try
     with TWorkDriveForm.Create(Params) do
@@ -105,6 +106,8 @@ begin
   end;
 
   CorrectButtons;
+
+  FParameters.EventSystem.Publish(esMountUnmountWorkDrive);
 end;
 
 
@@ -137,6 +140,8 @@ begin
   end;
 
   CorrectButtons;
+
+  FParameters.EventSystem.Publish(esMountUnmountWorkDrive);
 end;
 
 

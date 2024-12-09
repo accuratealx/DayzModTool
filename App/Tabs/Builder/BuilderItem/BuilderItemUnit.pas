@@ -98,6 +98,7 @@ type
     procedure ValueFromString(const AValue: String);
     function  ValueToString: String;
 
+    procedure CorrectButtonVisible;
     procedure ChangeLanguage(Language: TLanguage);
 
     property Collapsed: Boolean read FCollapsed write SetCollapsed;
@@ -545,6 +546,12 @@ begin
     edVersion.Text + SEPARATOR +
     edPrivateKey.Text + SEPARATOR +
     BoolToStr(cbSign.Checked);
+end;
+
+
+procedure TBuilderItemFrame.CorrectButtonVisible;
+begin
+  edEditChange(nil);;
 end;
 
 
