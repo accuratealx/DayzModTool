@@ -60,9 +60,9 @@ inherited NoteFrame: TNoteFrame
         24FFB57F1FFFB47E1EFFB47E1EFFB47E1EFFB47E1EFFB47F1FFFB58022FFB783
         27EAB9872E00BB893200BB8A3300BB8A3300BB8A3300BB8A3300
       }
-      OnClick = btnClearClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnClearClick
     end
     object btnSave: TSpeedButton
       Cursor = crHandPoint
@@ -108,9 +108,9 @@ inherited NoteFrame: TNoteFrame
         14FFB57E0FFFB57C0BFFB57C09FFB57C09FFB57C09FFB57C09FFB57C09FFB57C
         09FFB57C09FFB57C09FFB57C0BFFB57E0FFFB78114FFB782187C
       }
-      OnClick = btnSaveClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnSaveClick
     end
   end
   object Panel1: TPanel[1]
@@ -130,6 +130,7 @@ inherited NoteFrame: TNoteFrame
       Top = 0
       Width = 455
       Align = alClient
+      BlockTabIndent = 2
       Font.Height = -13
       Font.Name = 'Consolas'
       Font.Pitch = fpVariable
@@ -568,7 +569,7 @@ inherited NoteFrame: TNoteFrame
       MouseActions = <>
       MouseTextActions = <>
       MouseSelActions = <>
-      Options = [eoAutoIndent, eoBracketHighlight, eoGroupUndo, eoHideRightMargin, eoScrollPastEol, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoDoubleClickSelectsLine]
+      Options = [eoAutoIndent, eoBracketHighlight, eoGroupUndo, eoHideRightMargin, eoScrollPastEol, eoTabsToSpaces, eoTrimTrailingSpaces, eoDoubleClickSelectsLine]
       MouseOptions = [emDoubleClickSelectsLine]
       VisibleSpecialChars = [vscSpace, vscTabAtLast]
       RightEdgeColor = clNone
@@ -595,6 +596,8 @@ inherited NoteFrame: TNoteFrame
         object SynGutterMarks1: TSynGutterMarks
           Width = 24
           MouseActions = <>
+          MaxExtraMarksColums = 0
+          Options = [sgmoDeDuplicateMarksOnOverflow]
         end
         object SynGutterLineNumber1: TSynGutterLineNumber
           Width = 15

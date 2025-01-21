@@ -22,7 +22,6 @@ type
     procedure ValueFromString(const Str: String);
 
     procedure LoadFromFile(const FileName: String);
-    procedure SaveToFile(const FileName: String);
 
     property Count: Integer read FCount;
     property Item[Index: Integer]: TStartParamSimple read GetItem;
@@ -200,12 +199,6 @@ begin
     Section.Free;
     Container.Free;
   end;
-end;
-
-
-procedure TStartParamArray.SaveToFile(const FileName: String);
-begin
-
 end;
 
 

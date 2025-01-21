@@ -5,7 +5,7 @@ unit ObjectItemList;
 interface
 
 uses
-  Classes, SysUtils, LazUTF8, windows, shlwapi;
+  Classes, SysUtils, LazUTF8, shlwapi;
 
 type
   TObjectItem = class
