@@ -5,8 +5,8 @@ unit BuilderUnit;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, Buttons,
-  TabParameters, TabCommonUnit, BuilderItemUnit;
+  Classes, ComCtrls, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls,
+  Buttons, TabParameters, TabCommonUnit, BuilderItemUnit;
 
 type
   TBuilderFrame = class(TTabCommonFrame)
@@ -18,6 +18,7 @@ type
     btnUp: TSpeedButton;
     pnlTools: TPanel;
     sbContent: TScrollBox;
+    StatusBar: TStatusBar;
     procedure btnAddClick(Sender: TObject);
     procedure btnChangeIconClick(Sender: TObject);
     procedure btnDeleteClick(Sender: TObject);
@@ -45,6 +46,7 @@ type
     function  GetItemFrameIndex(Frame: TBuilderItemFrame): Integer;
 
     procedure CorrectToolButtons;
+    procedure UpdateStatusBar;
 
     procedure OnChangeBuilderContentHeight(Sender: TObject);
     procedure OnItemSelect(Sender: TObject);
@@ -59,6 +61,8 @@ type
     procedure ApplyLanguage; override;
     procedure SaveSettings; override;
     procedure LoadSettings; override;
+
+    procedure Sort;
 
     property Frames: TBuilderItemFrameList read FFrames;
   end;
@@ -356,6 +360,15 @@ begin
   btnRename.Enabled := Item <> nil;
   btnUp.Enabled := (Item <> nil) and (GetItemFrameIndex(Item) > 0);
   btnDown.Enabled := (Item <> nil) and (GetItemFrameIndex(Item) < Length(FFrames) - 1);
+
+  //Поправить строку статуса
+  UpdateStatusBar;
+end;
+
+
+procedure TBuilderFrame.UpdateStatusBar;
+begin
+  StatusBar.SimpleText := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'TotalItems', 'Всего элементов') + ': ' + IntToStr(Length(FFrames));
 end;
 
 
@@ -447,6 +460,9 @@ begin
   //Элементы
   for i := 0 to Length(FFrames) - 1 do
     FFrames[i].ChangeLanguage(FParams.Language);
+
+  //Строка статуса
+  UpdateStatusBar;
 end;
 
 
@@ -503,10 +519,32 @@ begin
     //Упорядочить фреймы
     ArrangeItemFrames;
 
+    //Поправить строку статуса
+    UpdateStatusBar;
+
   finally
     Values.Free;
     F.Free;
   end;
+end;
+
+
+procedure TBuilderFrame.Sort;
+var
+  i, j: Integer;
+  frm: TBuilderItemFrame;
+begin
+  for i := 0 to Length(FFrames) - 1 do
+    for j := i to Length(FFrames) - 1 do
+      if FFrames[i].Title > FFrames[j].Title then
+      begin
+        frm := FFrames[i];
+        FFrames[i] := FFrames[j];
+        FFrames[j] := frm;
+      end;
+
+  //Упорядочить фреймы
+  ArrangeItemFrames;
 end;
 
 

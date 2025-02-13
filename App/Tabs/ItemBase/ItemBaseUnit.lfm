@@ -59,9 +59,9 @@ inherited ItemBaseFrame: TItemBaseFrame
         0000000000003040C4FF3040C4FF000000000000000000000000000000000000
         0000000000003040C4FF3040C4FF0000000000000000FFFFFF00
       }
-      OnClick = btnClearFilterClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnClearFilterClick
     end
     object edFilter: TEdit
       Left = 275
@@ -116,9 +116,9 @@ inherited ItemBaseFrame: TItemBaseFrame
         24FFB57F1FFFB47E1EFFB47E1EFFB47E1EFFB47E1EFFB47F1FFFB58022FFB783
         27EAB9872E00BB893200BB8A3300BB8A3300BB8A3300BB8A3300
       }
-      OnClick = btnClearTableClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnClearTableClick
     end
     object btnOpen: TSpeedButton
       Cursor = crHandPoint
@@ -164,9 +164,9 @@ inherited ItemBaseFrame: TItemBaseFrame
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
-      OnClick = btnOpenClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnOpenClick
     end
     object btnSave: TSpeedButton
       Cursor = crHandPoint
@@ -212,9 +212,9 @@ inherited ItemBaseFrame: TItemBaseFrame
         14FFB57E0FFFB57C0BFFB57C09FFB57C09FFB57C09FFB57C09FFB57C09FFB57C
         09FFB57C09FFB57C09FFB57C0BFFB57E0FFFB78114FFB782187C
       }
-      OnClick = btnSaveClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnSaveClick
     end
     object btnAdd: TSpeedButton
       Cursor = crHandPoint
@@ -259,9 +259,9 @@ inherited ItemBaseFrame: TItemBaseFrame
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
-      OnClick = btnAddClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnAddClick
     end
     object btnEdit: TSpeedButton
       Cursor = crHandPoint
@@ -308,9 +308,9 @@ inherited ItemBaseFrame: TItemBaseFrame
         0000000000000000000000000000000000000000000000000000000000000000
         000000000000C38AD9FFBD88D3FF0000000000000000FFFFFF00
       }
-      OnClick = btnEditClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnEditClick
     end
     object btnDelete: TSpeedButton
       Cursor = crHandPoint
@@ -357,9 +357,9 @@ inherited ItemBaseFrame: TItemBaseFrame
         0000000000003040C4FF3040C4FF000000000000000000000000000000000000
         0000000000003040C4FF3040C4FF0000000000000000FFFFFF00
       }
-      OnClick = btnDeleteClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnDeleteClick
     end
     object btnImport: TSpeedButton
       Cursor = crHandPoint
@@ -405,9 +405,9 @@ inherited ItemBaseFrame: TItemBaseFrame
         D0FF3A92CFFF3A92CFFF3D94D0FF4197D1E44398D22B4498D2324498D2334498
         D2334498D2334499D2334499D337459AD300469AD300469AD300
       }
-      OnClick = btnImportClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnImportClick
     end
     object btnCopyObjName: TSpeedButton
       Cursor = crHandPoint
@@ -453,22 +453,22 @@ inherited ItemBaseFrame: TItemBaseFrame
         24FFB57F1FFFB47E1EFFB47E1EFFB47F1FFFB58022FFB78327D5B9872E00BB89
         3200BB8A3300BB8A3300BB8A3300BB8A3300BB8A3300BB8A3300
       }
-      OnClick = btnCopyObjNameClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnCopyObjNameClick
     end
   end
   object sbContent: TScrollBox[1]
     Left = 0
-    Height = 238
+    Height = 215
     Top = 35
     Width = 500
     HorzScrollBar.Page = 75
     HorzScrollBar.Tracking = True
-    VertScrollBar.Page = 73
+    VertScrollBar.Page = 50
     VertScrollBar.Tracking = True
     Align = alClient
-    ClientHeight = 234
+    ClientHeight = 211
     ClientWidth = 496
     TabOrder = 1
     object TableGrid: TStringGrid
@@ -524,34 +524,34 @@ inherited ItemBaseFrame: TItemBaseFrame
         150
       )
     end
-    object StatusBar: TStatusBar
-      Left = 0
-      Height = 23
-      Top = 211
-      Width = 496
-      Panels = <      
-        item
-          Alignment = taRightJustify
-          Text = 'Всего элементов:'
-          Width = 120
-        end      
-        item
-          Text = '5000'
-          Width = 50
-        end      
-        item
-          Alignment = taRightJustify
-          Text = 'Видимых элементов:'
-          Width = 150
-        end      
-        item
-          Text = '5000'
-          Width = 50
-        end>
-      SimplePanel = False
-    end
   end
-  object SaveDialog: TSaveDialog[2]
+  object StatusBar: TStatusBar[2]
+    Left = 0
+    Height = 23
+    Top = 250
+    Width = 500
+    Panels = <    
+      item
+        Alignment = taRightJustify
+        Text = 'Всего элементов:'
+        Width = 120
+      end    
+      item
+        Text = '5000'
+        Width = 50
+      end    
+      item
+        Alignment = taRightJustify
+        Text = 'Видимых элементов:'
+        Width = 150
+      end    
+      item
+        Text = '5000'
+        Width = 50
+      end>
+    SimplePanel = False
+  end
+  object SaveDialog: TSaveDialog[3]
     Title = ''
     DefaultExt = '.csv'
     Filter = 'Таблица строк (*.csv)|*.csv'
@@ -559,7 +559,7 @@ inherited ItemBaseFrame: TItemBaseFrame
     Left = 255
     Top = 86
   end
-  object OpenDialog: TOpenDialog[3]
+  object OpenDialog: TOpenDialog[4]
     Title = ''
     Filter = 'Таблица строк (*.csv)|*.csv'
     Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofForceShowHidden, ofViewDetail]

@@ -311,7 +311,7 @@ inherited BuilderFrame: TBuilderFrame
   end
   object sbContent: TScrollBox[1]
     Left = 0
-    Height = 264
+    Height = 241
     Top = 35
     Width = 460
     HorzScrollBar.Page = 1
@@ -322,5 +322,12 @@ inherited BuilderFrame: TBuilderFrame
     Align = alClient
     TabOrder = 1
     OnClick = sbContentClick
+  end
+  object StatusBar: TStatusBar[2]
+    Left = 0
+    Height = 23
+    Top = 276
+    Width = 460
+    Panels = <>
   end
 end

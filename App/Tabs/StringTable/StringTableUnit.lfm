@@ -60,9 +60,9 @@ inherited StringTableFrame: TStringTableFrame
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
-      OnClick = btnOpenClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnOpenClick
     end
     object btnEdit: TSpeedButton
       Cursor = crHandPoint
@@ -109,9 +109,9 @@ inherited StringTableFrame: TStringTableFrame
         0000000000000000000000000000000000000000000000000000000000000000
         000000000000C38AD9FFBD88D3FF0000000000000000FFFFFF00
       }
-      OnClick = btnEditClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnEditClick
     end
     object btnAdd: TSpeedButton
       Cursor = crHandPoint
@@ -157,9 +157,9 @@ inherited StringTableFrame: TStringTableFrame
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
-      OnClick = btnAddClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnAddClick
     end
     object btnClearTable: TSpeedButton
       Cursor = crHandPoint
@@ -205,9 +205,9 @@ inherited StringTableFrame: TStringTableFrame
         24FFB57F1FFFB47E1EFFB47E1EFFB47E1EFFB47E1EFFB47F1FFFB58022FFB783
         27EAB9872E00BB893200BB8A3300BB8A3300BB8A3300BB8A3300
       }
-      OnClick = btnClearTableClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnClearTableClick
     end
     object btnDelete: TSpeedButton
       Cursor = crHandPoint
@@ -254,9 +254,9 @@ inherited StringTableFrame: TStringTableFrame
         0000000000003040C4FF3040C4FF000000000000000000000000000000000000
         0000000000003040C4FF3040C4FF0000000000000000FFFFFF00
       }
-      OnClick = btnDeleteClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnDeleteClick
     end
     object btnSave: TSpeedButton
       Cursor = crHandPoint
@@ -302,9 +302,9 @@ inherited StringTableFrame: TStringTableFrame
         14FFB57E0FFFB57C0BFFB57C09FFB57C09FFB57C09FFB57C09FFB57C09FFB57C
         09FFB57C09FFB57C09FFB57C0BFFB57E0FFFB78114FFB782187C
       }
-      OnClick = btnSaveClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnSaveClick
     end
     object btnColumnAdjust: TSpeedButton
       Cursor = crHandPoint
@@ -351,9 +351,9 @@ inherited StringTableFrame: TStringTableFrame
         0EFFB67C09FFB67B07FFB67B08FFB57B08FFB67B08FFB67B08FFB57B08FFB67B
         08FFB67B08FFB57B08FFB67C09FFB67E0EFFB98419EF00000000
       }
-      OnClick = btnColumnAdjustClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnColumnAdjustClick
     end
     object btnDown: TSpeedButton
       Cursor = crHandPoint
@@ -400,9 +400,9 @@ inherited StringTableFrame: TStringTableFrame
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
-      OnClick = btnDownClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnDownClick
     end
     object btnUp: TSpeedButton
       Cursor = crHandPoint
@@ -449,9 +449,9 @@ inherited StringTableFrame: TStringTableFrame
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
-      OnClick = btnUpClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnUpClick
     end
     object btnCopyIdToClipboard: TSpeedButton
       Cursor = crHandPoint
@@ -498,22 +498,22 @@ inherited StringTableFrame: TStringTableFrame
         24FFB57F1FFFB47E1EFFB47E1EFFB47F1FFFB58022FFB78327D5B9872E00BB89
         3200BB8A3300BB8A3300BB8A3300BB8A3300BB8A3300BB8A3300
       }
-      OnClick = btnCopyIdToClipboardClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnCopyIdToClipboardClick
     end
   end
   object sbContent: TScrollBox[1]
     Left = 0
-    Height = 294
+    Height = 271
     Top = 35
     Width = 500
     HorzScrollBar.Page = 75
     HorzScrollBar.Tracking = True
-    VertScrollBar.Page = 73
+    VertScrollBar.Page = 50
     VertScrollBar.Tracking = True
     Align = alClient
-    ClientHeight = 290
+    ClientHeight = 267
     ClientWidth = 496
     TabOrder = 1
     object TableGrid: TStringGrid
@@ -546,22 +546,22 @@ inherited StringTableFrame: TStringTableFrame
       OnClick = TableGridClick
       OnDblClick = TableGridDblClick
     end
-    object StatusBar: TStatusBar
-      Left = 0
-      Height = 23
-      Top = 267
-      Width = 496
-      Panels = <>
-    end
   end
-  object OpenDialog: TOpenDialog[2]
+  object StatusBar: TStatusBar[2]
+    Left = 0
+    Height = 23
+    Top = 306
+    Width = 500
+    Panels = <>
+  end
+  object OpenDialog: TOpenDialog[3]
     Title = ''
     Filter = 'Таблица строк (*.csv)|*.csv'
     Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofForceShowHidden, ofViewDetail]
     Left = 210
     Top = 59
   end
-  object SaveDialog: TSaveDialog[3]
+  object SaveDialog: TSaveDialog[4]
     Title = ''
     DefaultExt = '.csv'
     Filter = 'Таблица строк (*.csv)|*.csv'

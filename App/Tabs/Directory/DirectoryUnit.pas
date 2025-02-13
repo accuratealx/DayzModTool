@@ -5,9 +5,9 @@ unit DirectoryUnit;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, Buttons, IniFiles,
-  Language, SteamUtils,
-  TabParameters, TabCommonUnit, DirectoryItemUnit;
+  Classes, ComCtrls, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls,
+  Buttons, IniFiles, Language, SteamUtils, TabParameters, TabCommonUnit,
+  DirectoryItemUnit;
 
 type
   TDirectoryFrame = class(TTabCommonFrame)
@@ -19,6 +19,7 @@ type
     pnlTools: TPanel;
     btnAdd: TSpeedButton;
     sbContent: TScrollBox;
+    StatusBar: TStatusBar;
     procedure btnAddClick(Sender: TObject);
     procedure btnDeleteClick(Sender: TObject);
     procedure btnDownClick(Sender: TObject);
@@ -45,6 +46,7 @@ type
     function  IsItemFrameExist(APath: String): Boolean;
 
     procedure CorrectToolButtons;
+    procedure UpdateStatusBar;
 
     //Обработчик выделения элемента
     procedure OnItemSelect(Sender: TObject);
@@ -61,6 +63,8 @@ type
     procedure ApplyLanguage; override;
     procedure SaveSettings; override;
     procedure LoadSettings; override;
+
+    procedure Sort;
 
     property Frames: TDirectoryItemFrameArray read FFrames;
   end;
@@ -371,6 +375,15 @@ begin
   btnUp.Enabled := (Item <> nil) and (GetItemFrameIndex(Item) > 0);
   btnDown.Enabled := (Item <> nil) and (GetItemFrameIndex(Item) < Length(FFrames) - 1);
   btnExplore.Enabled := (Item <> nil) and (Item.IsPathCorrect);
+
+  //Поправить строку статуса
+  UpdateStatusBar;
+end;
+
+
+procedure TDirectoryFrame.UpdateStatusBar;
+begin
+  StatusBar.SimpleText := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'TotalItems', 'Всего элементов') + ': ' + IntToStr(Length(FFrames));
 end;
 
 
@@ -541,6 +554,9 @@ begin
   btnDown.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Down', 'Вниз');
   btnDelete.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Delete', 'Удалить');
   btnExplore.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'OpenDirectory', 'Открыть в проводнике');
+
+  //Строка статуса
+  UpdateStatusBar;
 end;
 
 
@@ -598,10 +614,32 @@ begin
     //Упорядочить фреймы
     ArrangeItemFrames;
 
+    //Поправить строку статуса
+    UpdateStatusBar;
+
   finally
     Values.Free;
     F.Free;
   end;
+end;
+
+
+procedure TDirectoryFrame.Sort;
+var
+  i, j: Integer;
+  frm: TDirectoryItemFrame;
+begin
+  for i := 0 to Length(FFrames) - 1 do
+    for j := i to Length(FFrames) - 1 do
+      if FFrames[i].Caption > FFrames[j].Caption then
+      begin
+        frm := FFrames[i];
+        FFrames[i] := FFrames[j];
+        FFrames[j] := frm;
+      end;
+
+  //Упорядочить фреймы
+  ArrangeItemFrames;
 end;
 
 

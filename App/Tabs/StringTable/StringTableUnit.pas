@@ -72,6 +72,7 @@ type
     procedure LoadSettings; override;
 
     procedure FitColumns;
+    procedure Sort;
   end;
 
 
@@ -571,6 +572,16 @@ begin
   for i := 0 to TableGrid.Columns.Count - 1 do
     if TableGrid.Columns.Items[i].Visible then
       TableGrid.AutoSizeColumn(i);
+end;
+
+
+procedure TStringTableFrame.Sort;
+begin
+  //Упорядочить строки по идентификатору
+  FLangTable.Sort;
+
+  //Заполнить по новой таблицу
+  LoadTableListToGrid(FLangTable);
 end;
 
 

@@ -312,15 +312,23 @@ inherited DirectoryFrame: TDirectoryFrame
   end
   object sbContent: TScrollBox[1]
     Left = 0
-    Height = 267
+    Height = 244
     Top = 35
     Width = 460
     HorzScrollBar.Page = 1
     HorzScrollBar.Tracking = True
+    HorzScrollBar.Visible = False
     VertScrollBar.Page = 1
     VertScrollBar.Tracking = True
     Align = alClient
     TabOrder = 1
     OnClick = FrameClick
+  end
+  object StatusBar: TStatusBar[2]
+    Left = 0
+    Height = 23
+    Top = 279
+    Width = 460
+    Panels = <>
   end
 end

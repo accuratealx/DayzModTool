@@ -14,6 +14,7 @@ type
     constructor Create; reintroduce;
 
     procedure Change(Index1, Index2: Integer);
+    procedure Sort;
 
     procedure LoadFromFile(FileName: String);
     procedure SaveToFile(FileName: String);
@@ -40,6 +41,22 @@ begin
   el := FList[Index1];
   FList[Index1] := FList[Index2];
   FList[Index2] := el;
+end;
+
+
+procedure TStringTableItemList.Sort;
+var
+  i, j: Integer;
+  el: TStringTableItem;
+begin
+  for i := 0 to Length(FList) - 1 do
+    for j := i to Length(FList) - 1 do
+      if FList[i].ID > FList[j].ID then
+      begin
+        el := FList[i];
+        FList[i] := FList[j];
+        FList[j] := el;
+      end;
 end;
 
 

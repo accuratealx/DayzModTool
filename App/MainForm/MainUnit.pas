@@ -14,7 +14,7 @@ uses
   WorkDriveUnit, TrashCleanerUnit, ItemBaseUnit, NoteUnit;
 
 const
-  VERSION = '0.13';
+  VERSION = '0.14';
 
 type
   TMainForm = class(TForm)
@@ -24,8 +24,11 @@ type
     ilTrayDirectory: TImageList;
     ilLanguages: TImageList;
     MainMenu: TMainMenu;
+    miMainTabStringTableSort: TMenuItem;
+    miMainTabDirectorySort: TMenuItem;
+    miMainTabBuilderSort: TMenuItem;
+    miMainTabBuilderSeparator1: TMenuItem;
     miMainInfoCheckVersion:TMenuItem;
-    miMainSeparator4: TMenuItem;
     miMainTabItemBaseFitColomns: TMenuItem;
     miMainTabItemBaseSort: TMenuItem;
     miMainTabItemBase: TMenuItem;
@@ -50,14 +53,14 @@ type
     miMainTools: TMenuItem;
     miMainLanguage: TMenuItem;
     miTrayHide: TMenuItem;
-    miMainSeparator3: TMenuItem;
+    miMainTabDirectorySeparator1: TMenuItem;
     miMainTabDirectoryEraseAll: TMenuItem;
     miMainTabDirectoryAddDefault: TMenuItem;
     miMainTabDirectoryEraseIncorrect: TMenuItem;
     miMainTabDirectory: TMenuItem;
     miTrayDirectory: TMenuItem;
     miMainTabLaunchFindExecutables: TMenuItem;
-    miMainSeparator2: TMenuItem;
+    miMainTabLaunchSeparator1: TMenuItem;
     miMainTabLaunchCollapseAll: TMenuItem;
     miMainTabLaunchExpandAll: TMenuItem;
     miMainTabLaunch: TMenuItem;
@@ -94,15 +97,18 @@ type
     procedure miMainInfoDonateClick(Sender: TObject);
     procedure miMainTabBuilderCollapseAllClick(Sender: TObject);
     procedure miMainTabBuilderExpandAllClick(Sender: TObject);
+    procedure miMainTabBuilderSortClick(Sender: TObject);
     procedure miMainTabDirectoryAddDefaultClick(Sender: TObject);
     procedure miMainTabDirectoryEraseAllClick(Sender: TObject);
     procedure miMainTabDirectoryEraseIncorrectClick(Sender: TObject);
+    procedure miMainTabDirectorySortClick(Sender: TObject);
     procedure miMainTabItemBaseFitColomnsClick(Sender: TObject);
     procedure miMainTabItemBaseSortClick(Sender: TObject);
     procedure miMainTabLaunchCollapseAllClick(Sender: TObject);
     procedure miMainTabLaunchExpandAllClick(Sender: TObject);
     procedure miMainTabLaunchFindExecutablesClick(Sender: TObject);
     procedure miMainTabStringTableFitColumnsClick(Sender: TObject);
+    procedure miMainTabStringTableSortClick(Sender: TObject);
     procedure miMainToolsExportSettingsClick(Sender: TObject);
     procedure miMainToolsExtractDataClick(Sender: TObject);
     procedure miMainToolsImportSettingsClick(Sender: TObject);
@@ -334,6 +340,12 @@ begin
 end;
 
 
+procedure TMainForm.miMainTabBuilderSortClick(Sender: TObject);
+begin
+  (FFrames[tftBuilder] as TBuilderFrame).Sort;
+end;
+
+
 procedure TMainForm.miMainTabDirectoryAddDefaultClick(Sender: TObject);
 begin
   (FFrames[tftDirectory] as TDirectoryFrame).AddStandartDirectory;
@@ -349,6 +361,12 @@ end;
 procedure TMainForm.miMainTabDirectoryEraseIncorrectClick(Sender: TObject);
 begin
   (FFrames[tftDirectory] as TDirectoryFrame).DeleteIncorrectDirectory;
+end;
+
+
+procedure TMainForm.miMainTabDirectorySortClick(Sender: TObject);
+begin
+  (FFrames[tftDirectory] as TDirectoryFrame).Sort;
 end;
 
 
@@ -385,6 +403,12 @@ end;
 procedure TMainForm.miMainTabStringTableFitColumnsClick(Sender: TObject);
 begin
   (FFrames[tftStringTable] as TStringTableFrame).FitColumns;
+end;
+
+
+procedure TMainForm.miMainTabStringTableSortClick(Sender: TObject);
+begin
+  (FFrames[tftStringTable] as TStringTableFrame).Sort;
 end;
 
 
