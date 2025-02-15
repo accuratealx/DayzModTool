@@ -1,8 +1,8 @@
 # DayZ Mod Tool language file
 
 #Language info
-Info.AppVersion = 0.13
-Info.FileVersion = 1.4
+Info.AppVersion = 0.14
+Info.FileVersion = 1.6
 Info.Autor = accuratealx@gmail.com
 Info.Date = 23.02.2024
 Info.Comment =
@@ -17,6 +17,7 @@ MainForm.MainMenu.miMainLanguage = Язык
 MainForm.MainMenu.miMainSystem = Система
 MainForm.MainMenu.miMainTabDirectory = Каталоги
 MainForm.MainMenu.miMainTabDirectoryAddDefault = Добавить стандартные
+MainForm.MainMenu.miMainTabDirectorySort = Упорядочить
 MainForm.MainMenu.miMainTabDirectoryEraseAll = Удалить все
 MainForm.MainMenu.miMainTabDirectoryEraseIncorrect = Удалить несуществующие
 MainForm.MainMenu.miMainTabLaunch = Запуск программ
@@ -26,8 +27,11 @@ MainForm.MainMenu.miMainTabLaunchFindExecutables = Найти приложени
 MainForm.MainMenu.miMainTabBuilder = Построитель
 MainForm.MainMenu.miMainTabBuilderExpandAll = Развернуть все
 MainForm.MainMenu.miMainTabBuilderCollapseAll = Свернуть все
+MainForm.MainMenu.miMainTabBuilderSort = Упорядочить
+MainForm.MainMenu.miMainTabBuilderEraseAll = Удалить все
 MainForm.MainMenu.miMainTabStringTable = Таблица строк
 MainForm.MainMenu.miMainTabStringTableFitColumns = Подогнать под содержимое
+MainForm.MainMenu.miMainTabStringTableSort = Упорядочить
 MainForm.MainMenu.miMainTabItemBase = Предметы
 MainForm.MainMenu.miMainTabItemBaseSort = Упорядочить
 MainForm.MainMenu.miMainTabItemBaseFitColomns = Подогнать под содержимое
@@ -57,3 +61,4 @@ MainForm.Tabs.tabDirectory = Каталоги
 MainForm.Tabs.tabBuilder = Построитель
 MainForm.Tabs.tabStringTable = Таблица строк
 MainForm.Tabs.tabItemBase = Предметы
+MainForm.Tabs.tabNote = Заметки

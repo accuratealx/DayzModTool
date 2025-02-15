@@ -1,8 +1,8 @@
 # DayZ Mod Tool language file
 
 #Language info
-Info.AppVersion = 0.13
-Info.FileVersion = 1.5
+Info.AppVersion = 0.14
+Info.FileVersion = 1.6
 Info.Autor = accuratealx@gmail.com
 Info.Date = 21.02.2024
 Info.Comment =
@@ -17,6 +17,7 @@ MainForm.MainMenu.miMainLanguage = Language
 MainForm.MainMenu.miMainSystem = System
 MainForm.MainMenu.miMainTabDirectory = Directory
 MainForm.MainMenu.miMainTabDirectoryAddDefault = Add default
+MainForm.MainMenu.miMainTabDirectorySort = Sort
 MainForm.MainMenu.miMainTabDirectoryEraseAll = Erase all
 MainForm.MainMenu.miMainTabDirectoryEraseIncorrect = Erase incorrect
 MainForm.MainMenu.miMainTabLaunch = Launch
@@ -26,8 +27,11 @@ MainForm.MainMenu.miMainTabLaunchFindExecutables = Find applications
 MainForm.MainMenu.miMainTabBuilder = Builder
 MainForm.MainMenu.miMainTabBuilderExpandAll = Expand all
 MainForm.MainMenu.miMainTabBuilderCollapseAll = Collapse all
+MainForm.MainMenu.miMainTabBuilderSort = Sort
+MainForm.MainMenu.miMainTabBuilderEraseAll = Erase all
 MainForm.MainMenu.miMainTabStringTable = String table
 MainForm.MainMenu.miMainTabStringTableFitColumns = Fit to content
+MainForm.MainMenu.miMainTabStringTableSort = Sort
 MainForm.MainMenu.miMainTabItemBase = Items
 MainForm.MainMenu.miMainTabItemBaseSort = Sort
 MainForm.MainMenu.miMainTabItemBaseFitColomns = Fit to content
@@ -151,6 +155,7 @@ TabDirectory.NewItemName = New directory
 TabDirectory.DeleteAll = Erase all directories? Action cannot be undone.
 TabDirectory.DeleteIncorrect = Erase non-existent directories?
 TabDirectory.DeleteCurrent = Remove directory "%s" from the list?
+TabDirectory.TotalItems = Total items
 
 #Tab Buider
 TabBuilder.Add = Add
@@ -162,6 +167,7 @@ TabBuilder.Build = Build
 TabBuilder.NewItem = Input name
 TabBuilder.RenameItem = Input name
 TabBuilder.MemoCaption = Command line
+TabBuilder.TotalItems = Total items
 TabBuilder.DeleteCurrent = Remove setting "%s" from the list?
 TabBuilder.CantFindAddonBuilder = Сan't find the Addon Builder. Reinstall Dayz Tools.
 TabBuilder.CantCreateIncFile = Cant create file "%s"
@@ -176,12 +182,23 @@ TabBuilder.FileExtensions = File types
 TabBuilder.PrivateKey = Private key
 TabBuilder.SelectKey = Select key
 TabBuilder.PrivateKeys = Private кeys
-TabBuilder.Version = Версия
+TabBuilder.Version = Version
 TabBuilder.Sign = Sign PBO
+TabBuilder.BuildAll = Build all
 TabBuilder.BuildDialog.Title = Build result
 TabBuilder.BuildDialog.Close = Close
 TabBuilder.BuildDialog.CopyContent = Copy contetnt to clipboard
 TabBuilder.BuildDialog.Repeat = Repeat build
+TabBuilder.BuildAllDialog.Title = Build
+TabBuilder.BuildAllDialog.Close = Close
+TabBuilder.BuildAllDialog.Build = Build
+TabBuilder.BuildAllDialog.Stop = Stop
+TabBuilder.BuildAllDialog.Skip = Skip
+TabBuilder.BuildAllDialog.Details = Details
+TabBuilder.BuildAllDialog.CantCreateExtFile = Failed to create file with extensions
+TabBuilder.BuildAllDialog.CantFindAddonBuilder = Сan't find the Addon Builder. Reinstall Dayz Tools.
+TabBuilder.BuildAllDialog.NoSrcDir = No source directory
+TabBuilder.BuildAllDialog.NoDstDir = No destination directory
 
 #Tab StringTable
 TabStringTable.Clear = Clear table
