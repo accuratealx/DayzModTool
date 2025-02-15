@@ -9,7 +9,6 @@ uses
   Dialogs, Language, BuilderUtils;
 
 type
-  //Один элемент
   TBuilderItemFrame = class(TFrame)
     btnBuild: TSpeedButton;
     btnVersionClearValue: TSpeedButton;

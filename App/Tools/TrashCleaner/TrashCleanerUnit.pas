@@ -5,7 +5,7 @@ unit TrashCleanerUnit;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons, CheckLst,
+  Classes, SysUtils, Controls, Graphics, Dialogs, Buttons, CheckLst,
   DialogCommonUnit, DialogParameters, Language,
   sgeStringList;
 

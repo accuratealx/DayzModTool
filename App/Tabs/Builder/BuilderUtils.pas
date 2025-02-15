@@ -5,7 +5,7 @@ unit BuilderUtils;
 interface
 
 uses
-  ExtCtrls, SysUtils, Windows, Classes;
+  ExtCtrls, SysUtils, Classes;
 
 type
   //Параметры для сборки pbo
