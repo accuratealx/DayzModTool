@@ -113,7 +113,7 @@ begin
   Proc := TProcess.Create(nil);
   try
     //Настроим параметры
-    Proc.Options := [poUsePipes];
+    Proc.Options := [poUsePipes, poStderrToOutPut];
     Proc.ShowWindow := swoHIDE;
     Proc.Executable := Params.AppFile;
     Proc.Parameters.Add(Params.Params);
@@ -127,7 +127,7 @@ begin
       mContent.Lines.BeginUpdate;
       try
         SetLength(Buffer, BUF_SIZE);
-        BytesRead := Proc.Output.Read(Buffer[1], Length(Buffer));
+        BytesRead := Proc.Output.Read(Buffer[1], Length(Buffer)); //TODO виснет на этой строке иногда
 
         if BytesRead > 0 then
         begin

@@ -11,6 +11,7 @@ uses
 type
   TBuilderFrame = class(TTabCommonFrame)
     btnAdd: TSpeedButton;
+    btnBuildAll: TSpeedButton;
     btnDelete: TSpeedButton;
     btnChangeIcon: TSpeedButton;
     btnDown: TSpeedButton;
@@ -20,6 +21,7 @@ type
     sbContent: TScrollBox;
     StatusBar: TStatusBar;
     procedure btnAddClick(Sender: TObject);
+    procedure btnBuildAllClick(Sender: TObject);
     procedure btnChangeIconClick(Sender: TObject);
     procedure btnDeleteClick(Sender: TObject);
     procedure btnDownClick(Sender: TObject);
@@ -46,6 +48,7 @@ type
     function  GetItemFrameIndex(Frame: TBuilderItemFrame): Integer;
 
     procedure CorrectToolButtons;
+    procedure CorrectBuildAllButton;
     procedure UpdateStatusBar;
 
     procedure OnChangeBuilderContentHeight(Sender: TObject);
@@ -63,6 +66,7 @@ type
     procedure LoadSettings; override;
 
     procedure Sort;
+    procedure Clear;
 
     property Frames: TBuilderItemFrameList read FFrames;
   end;
@@ -75,7 +79,7 @@ implementation
 uses
   IniFiles,
   InputDialogUnit, YesNoQuestionDialogUnit, IconSelectorDialogUnit,
-  EventSystem;
+  EventSystem, BuilderUtils, BuildAllDialogUnit;
 
 
 procedure TBuilderFrame.btnAddClick(Sender: TObject);
@@ -99,9 +103,31 @@ begin
     //Упорядочить фреймы
     ArrangeItemFrames;
 
+    //Поправить кнопку собрать все
+    CorrectBuildAllButton;
+
     //Сохранить настройки
     SaveSettings;
   end;
+end;
+
+
+procedure TBuilderFrame.btnBuildAllClick(Sender: TObject);
+var
+  BuildData: TBuilderItemBuildDataList;
+  i, c: Integer;
+begin
+  c := Length(FFrames);
+  if c = 0 then
+    Exit;
+
+  //Собрать всё настройки в список
+  SetLength(BuildData, c);
+  for i := 0 to c - 1 do
+    BuildData[i] := FFrames[i].GetBuildData;
+
+  //Показать диалог сборки
+  BuildAllDialogExecute(FParams.Language, BuildData);
 end;
 
 
@@ -361,8 +387,17 @@ begin
   btnUp.Enabled := (Item <> nil) and (GetItemFrameIndex(Item) > 0);
   btnDown.Enabled := (Item <> nil) and (GetItemFrameIndex(Item) < Length(FFrames) - 1);
 
+  //Поправить кнопку собрать все
+  CorrectBuildAllButton;
+
   //Поправить строку статуса
   UpdateStatusBar;
+end;
+
+
+procedure TBuilderFrame.CorrectBuildAllButton;
+begin
+  btnBuildAll.Enabled := Length(FFrames) > 0;
 end;
 
 
@@ -456,6 +491,7 @@ begin
   btnUp.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Up', 'Вверх');
   btnDown.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Down', 'Вниз');
   btnDelete.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Delete', 'Удалить');
+  btnBuildAll.Caption := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'BuildAll', 'Собрать все');
 
   //Элементы
   for i := 0 to Length(FFrames) - 1 do
@@ -522,6 +558,9 @@ begin
     //Поправить строку статуса
     UpdateStatusBar;
 
+    //Поправить кнопку собрать все
+    CorrectBuildAllButton;
+
   finally
     Values.Free;
     F.Free;
@@ -545,6 +584,22 @@ begin
 
   //Упорядочить фреймы
   ArrangeItemFrames;
+end;
+
+
+procedure TBuilderFrame.Clear;
+begin
+  //Удалить
+  ClearItemFrames;
+
+  //Сохранить настройки
+  SaveSettings;
+
+  //Поправить строку статуса
+  UpdateStatusBar;
+
+  //Поправить панель инструментов
+  CorrectToolButtons;
 end;
 
 

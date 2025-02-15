@@ -11,6 +11,7 @@ uses
 function  GetSteamInstallPathFromRegistry: String;
 function  GetDayZToolsInstallPathFromRegistry: String;
 procedure GetSteamDayZDirectoryList(List: TStringList);
+function  GetPackToolFile: String;
 
 implementation
 
@@ -103,6 +104,12 @@ begin
 
   //Папка логов DayZ
   AddToResult('DayZ журналы', GetEnvironmentVariable('USERPROFILE') + '\AppData\Local\DayZ', 'Folder.Page.ico', True);
+end;
+
+
+function GetPackToolFile: String;
+begin
+  Result := GetDayZToolsInstallPathFromRegistry + 'Bin\AddonBuilder\AddonBuilder.exe';
 end;
 
 

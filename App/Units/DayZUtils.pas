@@ -17,6 +17,7 @@ procedure KillProcess(const ProcName: String);
 procedure GetDayZTrashDirectoryList(List: TsgeStringList);
 procedure GetDayzTrashFileList(list: TsgeStringList);
 function  IsDirectoryEmpty(Dir: String): Boolean;
+function  GetIncludeFilePath: String;
 
 
 implementation
@@ -245,6 +246,12 @@ begin
   end;
 
   SysUtils.FindClose(o);
+end;
+
+
+function GetIncludeFilePath: String;
+begin
+  Result := IncludeTrailingBackslash(SysUtils.GetEnvironmentVariable('TEMP')) + 'include.txt';
 end;
 
 

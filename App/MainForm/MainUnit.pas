@@ -24,6 +24,8 @@ type
     ilTrayDirectory: TImageList;
     ilLanguages: TImageList;
     MainMenu: TMainMenu;
+    miMainTabBuilderEraseAll: TMenuItem;
+    miMainTabBuilderSeparator2: TMenuItem;
     miMainTabStringTableSort: TMenuItem;
     miMainTabDirectorySort: TMenuItem;
     miMainTabBuilderSort: TMenuItem;
@@ -96,6 +98,7 @@ type
     procedure miMainInfoCheckVersionClick(Sender:TObject);
     procedure miMainInfoDonateClick(Sender: TObject);
     procedure miMainTabBuilderCollapseAllClick(Sender: TObject);
+    procedure miMainTabBuilderEraseAllClick(Sender: TObject);
     procedure miMainTabBuilderExpandAllClick(Sender: TObject);
     procedure miMainTabBuilderSortClick(Sender: TObject);
     procedure miMainTabDirectoryAddDefaultClick(Sender: TObject);
@@ -331,6 +334,12 @@ end;
 procedure TMainForm.miMainTabBuilderCollapseAllClick(Sender: TObject);
 begin
   (FFrames[tftBuilder] as TBuilderFrame).SetCollapset(True);
+end;
+
+
+procedure TMainForm.miMainTabBuilderEraseAllClick(Sender: TObject);
+begin
+  (FFrames[tftBuilder] as TBuilderFrame).Clear;
 end;
 
 

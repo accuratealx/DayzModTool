@@ -161,6 +161,7 @@ inherited DataExtractorForm: TDataExtractorForm
       Top = 40
       Width = 380
       Alignment = taCenter
+      Anchors = [akTop, akLeft, akRight]
       AutoSize = False
       Caption = 'Этап [0/200]'
       Font.Style = [fsBold]

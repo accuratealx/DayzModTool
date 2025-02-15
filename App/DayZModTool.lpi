@@ -25,7 +25,7 @@
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <OtherUnitFiles Value="MainForm;ParameterModListFrame;DirectoryPathFrame;LaunchFrames\DedicatedServerFrame;Dialogs\StartParamDialogForm;Dialogs;Dialogs\MemoDialogForm;Dialogs\SelectDirectoryDialog;Dialogs\MemoDialog;Dialogs\YesNoQuestionDialog;Tabs\Directory;Tabs\Launch;Tabs\Launch\ParamFrames\ParamFrameDirectory;Tabs\Launch\ParamFrames\ParamFrameDirectoryList;Tabs\Launch\ParamFrames\ParamFrameFile;Tabs\Launch\ParamFrames\ParamFrameInteger;Tabs\Launch\ParamFrames\ParamFrameSimple;Tabs\Launch\ParamFrames\ParamFrameString;Tabs\Directory\DirectoryItem;Dialogs\IconSelectorDialog;Dialogs\PathEditorDialog;Tools\WorkDrive;Dialogs\MessageDialog;Tools\DataExtractor;Tabs\StringTable;Tabs;Units;Units\StartParam;Tabs\StringTable\ColumnAdjust;Tabs\StringTable\StringTableItemEditorDialog;Tabs\Directory\DirectoryEditorDialog;Tabs\Directory\DirectoryItemEditorDialog;Units\Translator;Tabs\StringTable\StringTableProcessDialog;Tabs\StringTable\Utils;Tools\TrashCleaner;Tools\TimeCalculator;Tabs\Builder;Tabs\Builder\BuilderItem;Dialogs\InputDialog;Tabs\Launch\LaunchItem;Tabs\StringTable\StringTableItemEditorDialogItem;Tabs\Builder\BuildDialog;Tabs\ItemBase;Tabs\ItemBase\ItemBaseEditorDialog;Tabs\Note;Units\EventSystem"/>
+            <OtherUnitFiles Value="MainForm;ParameterModListFrame;DirectoryPathFrame;LaunchFrames\DedicatedServerFrame;Dialogs\StartParamDialogForm;Dialogs;Dialogs\MemoDialogForm;Dialogs\SelectDirectoryDialog;Dialogs\MemoDialog;Dialogs\YesNoQuestionDialog;Tabs\Directory;Tabs\Launch;Tabs\Launch\ParamFrames\ParamFrameDirectory;Tabs\Launch\ParamFrames\ParamFrameDirectoryList;Tabs\Launch\ParamFrames\ParamFrameFile;Tabs\Launch\ParamFrames\ParamFrameInteger;Tabs\Launch\ParamFrames\ParamFrameSimple;Tabs\Launch\ParamFrames\ParamFrameString;Tabs\Directory\DirectoryItem;Dialogs\IconSelectorDialog;Dialogs\PathEditorDialog;Tools\WorkDrive;Dialogs\MessageDialog;Tools\DataExtractor;Tabs\StringTable;Tabs;Units;Units\StartParam;Tabs\StringTable\ColumnAdjust;Tabs\StringTable\StringTableItemEditorDialog;Tabs\Directory\DirectoryEditorDialog;Tabs\Directory\DirectoryItemEditorDialog;Units\Translator;Tabs\StringTable\StringTableProcessDialog;Tabs\StringTable\Utils;Tools\TrashCleaner;Tools\TimeCalculator;Tabs\Builder;Tabs\Builder\BuilderItem;Dialogs\InputDialog;Tabs\Launch\LaunchItem;Tabs\StringTable\StringTableItemEditorDialogItem;Tabs\Builder\BuildDialog;Tabs\ItemBase;Tabs\ItemBase\ItemBaseEditorDialog;Tabs\Note;Units\EventSystem;Tabs\Builder\BuildAllDialog"/>
             <UnitOutputDirectory Value="..\~Tmp\$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <CodeGeneration>
@@ -426,6 +426,21 @@
         <Filename Value="Units\EventSystem\EventSubscriberHandlerList.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>
+      <Unit>
+        <Filename Value="Tabs\Builder\BuildAllDialog\BuildAllDialogUnit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="BuildAllDialogForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Tabs\Builder\BuilderUtils.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Tabs\Builder\BuilderTask.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -436,7 +451,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="MainForm;ParameterModListFrame;DirectoryPathFrame;LaunchFrames\DedicatedServerFrame;Dialogs\StartParamDialogForm;Dialogs;Dialogs\MemoDialogForm;Dialogs\SelectDirectoryDialog;Dialogs\MemoDialog;Dialogs\YesNoQuestionDialog;Tabs\Directory;Tabs\Launch;Tabs\Launch\ParamFrames\ParamFrameDirectory;Tabs\Launch\ParamFrames\ParamFrameDirectoryList;Tabs\Launch\ParamFrames\ParamFrameFile;Tabs\Launch\ParamFrames\ParamFrameInteger;Tabs\Launch\ParamFrames\ParamFrameSimple;Tabs\Launch\ParamFrames\ParamFrameString;Tabs\Directory\DirectoryItem;Dialogs\IconSelectorDialog;Dialogs\PathEditorDialog;Tools\WorkDrive;Dialogs\MessageDialog;Tools\DataExtractor;Tabs\StringTable;Tabs;Units;Units\StartParam;Tabs\StringTable\ColumnAdjust;Tabs\StringTable\StringTableItemEditorDialog;Tabs\Directory\DirectoryEditorDialog;Tabs\Directory\DirectoryItemEditorDialog;Units\Translator;Tabs\StringTable\StringTableProcessDialog;Tabs\StringTable\Utils;Tools\TrashCleaner;Tools\TimeCalculator;Tabs\Builder;Tabs\Builder\BuilderItem;Dialogs\InputDialog;Tabs\Launch\LaunchItem;Tabs\StringTable\StringTableItemEditorDialogItem;Tabs\Builder\BuildDialog;Tabs\ItemBase;Tabs\ItemBase\ItemBaseEditorDialog;Tabs\Note;Units\EventSystem"/>
+      <OtherUnitFiles Value="MainForm;ParameterModListFrame;DirectoryPathFrame;LaunchFrames\DedicatedServerFrame;Dialogs\StartParamDialogForm;Dialogs;Dialogs\MemoDialogForm;Dialogs\SelectDirectoryDialog;Dialogs\MemoDialog;Dialogs\YesNoQuestionDialog;Tabs\Directory;Tabs\Launch;Tabs\Launch\ParamFrames\ParamFrameDirectory;Tabs\Launch\ParamFrames\ParamFrameDirectoryList;Tabs\Launch\ParamFrames\ParamFrameFile;Tabs\Launch\ParamFrames\ParamFrameInteger;Tabs\Launch\ParamFrames\ParamFrameSimple;Tabs\Launch\ParamFrames\ParamFrameString;Tabs\Directory\DirectoryItem;Dialogs\IconSelectorDialog;Dialogs\PathEditorDialog;Tools\WorkDrive;Dialogs\MessageDialog;Tools\DataExtractor;Tabs\StringTable;Tabs;Units;Units\StartParam;Tabs\StringTable\ColumnAdjust;Tabs\StringTable\StringTableItemEditorDialog;Tabs\Directory\DirectoryEditorDialog;Tabs\Directory\DirectoryItemEditorDialog;Units\Translator;Tabs\StringTable\StringTableProcessDialog;Tabs\StringTable\Utils;Tools\TrashCleaner;Tools\TimeCalculator;Tabs\Builder;Tabs\Builder\BuilderItem;Dialogs\InputDialog;Tabs\Launch\LaunchItem;Tabs\StringTable\StringTableItemEditorDialogItem;Tabs\Builder\BuildDialog;Tabs\ItemBase;Tabs\ItemBase\ItemBaseEditorDialog;Tabs\Note;Units\EventSystem;Tabs\Builder\BuildAllDialog"/>
       <UnitOutputDirectory Value="..\~Tmp\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Parsing>
