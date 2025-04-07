@@ -14,7 +14,7 @@ uses
   WorkDriveUnit, TrashCleanerUnit, ItemBaseUnit, NoteUnit;
 
 const
-  VERSION = '0.14';
+  VERSION = '0.15';
 
 type
   TMainForm = class(TForm)

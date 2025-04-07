@@ -115,16 +115,22 @@ end;
 procedure TBuilderFrame.btnBuildAllClick(Sender: TObject);
 var
   BuildData: TBuilderItemBuildDataList;
-  i, c: Integer;
+  i, c, cnt: Integer;
 begin
   c := Length(FFrames);
   if c = 0 then
     Exit;
 
   //Собрать всё настройки в список
-  SetLength(BuildData, c);
   for i := 0 to c - 1 do
-    BuildData[i] := FFrames[i].GetBuildData;
+  begin
+    if FFrames[i].EnableBuild then
+    begin
+      cnt := Length(BuildData);
+      SetLength(BuildData, cnt + 1);
+      BuildData[cnt] := FFrames[i].GetBuildData;
+    end;
+  end;
 
   //Показать диалог сборки
   BuildAllDialogExecute(FParams.Language, BuildData);

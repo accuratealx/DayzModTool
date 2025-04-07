@@ -31,6 +31,8 @@ type
     edSourceDirectory: TEdit;
     edDestinationDirectory: TEdit;
     ilCollapse: TImageList;
+    ilEnableBuild: TImageList;
+    imgEnabledBuild: TImage;
     imgCollapse: TImage;
     imgIcon: TImage;
     lblVersion: TLabel;
@@ -58,6 +60,7 @@ type
     procedure edPrivateKeyChange(Sender: TObject);
     procedure edEditChange(Sender: TObject);
     procedure FrameClick(Sender: TObject);
+    procedure imgEnabledBuildClick(Sender: TObject);
     procedure pnlCollapseClick(Sender: TObject);
     procedure pnlCollapsePaint(Sender: TObject);
   private
@@ -71,6 +74,7 @@ type
     FCollapsed: Boolean;
     FHighlight: Boolean;
     FSelected: Boolean;
+    FEnabledBuild: Boolean;
 
     FOnHeightChange: TNotifyEvent;
     FOnSelect: TNotifyEvent;
@@ -83,6 +87,7 @@ type
     procedure SetHighlight(AHighlight: Boolean);
     procedure SetCollapsed(ACollapsed: Boolean);
     procedure SetIconName(AIconName: String);
+    procedure SetEnableBuild(AEnable: Boolean);
 
     procedure DoOnSelect;
     procedure DoHeightChange;
@@ -103,6 +108,7 @@ type
     property Highlight: Boolean read FHighlight write SetHighlight;
     property Title: String read GetTitle write SetTitle;
     property IconName: String read FIconName write SetIconName;
+    property EnableBuild: Boolean read FEnabledBuild write SetEnableBuild;
 
     property OnSelect: TNotifyEvent read FOnSelect write FOnSelect;
     property OnHeightChange: TNotifyEvent read FOnHeightChange write FOnHeightChange;
@@ -153,6 +159,12 @@ begin
 end;
 
 
+procedure TBuilderItemFrame.imgEnabledBuildClick(Sender: TObject);
+begin
+  EnableBuild := not EnableBuild;
+end;
+
+
 procedure TBuilderItemFrame.btnSourceDirectoryOpenDirClick(Sender: TObject);
 var
   Dir: String;
@@ -192,7 +204,9 @@ end;
 procedure TBuilderItemFrame.edEditChange(Sender: TObject);
 begin
   btnBuild.Enabled := DirectoryExists(edSourceDirectory.Text) and
-    DirectoryExists(edDestinationDirectory.Text) and (Trim(edFileExtensions.Text) <> '');
+                      DirectoryExists(edDestinationDirectory.Text) and
+                      (Trim(edFileExtensions.Text) <> '') and
+                      FEnabledBuild;
 end;
 
 
@@ -411,6 +425,16 @@ begin
 end;
 
 
+procedure TBuilderItemFrame.SetEnableBuild(AEnable: Boolean);
+begin
+  FEnabledBuild := AEnable;
+  imgEnabledBuild.ImageIndex := Ord(not FEnabledBuild);
+
+  //Поправить кнопку
+  CorrectButtonVisible;
+end;
+
+
 procedure TBuilderItemFrame.DoOnSelect;
 begin
   if Assigned(FOnSelect) then
@@ -429,6 +453,7 @@ constructor TBuilderItemFrame.Create(AIconDirectory: String);
 begin
   inherited Create(nil);
   FIconDirectory := AIconDirectory;
+  FEnabledBuild := True;
 end;
 
 
@@ -478,6 +503,9 @@ begin
     if List.Count > 9 then
       cbSign.Checked := StrToBool(List.Strings[9]);
 
+    if List.Count > 10 then
+      EnableBuild := StrToBool(List.Strings[10]);
+
   finally
     List.Free;
   end;
@@ -496,13 +524,14 @@ begin
     edFileExtensions.Text + SEPARATOR +
     edVersion.Text + SEPARATOR +
     edPrivateKey.Text + SEPARATOR +
-    BoolToStr(cbSign.Checked);
+    BoolToStr(cbSign.Checked) + SEPARATOR +
+    BoolToStr(EnableBuild);
 end;
 
 
 procedure TBuilderItemFrame.CorrectButtonVisible;
 begin
-  edEditChange(nil);;
+  edEditChange(nil);
 end;
 
 
@@ -517,6 +546,8 @@ begin
   btnSourceDirectoryOpenDir.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'OpenDirectory', 'Открыть каталог в проводнике');
   btnSourceDirectorySelect.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'SelectDirectory', 'Выбрать каталог');
   btnSourceDirectoryClearValue.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'ClearValue', 'Очистить значение');
+  imgEnabledBuild.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'EnabledBuild', 'Доступность сборки');
+
 
   lblDestinationDirectory.Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'DestinationDirectory', 'Выходной каталог');
   btnDestinationDirectoryOpenDir.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'OpenDirectory', 'Открыть каталог в проводнике');
