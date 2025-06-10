@@ -1,4 +1,4 @@
-Dayz Mod Tool v0.14  accuratealx@gmail
+Dayz Mod Tool v0.15  accuratealx@gmail
 
 Первый запуск:
   1. Установить из Steam "Dayz Tools" и запустить один раз (запишутся ключи в реестр)
