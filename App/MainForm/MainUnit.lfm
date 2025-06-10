@@ -7,7 +7,7 @@ object MainForm: TMainForm
   ClientHeight = 600
   ClientWidth = 550
   Constraints.MinHeight = 300
-  Constraints.MinWidth = 400
+  Constraints.MinWidth = 450
   Menu = MainMenu
   ShowInTaskBar = stNever
   SnapOptions.SnapToMonitor = True

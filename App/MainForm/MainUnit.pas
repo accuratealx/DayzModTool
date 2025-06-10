@@ -155,6 +155,14 @@ type
       CONFIG_PARAM_TAB_INDEX = 'TabIndex';
       CONFIG_PARAM_LANGUAGE = 'Language';
   private
+    const
+      verError = 0;
+      verNoUpdate = 1;
+      verUpdate = 2;
+
+    function  GetVersionType(ver: TGitHubVersion; CurrentVersion: String): Byte;
+    procedure ShowDialogUpdateVersion(Ver: TGitHubVersion);
+  private
     FCloseApplication: Boolean;
 
     //Каталоги
@@ -270,29 +278,15 @@ end;
 
 
 procedure TMainForm.miMainInfoCheckVersionClick(Sender:TObject);
-const
-  vError = 0;
-  vNoUpdate = 1;
-  vUpdate = 2;
 var
   ver: TGitHubVersion;
   mode: Byte;
 begin
-  mode := vError;
-
   ver := GetGithubVersion;
-  if ver.Version = '' then
-    mode := vError
-  else
-  begin
-    if VERSION < ver.Version then
-      mode := vUpdate
-    else
-      mode := vNoUpdate;
-  end;
+  mode := GetVersionType(ver, VERSION);
 
   case mode of
-    vError:
+    verError:
     begin
       MessageDialogExecute(
         FLanguage,
@@ -300,7 +294,7 @@ begin
       );
     end;
 
-    vNoUpdate:
+    verNoUpdate:
     begin
       MessageDialogExecute(
         FLanguage,
@@ -308,19 +302,8 @@ begin
       );
     end;
 
-    vUpdate:
-    begin
-      //Есть обновление, открыть ссылку
-      if YesNoQuestionDialogExecute(
-        FLanguage,
-        Format(
-          FLanguage.GetLocalizedString('MainForm.Update', 'Обнаружена новая версия %s, открыть ссылку?'),
-          [ver.Version]
-        )
-      ) then
-        if ver.URL <> '' then
-          OpenURL(ver.URL);
-    end;
+    verUpdate:
+      ShowDialogUpdateVersion(ver);
   end;
 end;
 
@@ -565,6 +548,36 @@ begin
       //Найдем приложения
       miMainTabLaunchFindExecutables.Click;
     end;
+  end;
+end;
+
+
+procedure TMainForm.ShowDialogUpdateVersion(Ver: TGitHubVersion);
+begin
+  if YesNoQuestionDialogExecute(
+    FLanguage,
+    Format(
+      FLanguage.GetLocalizedString('MainForm.Update', 'Обнаружена новая версия %s, открыть ссылку?'),
+      [Ver.Version]
+    )
+  ) then
+    if Ver.URL <> '' then
+      OpenURL(ver.URL);
+end;
+
+
+function TMainForm.GetVersionType(ver: TGitHubVersion; CurrentVersion: String): Byte;
+begin
+  Result := verError;
+
+  if ver.Version = '' then
+    Result := verError
+  else
+  begin
+    if CurrentVersion < ver.Version then
+      Result:= verUpdate
+    else
+      Result:= verNoUpdate;
   end;
 end;
 
