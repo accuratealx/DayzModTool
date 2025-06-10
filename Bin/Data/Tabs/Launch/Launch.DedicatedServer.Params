@@ -1,6 +1,12 @@
 Настройка параметров запуска DedicatedServer DayZ
 accuratealx@gmail.com 2023.12.23
 
+#startNavMeshDataServer{
+Type = Simple
+Description = Включает генерацию nav mesh
+Prefix = -
+}
+
 #doLogs{
 Type = Simple
 Description = Включает логирование в файле RPT сервера и server_console.log
