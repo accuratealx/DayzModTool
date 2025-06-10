@@ -108,7 +108,8 @@ begin
       FParams.DestinationDirectory,
       FParams.Prefix,
       FParams.Sign,
-      IncFile
+      IncFile,
+      FParams.Version
     );
 
     //Настроим параметры

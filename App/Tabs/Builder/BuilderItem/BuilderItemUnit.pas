@@ -11,6 +11,7 @@ uses
 type
   TBuilderItemFrame = class(TFrame)
     btnBuild: TSpeedButton;
+    btnShowCommandLine: TSpeedButton;
     btnVersionClearValue: TSpeedButton;
     btnPrivateKeyClearValue: TSpeedButton;
     btnPrivateKeyOpenDirectory: TSpeedButton;
@@ -53,13 +54,16 @@ type
     procedure btnPrivateKeyClearValueClick(Sender: TObject);
     procedure btnPrivateKeyOpenDirectoryClick(Sender: TObject);
     procedure btnPrivateKeySelectClick(Sender: TObject);
+    procedure btnShowCommandLineClick(Sender: TObject);
     procedure btnSourceDirectoryClearValueClick(Sender: TObject);
     procedure btnSourceDirectoryOpenDirClick(Sender: TObject);
     procedure btnSourceDirectorySelectClick(Sender: TObject);
     procedure btnVersionClearValueClick(Sender: TObject);
     procedure edPrivateKeyChange(Sender: TObject);
     procedure edEditChange(Sender: TObject);
+    procedure edVersionKeyPress(Sender: TObject; var Key: char);
     procedure FrameClick(Sender: TObject);
+    procedure FrameResize(Sender: TObject);
     procedure imgEnabledBuildClick(Sender: TObject);
     procedure pnlCollapseClick(Sender: TObject);
     procedure pnlCollapsePaint(Sender: TObject);
@@ -123,7 +127,7 @@ implementation
 
 uses
   DayZUtils, SteamUtils,
-  SelectDirectoryDialogUnit, BuildDialogUnit, MessageDialogUnit;
+  SelectDirectoryDialogUnit, BuildDialogUnit, MessageDialogUnit, MemoDialogUnit;
 
 const
   SEPARATOR = ';;;';
@@ -156,6 +160,14 @@ end;
 procedure TBuilderItemFrame.FrameClick(Sender: TObject);
 begin
   Selected := True;
+end;
+
+
+procedure TBuilderItemFrame.FrameResize(Sender: TObject);
+begin
+  //Костыль, потому что панель не изменяет свои размеры через свойство, скорее всего из-за невидимости TControl
+  pnlCollapse.Width := imgEnabledBuild.Left - 10;
+  lblTitle.Width := pnlCollapse.Width - lblTitle.Left;
 end;
 
 
@@ -207,6 +219,15 @@ begin
                       DirectoryExists(edDestinationDirectory.Text) and
                       (Trim(edFileExtensions.Text) <> '') and
                       FEnabledBuild;
+end;
+
+
+procedure TBuilderItemFrame.edVersionKeyPress(Sender: TObject; var Key: char);
+const
+  VALID_CHARS = ['a'..'z', 'A'..'Z', '0'..'9', #8];
+begin
+  if not (Key in VALID_CHARS) then
+    Key := #0;
 end;
 
 
@@ -265,7 +286,8 @@ begin
     Trim(edDestinationDirectory.Text),
     Trim(edPrefix.Text),
     s,
-    IncFile
+    IncFile,
+    Trim(edVersion.Text)
   );
 
   //Показать диалог сборки
@@ -326,6 +348,29 @@ begin
   OpenDialog.FileName := Fn;
   if OpenDialog.Execute then
     edPrivateKey.Text := OpenDialog.FileName;
+end;
+
+
+procedure TBuilderItemFrame.btnShowCommandLineClick(Sender: TObject);
+var
+  Param: String;
+begin
+  //Параметры сборки
+  Param := GetBuildParamString(
+    Trim(edSourceDirectory.Text),
+    Trim(edDestinationDirectory.Text),
+    Trim(edPrefix.Text),
+    edPrivateKey.Text,
+    GetIncludeFilePath,
+    Trim(edVersion.Text)
+  );
+
+  //Показать диалог
+  MemoDialogExecute(
+    FLanguage,
+    FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'MemoCaption', 'Параметры запуска'),
+    Param
+  );
 end;
 
 
@@ -547,6 +592,7 @@ begin
   btnSourceDirectorySelect.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'SelectDirectory', 'Выбрать каталог');
   btnSourceDirectoryClearValue.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'ClearValue', 'Очистить значение');
   imgEnabledBuild.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'EnabledBuild', 'Доступность сборки');
+  btnShowCommandLine.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'ShowCommandLine', 'Показать параметры запуска');
 
 
   lblDestinationDirectory.Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'DestinationDirectory', 'Выходной каталог');
@@ -580,6 +626,7 @@ begin
   Result.SourceDirectory := Trim(edSourceDirectory.Text);
   Result.DestinationDirectory := Trim(edDestinationDirectory.Text);
   Result.Prefix := Trim(edPrefix.Text);
+  Result.Version := Trim(edVersion.Text);
 
   if cbSign.Checked then
     Result.Sign := Trim(edPrivateKey.Text);

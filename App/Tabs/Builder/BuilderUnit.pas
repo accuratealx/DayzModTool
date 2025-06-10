@@ -5,8 +5,8 @@ unit BuilderUnit;
 interface
 
 uses
-  Classes, ComCtrls, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  Buttons, TabParameters, TabCommonUnit, BuilderItemUnit;
+  Classes, ComCtrls, StdCtrls, SysUtils, Forms, Controls, Graphics, Dialogs,
+  ExtCtrls, Buttons, TabParameters, TabCommonUnit, BuilderItemUnit;
 
 type
   TBuilderFrame = class(TTabCommonFrame)
@@ -14,19 +14,23 @@ type
     btnBuildAll: TSpeedButton;
     btnDelete: TSpeedButton;
     btnChangeIcon: TSpeedButton;
+    btnClearFilter: TSpeedButton;
     btnDown: TSpeedButton;
     btnRename: TSpeedButton;
     btnUp: TSpeedButton;
+    edFilter: TEdit;
     pnlTools: TPanel;
     sbContent: TScrollBox;
     StatusBar: TStatusBar;
     procedure btnAddClick(Sender: TObject);
     procedure btnBuildAllClick(Sender: TObject);
     procedure btnChangeIconClick(Sender: TObject);
+    procedure btnClearFilterClick(Sender: TObject);
     procedure btnDeleteClick(Sender: TObject);
     procedure btnDownClick(Sender: TObject);
     procedure btnRenameClick(Sender: TObject);
     procedure btnUpClick(Sender: TObject);
+    procedure edFilterChange(Sender: TObject);
     procedure FrameResize(Sender: TObject);
     procedure sbContentClick(Sender: TObject);
   private
@@ -34,6 +38,8 @@ type
       LANGUAGE_PREFIX = 'TabBuilder.';
 
       SECTION_BUILDER = 'Builder';
+      SECTION_SETTINGS = 'Settings';
+      PARAM_FILTER = 'Filter';
   private
     FFrames: TBuilderItemFrameList;
 
@@ -53,6 +59,9 @@ type
 
     procedure OnChangeBuilderContentHeight(Sender: TObject);
     procedure OnItemSelect(Sender: TObject);
+
+    function GetDefaultFileExtensions: String;
+    function GetFilter: String;
 
     procedure EventHandler;
   public
@@ -96,6 +105,8 @@ begin
     //Создать фрейм
     Frame := TBuilderItemFrame.Create(FParams.IconDirectory);
     Frame.Title := AName;
+
+    Frame.edFileExtensions.Text := GetDefaultFileExtensions;
 
     //Добавить в список
     AddItemFrame(Frame);
@@ -154,6 +165,12 @@ begin
     //Сохранить параметры
     SaveSettings;
   end;
+end;
+
+
+procedure TBuilderFrame.btnClearFilterClick(Sender: TObject);
+begin
+  edFilter.Text := '';
 end;
 
 
@@ -260,6 +277,22 @@ begin
 end;
 
 
+procedure TBuilderFrame.edFilterChange(Sender: TObject);
+begin
+  edFilter.OnChange := nil;
+  sbContent.BeginUpdateBounds;
+
+  try
+    ArrangeItemFrames;
+    UpdateStatusBar;
+
+  finally
+    sbContent.EndUpdateBounds;
+    edFilter.OnChange := @edFilterChange;
+  end;
+end;
+
+
 procedure TBuilderFrame.FrameResize(Sender: TObject);
 begin
   ArrangeItemFrames;
@@ -301,24 +334,48 @@ end;
 
 
 procedure TBuilderFrame.ArrangeItemFrames;
+
+  function IsFrameVisible(Frame: TBuilderItemFrame): Boolean;
+  var
+    Fltr, Cpt: String;
+  begin
+    Fltr := GetFilter;
+    if Fltr = '' then
+      Exit(True);
+    Cpt := UnicodeLowerCase(Frame.Title);
+    Result := Pos(Fltr, Cpt) > 0;
+  end;
+
 var
   i, Y: Integer;
+  Highlight: Boolean;
   Frame: TBuilderItemFrame;
 begin
   Y := 0;
+  Highlight := False;
 
   for i := 0 to Length(FFrames) - 1 do
   begin
     Frame := FFrames[i];
 
-    Frame.Anchors := [akLeft, akTop, akRight];
-    Frame.Parent := sbContent;
-    Frame.Left := 0;
-    Frame.Top := Y;
-    Frame.Width := sbContent.ClientWidth;
-    Frame.Highlight := not Odd(i);
+    if IsFrameVisible(Frame) then
+    begin
+      Frame.Anchors := [akLeft, akTop, akRight];
+      Frame.Parent := sbContent;
+      Frame.Left := 0;
+      Frame.Top := Y;
+      Frame.Width := sbContent.ClientWidth;
+      Frame.Highlight := Highlight;
+      Frame.Visible := True;
 
-    Inc(Y, Frame.Height);
+      Inc(Y, Frame.Height);
+      Highlight := not Highlight;
+    end
+    else
+    begin
+      Frame.Visible := False;
+      Frame.Parent := nil;
+    end;
   end;
 end;
 
@@ -408,8 +465,21 @@ end;
 
 
 procedure TBuilderFrame.UpdateStatusBar;
+var
+  i, vis: Integer;
+  Frame: TBuilderItemFrame;
 begin
-  StatusBar.SimpleText := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'TotalItems', 'Всего элементов') + ': ' + IntToStr(Length(FFrames));
+  //Определим сколько видимых фреймов
+  vis := 0;
+  for i := 0 to Length(FFrames) - 1 do
+  begin
+    Frame := FFrames[i];
+    if Frame.Visible then
+      Inc(vis);
+  end;
+
+  StatusBar.Panels[1].Text := IntToStr(Length(FFrames));
+  StatusBar.Panels[3].Text := IntToStr(vis);
 end;
 
 
@@ -438,6 +508,18 @@ begin
 end;
 
 
+function TBuilderFrame.GetDefaultFileExtensions: String;
+begin
+  Result := '*.emat,*.edds,*.ptc,*.c,*.imageset,*.layout,*.ogg,*.xml,*.paa,*.csv,*.rvmat,*.p3d';
+end;
+
+
+function TBuilderFrame.GetFilter: String;
+begin
+  Result := UnicodeLowerCase(Trim(edFilter.Text));
+end;
+
+
 procedure TBuilderFrame.EventHandler;
 var
   i: Integer;
@@ -462,6 +544,9 @@ begin
 
   //Подписаться на событие
   FParams.EventSystem.Subscribe(esMountUnmountWorkDrive, @EventHandler);
+
+  //Двойная буферизация
+  sbContent.DoubleBuffered := True;
 end;
 
 
@@ -491,13 +576,18 @@ var
   i: Integer;
 begin
   //Перевод
-  btnAdd.Caption := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Add', 'Добавить');
+  btnAdd.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Add', 'Добавить');
   btnChangeIcon.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'ChangeIcon', 'Изменить иконку');
   btnRename.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Rename', 'Переименовать');
   btnUp.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Up', 'Вверх');
   btnDown.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Down', 'Вниз');
   btnDelete.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Delete', 'Удалить');
+  btnClearFilter.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'ClearFilter', 'Очистить фильтр');
   btnBuildAll.Caption := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'BuildAll', 'Собрать все');
+
+  //Строка статуса
+  StatusBar.Panels[0].Text := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'TotalItems', 'Всего элементов') + ':';
+  StatusBar.Panels[2].Text := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'VisibleItems', 'Видимых элементов') + ':';
 
   //Элементы
   for i := 0 to Length(FFrames) - 1 do
@@ -514,6 +604,10 @@ var
   i: Integer;
 begin
   F := TIniFile.Create(FSettingsFile);
+
+  //Настройки
+  F.WriteString(SECTION_SETTINGS, PARAM_FILTER, GetFilter);
+
   try
     //Стереть секцию
     F.EraseSection(SECTION_BUILDER);
@@ -558,8 +652,8 @@ begin
       AddItemFrame(Frame);
     end;
 
-    //Упорядочить фреймы
-    ArrangeItemFrames;
+    //Прочитать настройки фильтра
+    edFilter.Text := F.ReadString(SECTION_SETTINGS, PARAM_FILTER, '');
 
     //Поправить строку статуса
     UpdateStatusBar;

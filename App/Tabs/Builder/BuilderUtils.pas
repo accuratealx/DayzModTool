@@ -18,6 +18,7 @@ type
     DestinationDirectory: String;
     Prefix: String;
     Sign: String;
+    Version: String;
   end;
 
   //Список параметров для сборки pbo
@@ -25,7 +26,7 @@ type
 
 
 function CreateIncludeFile(Path: String; Line: String): Boolean;
-function GetBuildParamString(Src, Dst, Prefix, SignFile, ExtensionFile: String): String;
+function GetBuildParamString(Src, Dst, Prefix, SignFile, ExtensionFile, Version: String): String;
 
 implementation
 
@@ -52,7 +53,7 @@ begin
 end;
 
 
-function GetBuildParamString(Src, Dst, Prefix, SignFile, ExtensionFile: String): String;
+function GetBuildParamString(Src, Dst, Prefix, SignFile, ExtensionFile, Version: String): String;
 var
   List: TStringList;
 begin
@@ -60,13 +61,16 @@ begin
   List.LineBreak := ' ';
   try
     //Исходный каталог
-    List.Add(Trim(Src));
+    List.Add(Format('%s', [Trim(Src)]));
 
     //Каталог назначения
-    List.Add(Trim(Dst));
+    List.Add(Format('%s', [Trim(Dst)]));
 
     //Очищать временные файлы
     List.Add('-clear');
+
+    //Путь к каталогу проекта
+    List.Add(Format('"-project=%s"', [ExtractFileDrive(Src)]));
 
     //Полный лог упаковки
     List.Add('-binarizeFullLogs');
@@ -80,7 +84,11 @@ begin
       List.Add(Format('"-sign=%s"', [SignFile]));
 
     //Список расширений
-    List.Add(Format('-include=%s', [ExtensionFile]));
+    List.Add(Format('"-include=%s"', [ExtensionFile]));
+
+    //Версия
+    if Version <> '' then
+      List.Add(Format('"-pboversion=%s"', [Version]));
 
     //Результат
     Result := Trim(List.Text);
