@@ -1,8 +1,8 @@
 # DayZ Mod Tool language file
 
 #Language info
-Info.AppVersion = 0.14
-Info.FileVersion = 1.6
+Info.AppVersion = 0.15
+Info.FileVersion = 1.7
 Info.Autor = accuratealx@gmail.com
 Info.Date = 21.02.2024
 Info.Comment =
@@ -164,10 +164,11 @@ TabBuilder.Up = Up
 TabBuilder.Down = Down
 TabBuilder.Delete = Delete
 TabBuilder.Build = Build
+TabBuilder.ClearFilter = Clear filter
+TabBuilder.ShowCommandLine = Command line
 TabBuilder.NewItem = Input name
 TabBuilder.RenameItem = Input name
 TabBuilder.MemoCaption = Command line
-TabBuilder.TotalItems = Total items
 TabBuilder.DeleteCurrent = Remove setting "%s" from the list?
 TabBuilder.CantFindAddonBuilder = Сan't find the Addon Builder. Reinstall Dayz Tools.
 TabBuilder.CantCreateIncFile = Cant create file "%s"
@@ -184,6 +185,10 @@ TabBuilder.SelectKey = Select key
 TabBuilder.PrivateKeys = Private кeys
 TabBuilder.Version = Version
 TabBuilder.Sign = Sign PBO
+TabBuilder.MemoCaption = Command line
+TabBuilder.EnabledBuild = Availability of assembly
+TabBuilder.TotalItems = Total items
+TabBuilder.VisibleItems = Visible items
 TabBuilder.BuildAll = Build all
 TabBuilder.BuildDialog.Title = Build result
 TabBuilder.BuildDialog.Close = Close
@@ -268,6 +273,7 @@ TabLaunch.Application.AddonBuilder = Addon Builder
 TabLaunch.Application.Publisher = Publisher
 TabLaunch.Application.EconomicsEditor = Economics Editor
 TabLaunch.Application.TextureViewer = Texture Viewer
+TabLaunch.Application.NavMeshGenerator = Navigation mesh generator
 
 #Directory names
 TabDirectory.DirectoryName.DayZ клиент = DayZ Client
