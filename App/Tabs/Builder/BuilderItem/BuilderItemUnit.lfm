@@ -1,9 +1,9 @@
 object BuilderItemFrame: TBuilderItemFrame
   Left = 0
-  Height = 250
+  Height = 269
   Top = 0
   Width = 550
-  ClientHeight = 250
+  ClientHeight = 269
   ClientWidth = 550
   TabOrder = 0
   OnClick = FrameClick
@@ -172,7 +172,7 @@ object BuilderItemFrame: TBuilderItemFrame
   object edSourceDirectory: TEdit
     Left = 155
     Height = 23
-    Top = 45
+    Top = 73
     Width = 311
     Anchors = [akTop, akLeft, akRight]
     Enabled = False
@@ -182,10 +182,10 @@ object BuilderItemFrame: TBuilderItemFrame
   end
   object btnSourceDirectoryOpenDir: TSpeedButton
     Cursor = crHandPoint
-    Left = 471
+    Left = 470
     Height = 23
     Hint = 'Открыть каталог в проводнике'
-    Top = 45
+    Top = 73
     Width = 23
     Anchors = [akTop, akRight]
     Flat = True
@@ -231,10 +231,10 @@ object BuilderItemFrame: TBuilderItemFrame
   end
   object btnSourceDirectorySelect: TSpeedButton
     Cursor = crHandPoint
-    Left = 494
+    Left = 493
     Height = 23
     Hint = 'Выбрать каталог'
-    Top = 45
+    Top = 73
     Width = 23
     Anchors = [akTop, akRight]
     Flat = True
@@ -280,10 +280,10 @@ object BuilderItemFrame: TBuilderItemFrame
   end
   object btnSourceDirectoryClearValue: TSpeedButton
     Cursor = crHandPoint
-    Left = 517
+    Left = 516
     Height = 23
     Hint = 'Очистить значение'
-    Top = 45
+    Top = 73
     Width = 23
     Anchors = [akTop, akRight]
     Flat = True
@@ -330,21 +330,21 @@ object BuilderItemFrame: TBuilderItemFrame
   object lblSourceDirectory: TLabel
     Left = 10
     Height = 15
-    Top = 49
+    Top = 77
     Width = 102
     Caption = 'Исходный каталог'
   end
   object lblDestinationDirectory: TLabel
     Left = 10
     Height = 15
-    Top = 77
+    Top = 105
     Width = 101
     Caption = 'Выходной каталог'
   end
   object edDestinationDirectory: TEdit
     Left = 155
     Height = 23
-    Top = 73
+    Top = 101
     Width = 311
     Anchors = [akTop, akLeft, akRight]
     Enabled = False
@@ -357,7 +357,7 @@ object BuilderItemFrame: TBuilderItemFrame
     Left = 471
     Height = 23
     Hint = 'Открыть каталог в проводнике'
-    Top = 73
+    Top = 101
     Width = 23
     Anchors = [akTop, akRight]
     Flat = True
@@ -406,7 +406,7 @@ object BuilderItemFrame: TBuilderItemFrame
     Left = 494
     Height = 23
     Hint = 'Выбрать каталог'
-    Top = 73
+    Top = 101
     Width = 23
     Anchors = [akTop, akRight]
     Flat = True
@@ -455,7 +455,7 @@ object BuilderItemFrame: TBuilderItemFrame
     Left = 517
     Height = 23
     Hint = 'Очистить значение'
-    Top = 73
+    Top = 101
     Width = 23
     Anchors = [akTop, akRight]
     Flat = True
@@ -502,7 +502,7 @@ object BuilderItemFrame: TBuilderItemFrame
   object edPrefix: TEdit
     Left = 155
     Height = 23
-    Top = 101
+    Top = 129
     Width = 357
     Anchors = [akTop, akLeft, akRight]
     ParentShowHint = False
@@ -511,7 +511,7 @@ object BuilderItemFrame: TBuilderItemFrame
   object lblPrefix: TLabel
     Left = 10
     Height = 15
-    Top = 105
+    Top = 133
     Width = 50
     Caption = 'Префикс'
   end
@@ -520,7 +520,7 @@ object BuilderItemFrame: TBuilderItemFrame
     Left = 517
     Height = 23
     Hint = 'Очистить значение'
-    Top = 101
+    Top = 129
     Width = 23
     Anchors = [akTop, akRight]
     Flat = True
@@ -567,14 +567,14 @@ object BuilderItemFrame: TBuilderItemFrame
   object lblFileExtensions: TLabel
     Left = 10
     Height = 15
-    Top = 133
+    Top = 161
     Width = 74
     Caption = 'Типы файлов'
   end
   object edFileExtensions: TEdit
     Left = 155
     Height = 23
-    Top = 129
+    Top = 157
     Width = 357
     Anchors = [akTop, akLeft, akRight]
     ParentShowHint = False
@@ -586,7 +586,7 @@ object BuilderItemFrame: TBuilderItemFrame
     Left = 517
     Height = 23
     Hint = 'Очистить значение'
-    Top = 129
+    Top = 157
     Width = 23
     Anchors = [akTop, akRight]
     Flat = True
@@ -633,7 +633,7 @@ object BuilderItemFrame: TBuilderItemFrame
   object edPrivateKey: TEdit
     Left = 155
     Height = 23
-    Top = 185
+    Top = 213
     Width = 311
     Anchors = [akTop, akLeft, akRight]
     Enabled = False
@@ -646,7 +646,7 @@ object BuilderItemFrame: TBuilderItemFrame
     Left = 471
     Height = 23
     Hint = 'Открыть каталог в проводнике'
-    Top = 185
+    Top = 213
     Width = 23
     Anchors = [akTop, akRight]
     Flat = True
@@ -695,7 +695,7 @@ object BuilderItemFrame: TBuilderItemFrame
     Left = 494
     Height = 23
     Hint = 'Выбрать ключ'
-    Top = 185
+    Top = 213
     Width = 23
     Anchors = [akTop, akRight]
     Flat = True
@@ -742,7 +742,7 @@ object BuilderItemFrame: TBuilderItemFrame
   object lblPrivateKey: TLabel
     Left = 10
     Height = 15
-    Top = 189
+    Top = 217
     Width = 96
     Caption = 'Приватный ключ'
   end
@@ -751,7 +751,7 @@ object BuilderItemFrame: TBuilderItemFrame
     Left = 517
     Height = 23
     Hint = 'Очистить значение'
-    Top = 185
+    Top = 213
     Width = 23
     Anchors = [akTop, akRight]
     Flat = True
@@ -799,7 +799,7 @@ object BuilderItemFrame: TBuilderItemFrame
     Cursor = crHandPoint
     Left = 20
     Height = 19
-    Top = 210
+    Top = 238
     Width = 127
     Caption = 'Подписывать архив'
     Checked = True
@@ -810,14 +810,14 @@ object BuilderItemFrame: TBuilderItemFrame
   object lblVersion: TLabel
     Left = 10
     Height = 15
-    Top = 161
+    Top = 189
     Width = 39
     Caption = 'Версия'
   end
   object edVersion: TEdit
     Left = 155
     Height = 23
-    Top = 157
+    Top = 185
     Width = 357
     Anchors = [akTop, akLeft, akRight]
     ParentShowHint = False
@@ -829,7 +829,7 @@ object BuilderItemFrame: TBuilderItemFrame
     Left = 517
     Height = 23
     Hint = 'Очистить значение'
-    Top = 157
+    Top = 185
     Width = 23
     Anchors = [akTop, akRight]
     Flat = True
@@ -934,6 +934,27 @@ object BuilderItemFrame: TBuilderItemFrame
     ShowHint = True
     ParentShowHint = False
     OnClick = btnShowCommandLineClick
+  end
+  object cbDriveLetters: TComboBox
+    Cursor = crHandPoint
+    Left = 155
+    Height = 23
+    Top = 45
+    Width = 385
+    Anchors = [akTop, akLeft, akRight]
+    DropDownCount = 15
+    ItemHeight = 15
+    MaxLength = 1
+    TabOrder = 8
+    OnKeyPress = cbDriveLettersKeyPress
+    OnMouseWheel = cbDriveLettersMouseWheel
+  end
+  object lblDriveLetter: TLabel
+    Left = 10
+    Height = 15
+    Top = 49
+    Width = 74
+    Caption = 'Диск проекта'
   end
   object ilCollapse: TImageList
     Left = 360

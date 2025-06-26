@@ -42,8 +42,10 @@ type
       PARAM_FILTER = 'Filter';
   private
     FFrames: TBuilderItemFrameList;
+    FDriveLetters: TStringList;
 
     FSettingsFile: String;
+    FLockFrameArrange: Boolean;
 
     procedure AddItemFrame(AFrame: TBuilderItemFrame);
     procedure ClearItemFrames;
@@ -88,7 +90,7 @@ implementation
 uses
   IniFiles,
   InputDialogUnit, YesNoQuestionDialogUnit, IconSelectorDialogUnit,
-  EventSystem, BuilderUtils, BuildAllDialogUnit;
+  EventSystem, BuilderUtils, BuildAllDialogUnit, DosDevices;
 
 
 procedure TBuilderFrame.btnAddClick(Sender: TObject);
@@ -103,7 +105,7 @@ begin
     AName) then
   begin
     //Создать фрейм
-    Frame := TBuilderItemFrame.Create(FParams.IconDirectory);
+    Frame := TBuilderItemFrame.Create(FParams.IconDirectory, FDriveLetters);
     Frame.Title := AName;
 
     Frame.edFileExtensions.Text := GetDefaultFileExtensions;
@@ -485,7 +487,8 @@ end;
 
 procedure TBuilderFrame.OnChangeBuilderContentHeight(Sender: TObject);
 begin
-  ArrangeItemFrames;
+  if not FLockFrameArrange then
+    ArrangeItemFrames;
 end;
 
 
@@ -525,10 +528,15 @@ var
   i: Integer;
   Frm: TBuilderItemFrame;
 begin
+  //Перечитаем список дисководов
+  GetAvailableDriveLetters(FDriveLetters);
+
+  //Обновим фреймы
   for i := 0 to Length(FFrames) - 1 do
   begin
     Frm := FFrames[i];
     Frm.CorrectButtonVisible;
+    Frm.CorrectDriveLetterBox;
   end;
 end;
 
@@ -538,6 +546,10 @@ begin
   inherited Create(Parameters, AParent);
 
   FSettingsFile := FParams.SettingsDirectory + 'Build.ini';
+
+  //Доступные буквы дисководов
+  FDriveLetters := TStringList.Create;
+  GetAvailableDriveLetters(FDriveLetters);
 
   //Загрузить настройки
   LoadSettings;
@@ -557,6 +569,9 @@ begin
 
   //Удалить элементы
   ClearItemFrames;
+
+  //Удалим объекты
+  FDriveLetters.Free;
 
   inherited Destroy;
 end;
@@ -630,40 +645,48 @@ var
   Line: String;
   Frame: TBuilderItemFrame;
 begin
-  //Удалить фреймы
-  ClearItemFrames;
-
-  F := TIniFile.Create(FSettingsFile);
-  Values := TStringList.Create;
+  FLockFrameArrange := True;
   try
-    F.ReadSection(SECTION_BUILDER, Values);
 
-    for i := 0 to Values.Count - 1 do
-    begin
-      Line := Trim(F.ReadString(SECTION_BUILDER, Values.Strings[i], ''));
+    //Удалить фреймы
+    ClearItemFrames;
 
-      if Line = '' then
-        Continue;
+    F := TIniFile.Create(FSettingsFile);
+    Values := TStringList.Create;
+    try
+      F.ReadSection(SECTION_BUILDER, Values);
 
-      //Создать элемент каталога
-      Frame := TBuilderItemFrame.Create(FParams.IconDirectory, Line);
+      for i := 0 to Values.Count - 1 do
+      begin
+        Line := Trim(F.ReadString(SECTION_BUILDER, Values.Strings[i], ''));
 
-      //Добавить в массив
-      AddItemFrame(Frame);
+        if Line = '' then
+          Continue;
+
+        //Создать элемент каталога
+        Frame := TBuilderItemFrame.Create(FParams.IconDirectory, FDriveLetters, Line);
+
+        //Добавить в массив
+        AddItemFrame(Frame);
+      end;
+
+      //Прочитать настройки фильтра
+      edFilter.Text := F.ReadString(SECTION_SETTINGS, PARAM_FILTER, '');
+
+      //Поправить строку статуса
+      UpdateStatusBar;
+
+      //Поправить кнопку собрать все
+      CorrectBuildAllButton;
+
+    finally
+      Values.Free;
+      F.Free;
     end;
 
-    //Прочитать настройки фильтра
-    edFilter.Text := F.ReadString(SECTION_SETTINGS, PARAM_FILTER, '');
-
-    //Поправить строку статуса
-    UpdateStatusBar;
-
-    //Поправить кнопку собрать все
-    CorrectBuildAllButton;
-
   finally
-    Values.Free;
-    F.Free;
+    FLockFrameArrange := False;
+    ArrangeItemFrames;
   end;
 end;
 

@@ -16,6 +16,7 @@ type
     Extensions: String;
     SourceDirectory: String;
     DestinationDirectory: String;
+    ProjectDrive: String;
     Prefix: String;
     Sign: String;
     Version: String;
@@ -26,7 +27,7 @@ type
 
 
 function CreateIncludeFile(Path: String; Line: String): Boolean;
-function GetBuildParamString(Src, Dst, Prefix, SignFile, ExtensionFile, Version: String): String;
+function GetBuildParamString(Src, Dst, Prefix, SignFile, ExtensionFile, ProjectDrive, Version: String): String;
 
 implementation
 
@@ -53,7 +54,7 @@ begin
 end;
 
 
-function GetBuildParamString(Src, Dst, Prefix, SignFile, ExtensionFile, Version: String): String;
+function GetBuildParamString(Src, Dst, Prefix, SignFile, ExtensionFile, ProjectDrive, Version: String): String;
 var
   List: TStringList;
 begin
@@ -70,7 +71,7 @@ begin
     List.Add('-clear');
 
     //Путь к каталогу проекта
-    List.Add(Format('"-project=%s"', [ExtractFileDrive(Src)]));
+    List.Add(Format('"-project=%s:"', [ProjectDrive]));
 
     //Полный лог упаковки
     List.Add('-binarizeFullLogs');
