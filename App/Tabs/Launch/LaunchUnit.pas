@@ -18,6 +18,8 @@ type
     FSettingsDir: String;           //Каталог с настройками
     FLaunchListFile: String;        //Файл настроек приложений
 
+    FLockFrameArrange: Boolean;           //Блокировка расположения фреймов
+
     procedure AddItemFrame(AFrame: TLaunchItemFrame);
     procedure CreateItemFrames(const LaunchFile: String);
     procedure ClearItemFrames;
@@ -64,7 +66,7 @@ var
   F: TIniFile;
   SectionList: TStringList;
   i: Integer;
-  FrameCaption, FrameParams, FrameSettings, FrameIconName, FrameRelativeFilename, FrameLocaleID: String;
+  FrameCaption, FrameParams, FrameDirectory, FrameIconName, FrameRelativeFilename, FrameLocaleID: String;
   Frame: TLaunchItemFrame;
   FrameIcon: TIcon;
 begin
@@ -82,10 +84,13 @@ begin
       //Прочитать параметры фрейма
       FrameCaption := SectionList.Strings[i];
       FrameParams := FDataDir + F.ReadString(FrameCaption, 'ParamFile', '');
-      FrameSettings := FSettingsDir + F.ReadString(FrameCaption, 'SettingsFile', '');
+      FrameDirectory := FSettingsDir + F.ReadString(FrameCaption, 'SettingsDirectory', '');
       FrameIconName := FDataDir + F.ReadString(FrameCaption, 'Icon', '');
       FrameRelativeFilename := F.ReadString(FrameCaption, 'RelativeFileName', '');
       FrameLocaleID := F.ReadString(FrameCaption, 'LocaleId', '');
+
+      //Подготовим каталог настроек фрейма
+      ForceDirectories(FrameDirectory);
 
       //Если нет файла с настройками параметров, то пропуск
       if not FileExists(FrameParams) then
@@ -102,7 +107,7 @@ begin
       end;
 
       //Создать фрейм
-      Frame := TLaunchItemFrame.Create(FrameCaption, FrameIcon, FrameParams, FrameSettings, FrameRelativeFilename, FrameLocaleID);
+      Frame := TLaunchItemFrame.Create(FParams.Language, FrameCaption, FrameIcon, FrameParams, FrameDirectory, FrameRelativeFilename, FrameLocaleID);
 
       //Настроить выделение
       Frame.Highlight := not Odd(i);
@@ -157,7 +162,8 @@ end;
 
 procedure TLaunchFrame.OnChangeLaunchContentHeight(Sender: TObject);
 begin
-  ArrangeItemFrames;
+  if not FLockFrameArrange then
+    ArrangeItemFrames;
 end;
 
 
@@ -177,7 +183,14 @@ begin
   ForceDirectories(FSettingsDir);
 
   //Создать фреймы
-  CreateItemFrames(FLaunchListFile);
+  FLockFrameArrange := True;
+  try
+    CreateItemFrames(FLaunchListFile);
+
+  finally
+    ArrangeItemFrames;
+    FLockFrameArrange := False;
+  end;
 end;
 
 
@@ -221,8 +234,15 @@ procedure TLaunchFrame.LoadSettings;
 var
   i: Integer;
 begin
-  for i := Length(FItems) - 1 downto 0 do
-    FItems[i].LoadSettings;
+  FLockFrameArrange := True;
+  try
+    for i := Length(FItems) - 1 downto 0 do
+      FItems[i].LoadSettings;
+
+  finally
+    FLockFrameArrange := False;
+    ArrangeItemFrames;
+  end;
 end;
 
 

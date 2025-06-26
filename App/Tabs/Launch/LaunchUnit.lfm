@@ -1,5 +1,4 @@
 inherited LaunchFrame: TLaunchFrame
-  TabOrder = 0
   DesignLeft = 767
   DesignTop = 285
   object sbLaunch: TScrollBox[0]

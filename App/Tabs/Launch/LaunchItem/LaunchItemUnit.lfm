@@ -10,12 +10,12 @@ object LaunchItemFrame: TLaunchItemFrame
   DesignTop = 253
   object pnlButton: TPanel
     Left = 0
-    Height = 150
+    Height = 178
     Top = 0
     Width = 600
     Align = alTop
     BevelOuter = bvNone
-    ClientHeight = 150
+    ClientHeight = 178
     ClientWidth = 600
     ParentBackground = False
     TabOrder = 0
@@ -66,8 +66,8 @@ object LaunchItemFrame: TLaunchItemFrame
         0000000000000000000000000000000000000000000000000000000000000000
         0000000000000000000000000000000000000000000000000000
       }
-      OnClick = btnLaunchClick
       ParentFont = False
+      OnClick = btnLaunchClick
     end
     object btnShowCommandLine: TSpeedButton
       Cursor = crHandPoint
@@ -114,15 +114,15 @@ object LaunchItemFrame: TLaunchItemFrame
         19EAB78217FFB78216FFB78116FFB78116FFB68115FFB68115FFB78115FFB781
         15FFB78115FFB78115FFB78114FFB88215FFB98418EABA861D00
       }
-      OnClick = btnShowCommandLineClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnShowCommandLineClick
     end
     object edExecutable: TEdit
       Left = 10
       Height = 23
       Hint = 'Файл для запуска'
-      Top = 45
+      Top = 73
       Width = 529
       Anchors = [akTop, akLeft, akRight]
       ParentShowHint = False
@@ -135,7 +135,7 @@ object LaunchItemFrame: TLaunchItemFrame
       Left = 567
       Height = 23
       Hint = 'Выбрать файл для запуска'
-      Top = 45
+      Top = 73
       Width = 23
       Anchors = [akTop, akRight]
       Flat = True
@@ -175,15 +175,15 @@ object LaunchItemFrame: TLaunchItemFrame
         93AC989592FF989491FF989391FF989391FF989391FF979391FF979391FF9793
         91FF979391FF979391FF979391FF989592FF989593AC9A979500
       }
-      OnClick = btnSelectExecutableClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnSelectExecutableClick
     end
     object edAdditionalCommandLine: TEdit
       Left = 10
       Height = 23
       Hint = 'Дополнительные параметры запуска'
-      Top = 73
+      Top = 101
       Width = 580
       Anchors = [akTop, akLeft, akRight]
       ParentShowHint = False
@@ -195,7 +195,7 @@ object LaunchItemFrame: TLaunchItemFrame
       Left = 544
       Height = 23
       Hint = 'Открыть каталог в проводнике'
-      Top = 45
+      Top = 73
       Width = 23
       Anchors = [akTop, akRight]
       Flat = True
@@ -235,15 +235,15 @@ object LaunchItemFrame: TLaunchItemFrame
         D0FF3A92CFFF3A92CFFF3D94D0FF4197D1E44398D22B4498D2324498D2334498
         D2334498D2334499D2334499D337459AD300469AD300469AD300
       }
-      OnClick = btnExecutableOpenDirectoryClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnExecutableOpenDirectoryClick
     end
     object edJournalDir: TEdit
       Left = 225
       Height = 23
       Hint = 'Каталог с журналами'
-      Top = 101
+      Top = 129
       Width = 268
       Anchors = [akTop, akLeft, akRight]
       Enabled = False
@@ -287,8 +287,8 @@ object LaunchItemFrame: TLaunchItemFrame
         Center = True
         ImageIndex = 1
         Images = ilCollapse
-        OnClick = btnCollapseClick
         ParentShowHint = False
+        OnClick = btnCollapseClick
       end
       object imgIcon: TImage
         Cursor = crHandPoint
@@ -296,8 +296,8 @@ object LaunchItemFrame: TLaunchItemFrame
         Height = 32
         Top = 6
         Width = 32
-        OnClick = btnCollapseClick
         Stretch = True
+        OnClick = btnCollapseClick
       end
     end
     object btnOpenJournalDirectory: TSpeedButton
@@ -305,7 +305,7 @@ object LaunchItemFrame: TLaunchItemFrame
       Left = 498
       Height = 23
       Hint = 'Открыть каталог в проводнике'
-      Top = 101
+      Top = 129
       Width = 23
       Anchors = [akTop, akRight]
       Flat = True
@@ -345,16 +345,16 @@ object LaunchItemFrame: TLaunchItemFrame
         D0FF3A92CFFF3A92CFFF3D94D0FF4197D1E44398D22B4498D2324498D2334498
         D2334498D2334499D2334499D337459AD300469AD300469AD300
       }
-      OnClick = btnOpenJournalDirectoryClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnOpenJournalDirectoryClick
     end
     object btnSelectJournalDirectory: TSpeedButton
       Cursor = crHandPoint
       Left = 521
       Height = 23
       Hint = 'Выбрать каталог журналов'
-      Top = 101
+      Top = 129
       Width = 23
       Anchors = [akTop, akRight]
       Flat = True
@@ -394,15 +394,15 @@ object LaunchItemFrame: TLaunchItemFrame
         D0FF3A92CFFF3A92CFFF3D94D0FF4197D1E44398D22B4498D2324498D2334498
         D2334498D2334499D2334499D337459AD300469AD300469AD300
       }
-      OnClick = btnSelectJournalDirectoryClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnSelectJournalDirectoryClick
     end
     object cbEraseJournalDirBeforeRun: TCheckBox
       Cursor = crHandPoint
       Left = 10
       Height = 19
-      Top = 103
+      Top = 131
       Width = 204
       Caption = 'Очищать каталог перед запуском'
       TabOrder = 3
@@ -454,15 +454,15 @@ object LaunchItemFrame: TLaunchItemFrame
         000000000000000000002A3BC1952838C0F72737BFFF2737BFFF2737BFFF2838
         C0F72A3BC19500000000000000000000000000000000FFFFFF00
       }
-      OnClick = btnStopClick
       ParentFont = False
+      OnClick = btnStopClick
     end
     object btnClearValue: TSpeedButton
       Cursor = crHandPoint
       Left = 544
       Height = 23
       Hint = 'Очистить значение'
-      Top = 101
+      Top = 129
       Width = 23
       Anchors = [akTop, akRight]
       Flat = True
@@ -502,15 +502,15 @@ object LaunchItemFrame: TLaunchItemFrame
         0000000000003040C4FF3040C4FF000000000000000000000000000000000000
         0000000000003040C4FF3040C4FF0000000000000000FFFFFF00
       }
-      OnClick = btnClearValueClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnClearValueClick
     end
     object cbSubdirectories: TCheckBox
       Cursor = crHandPoint
       Left = 25
       Height = 19
-      Top = 125
+      Top = 153
       Width = 89
       Caption = 'Подкаталоги'
       TabOrder = 5
@@ -520,7 +520,7 @@ object LaunchItemFrame: TLaunchItemFrame
       Left = 567
       Height = 23
       Hint = 'Очистить каталог'
-      Top = 101
+      Top = 129
       Width = 23
       Anchors = [akTop, akRight]
       Flat = True
@@ -560,15 +560,29 @@ object LaunchItemFrame: TLaunchItemFrame
         8D008D8D8D008D8D8D008D8D8D008C8C8C008A8A8A83898989E2878788FF8787
         87FF878787FF878787FF878787FF888888E28A8A8A838C8C8C00
       }
-      OnClick = btnClearJournalDirClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = btnClearJournalDirClick
+    end
+    object cbProfile: TComboBox
+      Cursor = crHandPoint
+      Left = 10
+      Height = 23
+      Top = 45
+      Width = 529
+      Anchors = [akTop, akLeft, akRight]
+      ItemHeight = 15
+      ReadOnly = True
+      Style = csDropDownList
+      TabOrder = 6
+      OnMouseWheel = cbProfileMouseWheel
+      OnSelect = cbProfileSelect
     end
   end
   object pnlContent: TPanel
     Left = 0
     Height = 101
-    Top = 150
+    Top = 178
     Width = 600
     Align = alTop
     Anchors = [akLeft, akRight]

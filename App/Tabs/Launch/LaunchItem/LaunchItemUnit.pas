@@ -1,6 +1,7 @@
 unit LaunchItemUnit;
 
 {$mode ObjFPC}{$H+}
+{$ModeSwitch duplicatelocals}
 
 interface
 
@@ -8,7 +9,7 @@ uses
   Classes, SysUtils, Forms, Controls, Dialogs, ExtCtrls, Buttons,
   StdCtrls, Graphics, IniFiles,
   Language,
-  StartParamArray;
+  StartParamArray, sgeStringList, Types;
 
 type
   TLaunchItemFrame = class(TFrame)
@@ -19,6 +20,7 @@ type
     btnOpenJournalDirectory: TSpeedButton;
     cbEraseJournalDirBeforeRun: TCheckBox;
     cbSubdirectories: TCheckBox;
+    cbProfile: TComboBox;
     edExecutable: TEdit;
     edAdditionalCommandLine: TEdit;
     edJournalDir: TEdit;
@@ -42,14 +44,25 @@ type
     procedure btnOpenJournalDirectoryClick(Sender: TObject);
     procedure btnShowCommandLineClick(Sender: TObject);
     procedure btnStopClick(Sender: TObject);
+    procedure cbProfileMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+    procedure cbProfileSelect(Sender: TObject);
     procedure edExecutableChange(Sender: TObject);
     procedure btnSelectJournalDirectoryClick(Sender: TObject);
     procedure btnSelectExecutableClick(Sender: TObject);
     procedure btnCollapseClick(Sender: TObject);
   private
     const
+      COLLAPSED_HEIGHT = 45;
+
+      EXT_PROFILE = 'ini';
+
+      SETTINGS_FILE = 'Config.Settings';
+
+      SECTION_SETTINGS = 'Settings';
       SECTION_PARAMS = 'Params';
       SECTION_EXECUTABLE = 'Executable';
+
+      PARAM_CURRENT_PROFILE = 'CurrentProfile';
       PARAM_APP = 'Application';
       PARAM_CMD_LINE = 'CmdLine';
       PARAM_ERASE_JOURNAL = 'EraseJournalBeforeRun';
@@ -63,7 +76,7 @@ type
     FIcon: TIcon;
     FItems: TStartParamArray;
     FParameterFile: String;
-    FSettingsFile: String;
+    FSettingsDirectory: String;
     FRelativeFileName: String;
     FLocaleID: String;
     FCollapsed: Boolean;
@@ -77,10 +90,6 @@ type
     function  GetTotalFrameHeight: Integer;
     function  GetCommandLine: String;
 
-    procedure SaveSettings(const FileName: String);
-    procedure LoadSettings(const FileName: String);
-    procedure LoadItemsSettings(const FileName: String);
-
     procedure OnChangeContentHeight(Sender: TObject);
     procedure DoHeightChange;
     procedure ClearDirectory;
@@ -90,8 +99,26 @@ type
     procedure SetHighlight(AHighlight: Boolean);
     procedure SetValue(AValue: String);
     function  GetLocaleCaption: String;
+
+    procedure SaveProfile(ProfileName: String);
+    procedure LoadProfile(ProfileName: String);
+
+    procedure FillProfileBox;
+  private
+    FProfileList: TsgeStringList; //Список профилей
+    FCurrentProfile: String;      //Имя текущего профиля
+
+    function  GetSettingsFileName: String;
+    function  GetProfileFileName(ProfileName: String): String;
+    function  GetProfileDefaultName: String;
+
+    procedure ReadProfileList;
+    procedure ApplyProfile(Name: String);
+
+    procedure SaveFrameSettings;
+    procedure LoadFrameSettings;
   public
-    constructor Create(const ACaption: string; AIcon: TIcon; const ParameterFile: String; const SettingsFile: String; RelativeFileName: String; LocaleID: String); reintroduce;
+    constructor Create(Language: TLanguage; const ACaption: string; AIcon: TIcon; const ParameterFile: String; const SettingsDirectory: String; RelativeFileName: String; LocaleID: String); reintroduce;
     destructor Destroy; override;
 
     procedure Launch;
@@ -107,7 +134,6 @@ type
     property LocaleCaption: String read GetLocaleCaption;
     property Items: TStartParamArray read FItems;
     property ParameterFile: String read FParameterFile;
-    property SettingsFile: String read FSettingsFile;
     property RelativeFileName: String read FRelativeFileName write FRelativeFileName;
     property LocaleID: String read FLocaleID write FLocaleID;
     property Collapsed: Boolean read FCollapsed write SetCollapsed;
@@ -123,7 +149,7 @@ implementation
 {$R *.lfm}
 
 uses
-  DayZUtils, SteamUtils,
+  DayZUtils, SteamUtils, sgeFileUtils,
   MemoDialogUnit, SelectDirectoryDialogUnit, YesNoQuestionDialogUnit,
   StartParamSimple,
   ParamFrameSimpleUnit, ParamFrameIntegerUnit, ParamFrameStringUnit,
@@ -169,6 +195,27 @@ begin
   //Убить процесс по имени
   Fn := Trim(edExecutable.Text);
   KillProcess(ExtractFileName(Fn));
+end;
+
+
+procedure TLaunchItemFrame.cbProfileMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+begin
+  Handled := True;
+end;
+
+
+procedure TLaunchItemFrame.cbProfileSelect(Sender: TObject);
+var
+  s: String;
+begin
+  //Получить имя текущего профиля
+  s := cbProfile.Text;
+
+  //Сохраним текущее имя профиля
+  FCurrentProfile := s;
+
+  //Загрузить настройки профиля
+  LoadProfile(s);
 end;
 
 
@@ -333,7 +380,6 @@ begin
       Continue;
 
     FrameItem := pnlContent.Controls[i] as TParamFrameSimpleFrame;
-
     FrameItem.Left := 0;
     FrameItem.Width := pnlContent.Width;
     FrameItem.Top := Y;
@@ -365,33 +411,50 @@ begin
 end;
 
 
-constructor TLaunchItemFrame.Create(const ACaption: string; AIcon: TIcon; const ParameterFile: String; const SettingsFile: String; RelativeFileName: String; LocaleID: String);
+constructor TLaunchItemFrame.Create(Language: TLanguage; const ACaption: string; AIcon: TIcon; const ParameterFile: String; const SettingsDirectory: String; RelativeFileName: String; LocaleID: String);
 begin
   inherited Create(nil);
+
+  //Создать объекты
+  DoubleBuffered := True;
+  FProfileList := TsgeStringList.Create;
+
   FCaption := ACaption;
   FIcon := TIcon.Create;
   FIcon.Assign(AIcon);
-
-  DoubleBuffered := True;
-
+  FLanguage := Language;
   FParameterFile := ParameterFile;
-  FSettingsFile := SettingsFile;
+  FSettingsDirectory := IncludeTrailingBackslash(SettingsDirectory);
   FRelativeFileName := RelativeFileName;
   FLocaleID := LocaleID;
 
+  //Создаем фреймы с параметрами запуска
   FItems := TStartParamArray.Create;
   FItems.LoadFromFile(FParameterFile);
-
-  LoadItemsSettings(FSettingsFile);
   PrepareInterface(FItems);
-  LoadSettings(FSettingsFile);
+
+  //Поиск профилей в каталоге
+  ReadProfileList;
+
+  //Заполним список профилей
+  FillProfileBox;
+
+  //Загрузим настройки фрейма
+  LoadFrameSettings;
+
+  //Установим профиль
+  ApplyProfile(FCurrentProfile);
 end;
 
 
 destructor TLaunchItemFrame.Destroy;
 begin
-  SaveSettings(FSettingsFile);
+  //Сохранить настройки
+  SaveProfile(FCurrentProfile);
+  SaveFrameSettings;
 
+  //Почистим память
+  FProfileList.Free;
   FItems.Free;
 
   ClearInterface;
@@ -463,6 +526,7 @@ var
 begin
   FLanguage := Language;
 
+  //Интерфейс
   lblTitle.Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'Application.' + FLocaleID, FCaption);
   btnLaunch.Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'Launch', 'Запустить');
   btnStop.Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'Stop', 'Остановить');
@@ -491,100 +555,15 @@ end;
 
 procedure TLaunchItemFrame.SaveSettings;
 begin
-  SaveSettings(FSettingsFile);
+  SaveProfile(FCurrentProfile);
+  SaveFrameSettings;
 end;
 
 
 procedure TLaunchItemFrame.LoadSettings;
 begin
-  LoadItemsSettings(FSettingsFile);
-  LoadSettings(FSettingsFile);
-end;
-
-
-procedure TLaunchItemFrame.SaveSettings(const FileName: String);
-var
-  F: TIniFile;
-  i: Integer;
-begin
-  F := TIniFile.Create(FileName);
-  try
-    //Настройки запуска
-    F.WriteString(SECTION_EXECUTABLE, PARAM_APP, edExecutable.Text);
-    F.WriteString(SECTION_EXECUTABLE, PARAM_CMD_LINE, edAdditionalCommandLine.Text);
-
-    //Очистка каталога перед запуском
-    F.WriteBool(SECTION_EXECUTABLE, PARAM_ERASE_JOURNAL, cbEraseJournalDirBeforeRun.Checked);
-    F.WriteBool(SECTION_EXECUTABLE, PARAM_ERASE_JOURNAL_SUBDERICTORIES, cbSubdirectories.Checked);
-    F.WriteString(SECTION_EXECUTABLE, PARAM_ERASE_JOURNAL_DIRECTORY, edJournalDir.Text);
-
-    //Записать параметры
-    for i := 0 to FItems.Count - 1 do
-      F.WriteString(SECTION_PARAMS, FItems.Item[i].Name, FItems.Item[i].ValueToString);
-
-    //Минимальный вид
-    F.WriteBool(SECTION_EXECUTABLE, PARAM_COLLAPSED, Collapsed);
-
-  finally
-    F.Free;
-  end;
-end;
-
-
-procedure TLaunchItemFrame.LoadSettings(const FileName: String);
-var
-  F: TIniFile;
-  i: Integer;
-begin
-  F := TIniFile.Create(FileName);
-  try
-    //Настройки запуска
-    SetValue(F.ReadString(SECTION_EXECUTABLE, PARAM_APP, ''));
-    edAdditionalCommandLine.Text := F.ReadString(SECTION_EXECUTABLE, PARAM_CMD_LINE, '');
-
-    //Очистка каталога перед запуском
-    cbEraseJournalDirBeforeRun.Checked := F.ReadBool(SECTION_EXECUTABLE, PARAM_ERASE_JOURNAL, False);
-    cbSubdirectories.Checked := F.ReadBool(SECTION_EXECUTABLE, PARAM_ERASE_JOURNAL_SUBDERICTORIES, False);
-    edJournalDir.Text := F.ReadString(SECTION_EXECUTABLE, PARAM_ERASE_JOURNAL_DIRECTORY, '');
-
-    //Чтение параметров
-    for i := 0 to pnlContent.ControlCount - 1 do
-    begin
-      if not (pnlContent.Controls[i] is TParamFrameSimpleFrame) then
-        Continue;
-
-      //Поправить интерфейс
-      (pnlContent.Controls[i] as TParamFrameSimpleFrame).UpdateInterface;
-    end;
-
-    //Расположить элементы на панели и выставить правильную высоту
-    ArrangeContentPanelItems;
-
-    //Поправить высоту основного фрейма
-    Height := GetTotalFrameHeight;
-
-    //Минимальный вид
-    Collapsed := F.ReadBool(SECTION_EXECUTABLE, PARAM_COLLAPSED, True);
-
-  finally
-    F.Free;
-  end;
-end;
-
-
-procedure TLaunchItemFrame.LoadItemsSettings(const FileName: String);
-var
-  F: TIniFile;
-  i: Integer;
-begin
-  F := TIniFile.Create(FileName);
-  try
-    for i := 0 to FItems.Count - 1 do
-      FItems.Item[i].ValueFromString(F.ReadString(SECTION_PARAMS, FItems.Item[i].Name, ''));
-
-  finally
-    F.Free;
-  end;
+  LoadFrameSettings;
+  ApplyProfile(FCurrentProfile);
 end;
 
 
@@ -636,7 +615,7 @@ begin
 
   if FCollapsed then
   begin
-    Height := 45;
+    Height := COLLAPSED_HEIGHT;
     imgCollapse.ImageIndex := 0;
   end
   else
@@ -683,6 +662,180 @@ end;
 function TLaunchItemFrame.GetLocaleCaption: String;
 begin
   Result := lblTitle.Caption;
+end;
+
+
+function TLaunchItemFrame.GetSettingsFileName: String;
+begin
+  Result := Format('%s%s', [FSettingsDirectory, SETTINGS_FILE]);
+end;
+
+
+function TLaunchItemFrame.GetProfileFileName(ProfileName: String): String;
+begin
+  Result := Format('%s%s.%s', [FSettingsDirectory, ProfileName, EXT_PROFILE]);
+end;
+
+
+function TLaunchItemFrame.GetProfileDefaultName: String;
+begin
+  Result := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'DefaultProfileName', 'Профиль по умолчанию');
+end;
+
+
+procedure TLaunchItemFrame.ReadProfileList;
+var
+  i: Integer;
+  s: String;
+begin
+  //Ищем профили в каталоге настроек
+  sgeFindFilesInFolderByExt(FSettingsDirectory, FProfileList, EXT_PROFILE);
+
+  //Отпилить расширение
+  for i := 0 to FProfileList.Count - 1 do
+  begin
+    s := FProfileList.Part[i];
+    s := StringReplace(s, '.' + EXT_PROFILE, '', [rfIgnoreCase, rfReplaceAll]);
+    FProfileList.Part[i] := s;
+  end;
+
+  //Если нет ни одного профиля, то создадим профиль по умолчанию
+  if FProfileList.Count = 0 then
+  begin
+    s := GetProfileDefaultName;
+    SaveProfile(s);
+    FProfileList.Add(s);
+  end;
+end;
+
+
+procedure TLaunchItemFrame.ApplyProfile(Name: String);
+var
+  idx: Integer;
+begin
+  //Поищем индекс профиля
+  idx := FProfileList.IndexOf(Name);
+
+  if idx <> -1 then
+    cbProfile.ItemIndex := idx
+  else
+    cbProfile.ItemIndex := 0;
+
+  //Выберем профиль
+  cbProfileSelect(cbProfile);
+end;
+
+
+procedure TLaunchItemFrame.LoadFrameSettings;
+var
+  F: TIniFile;
+begin
+  F := TIniFile.Create(GetSettingsFileName);
+  try
+    FCurrentProfile := F.ReadString(SECTION_SETTINGS, PARAM_CURRENT_PROFILE, '');
+    Collapsed := F.ReadBool(SECTION_SETTINGS, PARAM_COLLAPSED, True);
+
+  finally
+    F.Free;
+  end;
+end;
+
+
+procedure TLaunchItemFrame.SaveFrameSettings;
+var
+  F: TIniFile;
+begin
+  F := TIniFile.Create(GetSettingsFileName);
+  try
+    F.WriteString(SECTION_SETTINGS, PARAM_CURRENT_PROFILE, FCurrentProfile);
+    F.WriteBool(SECTION_SETTINGS, PARAM_COLLAPSED, Collapsed);
+
+  finally
+    F.Free;
+  end;
+end;
+
+
+procedure TLaunchItemFrame.SaveProfile(ProfileName: String);
+var
+  F: TIniFile;
+  i: Integer;
+begin
+  F := TIniFile.Create(GetProfileFileName(ProfileName));
+  try
+    //Настройки запуска
+    F.WriteString(SECTION_EXECUTABLE, PARAM_APP, edExecutable.Text);
+    F.WriteString(SECTION_EXECUTABLE, PARAM_CMD_LINE, edAdditionalCommandLine.Text);
+
+    //Очистка каталога перед запуском
+    F.WriteBool(SECTION_EXECUTABLE, PARAM_ERASE_JOURNAL, cbEraseJournalDirBeforeRun.Checked);
+    F.WriteBool(SECTION_EXECUTABLE, PARAM_ERASE_JOURNAL_SUBDERICTORIES, cbSubdirectories.Checked);
+    F.WriteString(SECTION_EXECUTABLE, PARAM_ERASE_JOURNAL_DIRECTORY, edJournalDir.Text);
+
+    //Записать параметры
+    for i := 0 to FItems.Count - 1 do
+      F.WriteString(SECTION_PARAMS, FItems.Item[i].Name, FItems.Item[i].ValueToString);
+
+  finally
+    F.Free;
+  end;
+end;
+
+
+procedure TLaunchItemFrame.LoadProfile(ProfileName: String);
+var
+  F: TIniFile;
+  i: Integer;
+begin
+  F := TIniFile.Create(GetProfileFileName(ProfileName));
+
+  try
+    //Читаем настройки парметров
+    for i := 0 to FItems.Count - 1 do
+      FItems.Item[i].ValueFromString(F.ReadString(SECTION_PARAMS, FItems.Item[i].Name, ''));
+
+
+    //Настройки запуска
+    SetValue(F.ReadString(SECTION_EXECUTABLE, PARAM_APP, ''));
+    edAdditionalCommandLine.Text := F.ReadString(SECTION_EXECUTABLE, PARAM_CMD_LINE, '');
+
+    //Очистка каталога перед запуском
+    cbEraseJournalDirBeforeRun.Checked := F.ReadBool(SECTION_EXECUTABLE, PARAM_ERASE_JOURNAL, False);
+    cbSubdirectories.Checked := F.ReadBool(SECTION_EXECUTABLE, PARAM_ERASE_JOURNAL_SUBDERICTORIES, False);
+    edJournalDir.Text := F.ReadString(SECTION_EXECUTABLE, PARAM_ERASE_JOURNAL_DIRECTORY, '');
+
+    //Чтение параметров
+    for i := 0 to pnlContent.ControlCount - 1 do
+    begin
+      if not (pnlContent.Controls[i] is TParamFrameSimpleFrame) then
+        Continue;
+
+      //Поправить интерфейс
+      (pnlContent.Controls[i] as TParamFrameSimpleFrame).UpdateInterface;
+    end;
+
+    //Расположить элементы на панели и выставить правильную высоту
+    ArrangeContentPanelItems;
+
+    //Поправить высоту основного фрейма в зависимости от состояния
+    if FCollapsed then
+      Height := COLLAPSED_HEIGHT
+    else
+      Height := GetTotalFrameHeight;
+
+  finally
+    F.Free;
+  end;
+end;
+
+
+procedure TLaunchItemFrame.FillProfileBox;
+var
+  i: Integer;
+begin
+  cbProfile.Clear;
+  for i := 0 to FProfileList.Count - 1 do
+    cbProfile.Items.Add(FProfileList.Part[i]);
 end;
 
 
