@@ -11,6 +11,7 @@ object MainForm: TMainForm
   Menu = MainMenu
   ShowInTaskBar = stNever
   SnapOptions.SnapToMonitor = True
+  LCLVersion = '4.0.0.4'
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
