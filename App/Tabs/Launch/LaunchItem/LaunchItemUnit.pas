@@ -13,9 +13,13 @@ uses
 
 type
   TLaunchItemFrame = class(TFrame)
+    btnSaveProfile: TSpeedButton;
     btnClearValue: TSpeedButton;
     btnClearJournalDir: TSpeedButton;
+    btnRenameProfile: TSpeedButton;
     btnExecutableOpenDirectory: TSpeedButton;
+    btnDeleteProfile: TSpeedButton;
+    btnAddProfile: TSpeedButton;
     btnStop: TSpeedButton;
     btnOpenJournalDirectory: TSpeedButton;
     cbEraseJournalDirBeforeRun: TCheckBox;
@@ -37,11 +41,15 @@ type
     btnLaunch: TSpeedButton;
     btnShowCommandLine: TSpeedButton;
     btnSelectExecutable: TSpeedButton;
+    procedure btnAddProfileClick(Sender: TObject);
     procedure btnClearJournalDirClick(Sender: TObject);
     procedure btnClearValueClick(Sender: TObject);
+    procedure btnDeleteProfileClick(Sender: TObject);
     procedure btnLaunchClick(Sender: TObject);
     procedure btnExecutableOpenDirectoryClick(Sender: TObject);
     procedure btnOpenJournalDirectoryClick(Sender: TObject);
+    procedure btnRenameProfileClick(Sender: TObject);
+    procedure btnSaveProfileClick(Sender: TObject);
     procedure btnShowCommandLineClick(Sender: TObject);
     procedure btnStopClick(Sender: TObject);
     procedure cbProfileMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -100,10 +108,8 @@ type
     procedure SetValue(AValue: String);
     function  GetLocaleCaption: String;
 
-    procedure SaveProfile(ProfileName: String);
-    procedure LoadProfile(ProfileName: String);
-
-    procedure FillProfileBox;
+    procedure SaveFrameSettings;
+    procedure LoadFrameSettings;
   private
     FProfileList: TsgeStringList; //Список профилей
     FCurrentProfile: String;      //Имя текущего профиля
@@ -112,11 +118,15 @@ type
     function  GetProfileFileName(ProfileName: String): String;
     function  GetProfileDefaultName: String;
 
-    procedure ReadProfileList;
-    procedure ApplyProfile(Name: String);
+    procedure RenameProfile(Old, New: String);
+    procedure DeleteProfile(ProfileName: String);
+    function  IsProfileExist(ProfileName: String): Boolean;
+    procedure ApplyProfile(ProfileName: String);
+    procedure SaveProfile(ProfileName: String);
+    procedure LoadProfile(ProfileName: String);
 
-    procedure SaveFrameSettings;
-    procedure LoadFrameSettings;
+    procedure ReadProfileList;
+    procedure FillProfileBox;
   public
     constructor Create(Language: TLanguage; const ACaption: string; AIcon: TIcon; const ParameterFile: String; const SettingsDirectory: String; RelativeFileName: String; LocaleID: String); reintroduce;
     destructor Destroy; override;
@@ -150,7 +160,8 @@ implementation
 
 uses
   DayZUtils, SteamUtils, sgeFileUtils,
-  MemoDialogUnit, SelectDirectoryDialogUnit, YesNoQuestionDialogUnit,
+  MemoDialogUnit, SelectDirectoryDialogUnit, YesNoQuestionDialogUnit, InputDialogUnit,
+  MessageDialogUnit,
   StartParamSimple,
   ParamFrameSimpleUnit, ParamFrameIntegerUnit, ParamFrameStringUnit,
   ParamFrameDirectoryUnit, ParamFrameFileUnit, ParamFrameDirectoryListUnit;
@@ -242,9 +253,88 @@ begin
 end;
 
 
+procedure TLaunchItemFrame.btnDeleteProfileClick(Sender: TObject);
+var
+  s: String;
+begin
+  //Проверить что бы не удалился последний профиль
+  if FProfileList.Count <= 1 then
+  begin
+    MessageDialogExecute(
+      FLanguage,
+      FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'CantDeleteProfile', 'Невозможно удалить единственный профиль')
+    );
+    Exit;
+  end;
+
+  //Спросим можно ли удалить текущий профиль
+  s := FCurrentProfile;
+  if YesNoQuestionDialogExecute(
+    FLanguage,
+    Format(FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'DeleteProfileQuestion', 'Удалить профиль "%s"?'), [s])
+  ) then
+  begin
+    //Удалим профиль
+    DeleteProfile(s);
+
+    //Перечитаем список профилей с диска
+    ReadProfileList;
+
+    //Заполним список профилей
+    FillProfileBox;
+
+    //Установим новый профиль
+    s := FProfileList.Part[0];
+    ApplyProfile(s);
+  end;
+end;
+
+
 procedure TLaunchItemFrame.btnClearJournalDirClick(Sender: TObject);
 begin
   ClearDirectory;
+end;
+
+
+procedure TLaunchItemFrame.btnAddProfileClick(Sender: TObject);
+var
+  AName: String;
+  Overwrite: Boolean;
+begin
+  AName := '';
+  if InputDialogExecute(
+    FLanguage,
+    FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'InputProfileName', 'Введите имя профиля'),
+    AName) then
+  begin
+    Overwrite := True;
+
+    //Проверим нет ли такого профиля на диске
+    if IsProfileExist(AName) then
+    begin
+      if not YesNoQuestionDialogExecute(
+        FLanguage,
+        Format(FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'OverwriteProfile', 'Профиль "%s" существует, переписать?'), [AName])
+      ) then
+      Overwrite := False;
+    end;
+
+    //Выход, если не перетирать
+    if not Overwrite then
+      Exit;
+
+    //Сохраним новый профиль
+    SaveProfile(AName);
+
+    //Перечитаем список профилей с диска
+    ReadProfileList;
+
+    //Заполним список профилей
+    FillProfileBox;
+
+    //Установим новый профиль
+    ApplyProfile(AName);
+  end;
 end;
 
 
@@ -265,6 +355,55 @@ begin
   Dir := edJournalDir.Text;
   if DirectoryExists(Dir) then
     OpenFolderInExplorer(Dir);
+end;
+
+
+procedure TLaunchItemFrame.btnRenameProfileClick(Sender: TObject);
+var
+  AName: String;
+  Overwrite: Boolean;
+begin
+  AName := cbProfile.Text;
+  if InputDialogExecute(
+    FLanguage,
+    FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'InputProfileName', 'Введите имя профиля'),
+    AName) then
+  begin
+    Overwrite := True;
+
+    //Проверим нет ли такого профиля на диске
+    if IsProfileExist(AName) then
+    begin
+      if not YesNoQuestionDialogExecute(
+        FLanguage,
+        Format(FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'OverwriteProfile', 'Профиль "%s" существует, переписать?'), [AName])
+      ) then
+        Overwrite := False;
+    end;
+
+    //Выход, если не перетирать
+    if not Overwrite then
+      Exit;
+
+    //Переименуем профиль
+    RenameProfile(cbProfile.Text, AName);
+
+    //Перечитаем список профилей с диска
+    ReadProfileList;
+
+    //Заполним список профилей
+    FillProfileBox;
+
+    //Установим новый профиль
+    ApplyProfile(AName);
+  end;
+end;
+
+
+procedure TLaunchItemFrame.btnSaveProfileClick(Sender: TObject);
+begin
+  //Обновим профиль на диске
+  SaveProfile(FCurrentProfile);
 end;
 
 
@@ -531,6 +670,10 @@ begin
   btnLaunch.Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'Launch', 'Запустить');
   btnStop.Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'Stop', 'Остановить');
   btnShowCommandLine.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'ShowCommandLine', 'Показать параметры запуска');
+  btnSaveProfile.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'SaveProfile', 'Сохранить профиль');
+  btnAddProfile.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'AddProfile', 'Добавить профиль');
+  btnRenameProfile.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'RenameProfile', 'Переименовать профиль');
+  btnDeleteProfile.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'DeleteProfile', 'Удалить профиль');
   btnExecutableOpenDirectory.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'ExecutableOpenDirectory', 'Открыть каталог в проводнике');
   btnSelectExecutable.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'SelectExecutable', 'Выбрать файл для запуска');
   btnOpenJournalDirectory.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'OpenJournalDirectory', 'Открыть каталог в проводнике');
@@ -683,6 +826,29 @@ begin
 end;
 
 
+procedure TLaunchItemFrame.RenameProfile(Old, New: String);
+begin
+  Old := GetProfileFileName(Old);
+  New := GetProfileFileName(New);
+  DeleteFile(New);
+  RenameFile(Old, New);
+end;
+
+
+procedure TLaunchItemFrame.DeleteProfile(ProfileName: String);
+begin
+  ProfileName := GetProfileFileName(ProfileName);
+  DeleteFile(ProfileName);
+end;
+
+
+function TLaunchItemFrame.IsProfileExist(ProfileName: String): Boolean;
+begin
+  ProfileName := GetProfileFileName(ProfileName);
+  Result := FileExists(ProfileName);
+end;
+
+
 procedure TLaunchItemFrame.ReadProfileList;
 var
   i: Integer;
@@ -709,12 +875,12 @@ begin
 end;
 
 
-procedure TLaunchItemFrame.ApplyProfile(Name: String);
+procedure TLaunchItemFrame.ApplyProfile(ProfileName: String);
 var
   idx: Integer;
 begin
   //Поищем индекс профиля
-  idx := FProfileList.IndexOf(Name);
+  idx := FProfileList.IndexOf(ProfileName);
 
   if idx <> -1 then
     cbProfile.ItemIndex := idx
