@@ -70,7 +70,7 @@ uses
 
 constructor TStartParamDirectoryListItem.Create;
 begin
-  FChecked := True;
+  FChecked := False;
   FValue := '';
 end;
 
