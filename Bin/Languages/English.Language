@@ -1,7 +1,7 @@
 # DayZ Mod Tool language file
 
 #Language info
-Info.AppVersion = 0.15
+Info.AppVersion = 0.16
 Info.FileVersion = 1.7
 Info.Autor = accuratealx@gmail.com
 Info.Date = 21.02.2024
@@ -37,6 +37,7 @@ MainForm.MainMenu.miMainTabItemBaseSort = Sort
 MainForm.MainMenu.miMainTabItemBaseFitColomns = Fit to content
 MainForm.MainMenu.miMainTabs = Tabs
 MainForm.MainMenu.miMainTools = Tools
+MainForm.MainMenu.miMainUtils = Utils
 MainForm.MainMenu.miMainToolsExtractData = Extract game data
 MainForm.MainMenu.miMainToolsWorkDrive = Work drive
 MainForm.MainMenu.miMainToolsTimeCalculator = Time calculator
@@ -62,6 +63,9 @@ MainForm.Tabs.tabBuilder = Builder
 MainForm.Tabs.tabStringTable = String table
 MainForm.Tabs.tabItemBase = Items
 MainForm.Tabs.tabNote = Note
+
+#UtilsMenu
+UtilsMenu.CassetteGenerator = Cassette generator
 
 #MainForm
 MainForm.FirstLaunchQuestion = Application settings not found %sDo automatic configuration?
@@ -121,6 +125,10 @@ TabLaunch.Launch = Launch
 TabLaunch.Stop = Terminate
 TabLaunch.ShowCommandLine = Command line
 TabLaunch.ExecutableOpenDirectory = Open directory
+TabLaunch.SaveProfile = Save profile
+TabLaunch.AddProfile = Add profile
+TabLaunch.RenameProfile = Rename profile
+TabLaunch.DeleteProfile = Delete profile
 TabLaunch.SelectExecutable = Select application
 TabLaunch.OpenJournalDirectory = Open log directory
 TabLaunch.SelectJournalDirectory = Select log directory
@@ -134,6 +142,11 @@ TabLaunch.Subdirectories = Subdirectories
 TabLaunch.MemoCaption = Command line
 TabLaunch.Applications = Applications
 TabLaunch.CantDeterminePath = Failed to autodetect path for "%s"%sSelect manually?
+TabLaunch.InputProfileName = Input profile name
+TabLaunch.OverwriteProfile = "%s" profile exists, overwrite?
+TabLaunch.CantDeleteProfile = Unable to delete a single profile
+TabLaunch.DeleteProfileQuestion = Delete profile "%s"
+TabLaunch.DefaultProfileName = Default profile
 TabLaunch.Param.DefaultValue = Set default value
 TabLaunch.Param.OpenDirectory = Open directory
 TabLaunch.Param.SelectFile = Select file
@@ -143,6 +156,7 @@ TabLaunch.Param.FullPath = Full path
 TabLaunch.Param.SelectAll = Select all
 TabLaunch.Param.UnselectAll = Unselect all
 TabLaunch.Param.ReloadValue = Reload value
+
 
 #Tab Directory
 TabDirectory.Add = Add
@@ -163,7 +177,9 @@ TabBuilder.Rename = Rename
 TabBuilder.Up = Up
 TabBuilder.Down = Down
 TabBuilder.Delete = Delete
+TabBuilder.Copy= Copy
 TabBuilder.Build = Build
+TabBuilder.CopyPostfix = _Copy
 TabBuilder.ClearFilter = Clear filter
 TabBuilder.ShowCommandLine = Command line
 TabBuilder.NewItem = Input name
@@ -273,7 +289,8 @@ TabLaunch.Application.AddonBuilder = Addon Builder
 TabLaunch.Application.Publisher = Publisher
 TabLaunch.Application.EconomicsEditor = Economics Editor
 TabLaunch.Application.TextureViewer = Texture Viewer
-TabLaunch.Application.NavMeshGenerator = Navigation mesh generator
+TabLaunch.Application.NavMeshGenerator = Navigation Mesh Generator
+TabLaunch.Application.DSUtils = Signature Tools
 
 #Directory names
 TabDirectory.DirectoryName.DayZ клиент = DayZ Client

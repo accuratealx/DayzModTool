@@ -1,7 +1,7 @@
 # DayZ Mod Tool language file
 
 #Language info
-Info.AppVersion = 0.15
+Info.AppVersion = 0.16
 Info.FileVersion = 1.6
 Info.Autor = accuratealx@gmail.com
 Info.Date = 23.02.2024
@@ -37,6 +37,7 @@ MainForm.MainMenu.miMainTabItemBaseSort = Упорядочить
 MainForm.MainMenu.miMainTabItemBaseFitColomns = Подогнать под содержимое
 MainForm.MainMenu.miMainTabs = Закладки
 MainForm.MainMenu.miMainTools = Инструменты
+MainForm.MainMenu.miMainUtils = Утилиты
 MainForm.MainMenu.miMainToolsExtractData = Извлечь данные
 MainForm.MainMenu.miMainToolsWorkDrive = Рабочий каталог
 MainForm.MainMenu.miMainToolsTimeCalculator = Калькулятор времени
@@ -62,3 +63,6 @@ MainForm.Tabs.tabBuilder = Построитель
 MainForm.Tabs.tabStringTable = Таблица строк
 MainForm.Tabs.tabItemBase = Предметы
 MainForm.Tabs.tabNote = Заметки
+
+#UtilsMenu
+UtilsMenu.CassetteGenerator = Генератор кассет
