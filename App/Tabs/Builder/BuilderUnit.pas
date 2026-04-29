@@ -15,6 +15,7 @@ type
     btnDelete: TSpeedButton;
     btnChangeIcon: TSpeedButton;
     btnClearFilter: TSpeedButton;
+    btnCopy: TSpeedButton;
     btnDown: TSpeedButton;
     btnRename: TSpeedButton;
     btnUp: TSpeedButton;
@@ -26,6 +27,7 @@ type
     procedure btnBuildAllClick(Sender: TObject);
     procedure btnChangeIconClick(Sender: TObject);
     procedure btnClearFilterClick(Sender: TObject);
+    procedure btnCopyClick(Sender: TObject);
     procedure btnDeleteClick(Sender: TObject);
     procedure btnDownClick(Sender: TObject);
     procedure btnRenameClick(Sender: TObject);
@@ -42,16 +44,17 @@ type
       PARAM_FILTER = 'Filter';
   private
     FFrames: TBuilderItemFrameList;
-    FDriveLetters: TStringList;
 
     FSettingsFile: String;
     FLockFrameArrange: Boolean;
+    FSkipArrange: Boolean;
 
     procedure AddItemFrame(AFrame: TBuilderItemFrame);
     procedure ClearItemFrames;
     procedure ArrangeItemFrames;
     procedure DeleteItemFrameByIndex(Index: Integer);
     procedure SwapItemFrames(Index1, Index2: Integer);
+    procedure InsertItemFrame(Index: Integer; AFrame: TBuilderItemFrame);
     function  GetSelectedItemFrame: TBuilderItemFrame;
     function  GetItemFrameIndex(Frame: TBuilderItemFrame): Integer;
 
@@ -105,7 +108,7 @@ begin
     AName) then
   begin
     //Создать фрейм
-    Frame := TBuilderItemFrame.Create(FParams.IconDirectory, FDriveLetters);
+    Frame := TBuilderItemFrame.Create(FParams.IconDirectory);
     Frame.Title := AName;
 
     Frame.edFileExtensions.Text := GetDefaultFileExtensions;
@@ -173,6 +176,48 @@ end;
 procedure TBuilderFrame.btnClearFilterClick(Sender: TObject);
 begin
   edFilter.Text := '';
+end;
+
+
+procedure TBuilderFrame.btnCopyClick(Sender: TObject);
+var
+  Index: Integer;
+  Frame, FrameNew: TBuilderItemFrame;
+  Params, Postfix: String;
+begin
+  //индекс выделенного фрейма
+  Index := GetItemFrameIndex(GetSelectedItemFrame);
+
+  //Ссылка на текущий фрейм
+  Frame := FFrames[Index];
+
+  //Параметры текущего фрейма
+  Params := Frame.ValueToString;
+
+  //Создадим новый фрейм
+  FrameNew := TBuilderItemFrame.Create(FParams.IconDirectory);
+
+  //Постфикс для нового имени
+  Postfix := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'CopyPostfix', '_Копия');
+
+  //Применим теже самые настройки что и у текущего
+  FrameNew.ValueFromString(Params);
+  FrameNew.Title := Frame.Title + Postfix;
+
+  //Вставить на после текущего
+  InsertItemFrame(Index + 1, FrameNew);
+
+  //Перестроить элементы
+  ArrangeItemFrames;
+
+  //Выбрать новый фрейм
+  FrameNew.Selected := True;
+
+  //Поправить панель инструментов
+  CorrectToolButtons;
+
+  //Сохранить настройки
+  SaveSettings;
 end;
 
 
@@ -352,12 +397,18 @@ var
   i, Y: Integer;
   Highlight: Boolean;
   Frame: TBuilderItemFrame;
+  Filter: String;
 begin
   Y := 0;
   Highlight := False;
+  Filter := GetFilter;
 
   for i := 0 to Length(FFrames) - 1 do
   begin
+    //Если фильтр поменялся, значит прервать текущий цикл перерисовки
+    if Filter <> GetFilter then
+      Exit;
+
     Frame := FFrames[i];
 
     if IsFrameVisible(Frame) then
@@ -379,6 +430,8 @@ begin
       Frame.Parent := nil;
     end;
   end;
+
+  FSkipArrange := False;
 end;
 
 
@@ -409,6 +462,30 @@ begin
   Frame := FFrames[Index1];
   FFrames[Index1] := FFrames[Index2];
   FFrames[Index2] := Frame;
+end;
+
+
+procedure TBuilderFrame.InsertItemFrame(Index: Integer; AFrame: TBuilderItemFrame);
+var
+  i, c: Integer;
+begin
+  c := Length(FFrames);
+  if (Index < 0) or (Index > c) then
+    Exit;
+
+  //Установим обработчики
+  AFrame.OnHeightChange := @OnChangeBuilderContentHeight;
+  AFrame.OnSelect := @OnItemSelect;
+  AFrame.ChangeLanguage(FParams.Language);
+
+  //Раздвинуть
+  Inc(c);
+  SetLength(FFrames, c);
+  for i := c - 1 downto Index + 1 do
+    FFrames[i] := FFrames[i - 1];
+
+  //Вставить
+  FFrames[Index] := AFrame;
 end;
 
 
@@ -451,6 +528,7 @@ begin
   btnRename.Enabled := Item <> nil;
   btnUp.Enabled := (Item <> nil) and (GetItemFrameIndex(Item) > 0);
   btnDown.Enabled := (Item <> nil) and (GetItemFrameIndex(Item) < Length(FFrames) - 1);
+  btnCopy.Enabled := Item <> nil;
 
   //Поправить кнопку собрать все
   CorrectBuildAllButton;
@@ -528,15 +606,11 @@ var
   i: Integer;
   Frm: TBuilderItemFrame;
 begin
-  //Перечитаем список дисководов
-  GetAvailableDriveLetters(FDriveLetters);
-
   //Обновим фреймы
   for i := 0 to Length(FFrames) - 1 do
   begin
     Frm := FFrames[i];
     Frm.CorrectButtonVisible;
-    Frm.CorrectDriveLetterBox;
   end;
 end;
 
@@ -546,10 +620,6 @@ begin
   inherited Create(Parameters, AParent);
 
   FSettingsFile := FParams.SettingsDirectory + 'Build.ini';
-
-  //Доступные буквы дисководов
-  FDriveLetters := TStringList.Create;
-  GetAvailableDriveLetters(FDriveLetters);
 
   //Загрузить настройки
   LoadSettings;
@@ -569,9 +639,6 @@ begin
 
   //Удалить элементы
   ClearItemFrames;
-
-  //Удалим объекты
-  FDriveLetters.Free;
 
   inherited Destroy;
 end;
@@ -599,6 +666,7 @@ begin
   btnDelete.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Delete', 'Удалить');
   btnClearFilter.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'ClearFilter', 'Очистить фильтр');
   btnBuildAll.Caption := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'BuildAll', 'Собрать все');
+  btnCopy.Hint := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'Copy', 'Копировать');
 
   //Строка статуса
   StatusBar.Panels[0].Text := FParams.Language.GetLocalizedString(LANGUAGE_PREFIX + 'TotalItems', 'Всего элементов') + ':';
@@ -664,7 +732,7 @@ begin
           Continue;
 
         //Создать элемент каталога
-        Frame := TBuilderItemFrame.Create(FParams.IconDirectory, FDriveLetters, Line);
+        Frame := TBuilderItemFrame.Create(FParams.IconDirectory, Line);
 
         //Добавить в массив
         AddItemFrame(Frame);

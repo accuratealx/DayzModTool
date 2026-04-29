@@ -176,7 +176,7 @@ inherited BuildDialogForm: TBuildDialogForm
     Interval = 100
     OnTimer = TimerTimer
     Left = 25
-    Top = 25
+    Top = 24
   end
   object ilResult: TImageList[3]
     Left = 85

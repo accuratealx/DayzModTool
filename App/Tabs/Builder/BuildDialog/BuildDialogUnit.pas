@@ -27,6 +27,7 @@ type
 
     function  IsOperationSucceed: Boolean;
     procedure Build;
+    procedure WriteInitingMessage;
   protected
     procedure SetLanguage; override;
   end;
@@ -86,6 +87,7 @@ procedure TBuildDialogForm.TimerTimer(Sender: TObject);
 begin
   Timer.Enabled := False;
 
+  WriteInitingMessage;
   btnRepeatClick(Self);
 end;
 
@@ -149,6 +151,12 @@ begin
   finally
     Proc.Free;
   end;
+end;
+
+
+procedure TBuildDialogForm.WriteInitingMessage;
+begin
+  mContent.Lines.Add('Initializing AddonBuilder...');
 end;
 
 

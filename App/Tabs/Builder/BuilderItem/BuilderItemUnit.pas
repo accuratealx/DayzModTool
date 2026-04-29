@@ -25,7 +25,6 @@ type
     btnSourceDirectorySelect: TSpeedButton;
     btnDestinationDirectorySelect: TSpeedButton;
     cbSign: TCheckBox;
-    cbDriveLetters: TComboBox;
     edVersion: TEdit;
     edPrivateKey: TEdit;
     edPrefix: TEdit;
@@ -44,7 +43,6 @@ type
     lblSourceDirectory: TLabel;
     lblDestinationDirectory: TLabel;
     lblTitle: TLabel;
-    lblDriveLetter: TLabel;
     OpenDialog: TOpenDialog;
     pnlCollapse: TPanel;
     procedure btnBuildClick(Sender: TObject);
@@ -77,7 +75,6 @@ type
   private
     FLanguage: TLanguage;
     FIconDirectory: String;
-    FDriveLetters: TStringList; //Ссылка на список букв дисководов
 
     FIconName: String;
     FCollapsed: Boolean;
@@ -101,15 +98,15 @@ type
     procedure DoOnSelect;
     procedure DoHeightChange;
 
+    function GetBuildParam: String;
   public
-    constructor Create(AIconDirectory: String; Letters: TStringList); reintroduce;
-    constructor Create(AIconDirectory: String; Letters: TStringList; ASettings: String);
+    constructor Create(AIconDirectory: String); reintroduce;
+    constructor Create(AIconDirectory: String; ASettings: String);
 
     procedure ValueFromString(const AValue: String);
     function  ValueToString: String;
 
     procedure CorrectButtonVisible;
-    procedure CorrectDriveLetterBox;
     procedure ChangeLanguage(Language: TLanguage);
 
     function GetBuildData: TBuilderItemBuildData;
@@ -281,7 +278,7 @@ end;
 
 procedure TBuilderItemFrame.btnBuildClick(Sender: TObject);
 var
-  exe, params, s, IncFile: String;
+  exe, IncFile, param: String;
 begin
   exe := GetPackToolFile;
   if not FileExists(exe) then
@@ -303,22 +300,11 @@ begin
     Exit;
   end;
 
-  if cbSign.Checked then
-    s := Trim(edPrivateKey.Text);
-
-  //Параметры сборки
-  params := GetBuildParamString(
-    Trim(edSourceDirectory.Text),
-    Trim(edDestinationDirectory.Text),
-    Trim(edPrefix.Text),
-    s,
-    IncFile,
-    cbDriveLetters.Text,
-    Trim(edVersion.Text)
-  );
+  //Параметры запуска
+  param := GetBuildParam;
 
   //Показать диалог сборки
-  BuildDialogExecute(FLanguage, GetTitle, exe, params);
+  BuildDialogExecute(FLanguage, GetTitle, exe, param);
 end;
 
 
@@ -379,25 +365,12 @@ end;
 
 
 procedure TBuilderItemFrame.btnShowCommandLineClick(Sender: TObject);
-var
-  Param: String;
 begin
-  //Параметры сборки
-  Param := GetBuildParamString(
-    Trim(edSourceDirectory.Text),
-    Trim(edDestinationDirectory.Text),
-    Trim(edPrefix.Text),
-    edPrivateKey.Text,
-    GetIncludeFilePath,
-    cbDriveLetters.Text,
-    Trim(edVersion.Text)
-  );
-
   //Показать диалог
   MemoDialogExecute(
     FLanguage,
     FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'MemoCaption', 'Параметры запуска'),
-    GetPackToolFile + ' ' + Param
+    GetPackToolFile + ' ' + GetBuildParam
   );
 end;
 
@@ -522,21 +495,37 @@ begin
 end;
 
 
-constructor TBuilderItemFrame.Create(AIconDirectory: String; Letters: TStringList);
+function TBuilderItemFrame.GetBuildParam: String;
+var
+  pkey: String;
+begin
+  if cbSign.Checked then
+    pkey := Trim(edPrivateKey.Text);
+
+  //Параметры сборки
+  Result := GetBuildParamString(
+    Trim(edSourceDirectory.Text),
+    Trim(edDestinationDirectory.Text),
+    Trim(edPrefix.Text),
+    pkey,
+    GetIncludeFilePath,
+    Trim(edSourceDirectory.Text),
+    Trim(edVersion.Text)
+  );
+end;
+
+
+constructor TBuilderItemFrame.Create(AIconDirectory: String);
 begin
   inherited Create(nil);
   FIconDirectory := AIconDirectory;
   FEnabledBuild := True;
-  FDriveLetters := Letters;
-
-  //Заполнить список дисководов
-  CorrectDriveLetterBox;
 end;
 
 
-constructor TBuilderItemFrame.Create(AIconDirectory: String; Letters: TStringList; ASettings: String);
+constructor TBuilderItemFrame.Create(AIconDirectory: String; ASettings: String);
 begin
-  Create(AIconDirectory, Letters);
+  Create(AIconDirectory);
   ValueFromString(ASettings);
 end;
 
@@ -582,9 +571,6 @@ begin
     if List.Count > 10 then
       EnableBuild := StrToBool(List.Strings[10]);
 
-    if List.Count > 11 then
-      cbDriveLetters.Text := List.Strings[11];
-
   finally
     List.Free;
   end;
@@ -604,20 +590,13 @@ begin
     edVersion.Text + SEPARATOR +
     edPrivateKey.Text + SEPARATOR +
     BoolToStr(cbSign.Checked) + SEPARATOR +
-    BoolToStr(EnableBuild) + SEPARATOR +
-    cbDriveLetters.Text;
+    BoolToStr(EnableBuild);
 end;
 
 
 procedure TBuilderItemFrame.CorrectButtonVisible;
 begin
   edEditChange(nil);
-end;
-
-
-procedure TBuilderItemFrame.CorrectDriveLetterBox;
-begin
-  cbDriveLetters.Items.AddStrings(FDriveLetters, True);
 end;
 
 
@@ -635,7 +614,6 @@ begin
   imgEnabledBuild.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'EnabledBuild', 'Доступность сборки');
   btnShowCommandLine.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'ShowCommandLine', 'Показать параметры запуска');
 
-
   lblDestinationDirectory.Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'DestinationDirectory', 'Выходной каталог');
   btnDestinationDirectoryOpenDir.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'OpenDirectory', 'Открыть каталог в проводнике');
   btnDestinationDirectorySelect.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'SelectDirectory', 'Выбрать каталог');
@@ -649,8 +627,6 @@ begin
 
   lblVersion.Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'Version', 'Версия');
   btnVersionClearValue.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'ClearValue', 'Очистить значение');
-
-  lblDriveLetter.Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'DriveLetter', 'Диск проекта');
 
   lblPrivateKey.Caption := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'PrivateKey', 'Приватный ключ');
   btnPrivateKeyOpenDirectory.Hint := FLanguage.GetLocalizedString(LANGUAGE_PREFIX + 'OpenDirectory', 'Открыть каталог в проводнике');
@@ -667,9 +643,10 @@ begin
   Result.Icon := imgIcon;
   Result.Title := GetTitle;
   Result.Extensions := Trim(edFileExtensions.Text);
-  Result.SourceDirectory := Trim(edSourceDirectory.Text);
+
+  Result.SourceDirectory := ExcludeTrailingBackslash(Trim(edSourceDirectory.Text));
   Result.DestinationDirectory := Trim(edDestinationDirectory.Text);
-  Result.ProjectDrive := cbDriveLetters.Text;
+  Result.ProjectDrive := Result.SourceDirectory;
   Result.Prefix := Trim(edPrefix.Text);
   Result.Version := Trim(edVersion.Text);
 

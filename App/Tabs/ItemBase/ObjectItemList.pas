@@ -138,6 +138,7 @@ begin
 
     AItem := TObjectItem.Create(s);
 
+    //TODO: Ускорить проверку черезь словарь
     //Если такой объект уже есть, то не грузим
     if IndexOfObject(AItem.ObjName) <> -1 then
     begin
@@ -147,6 +148,18 @@ begin
 
     Add(AItem);
   end;
+end;
+
+
+function TObjectItemList.IndexOfObject(AObjName: String): Integer;
+var
+  i: Integer;
+begin
+  Result := -1;
+  AObjName := Trim(LowerCase(AObjName));
+  for i := 0 to FCount - 1 do
+    if Trim(LowerCase(FItems[i].ObjName)) = AObjName then
+      Exit(i);
 end;
 
 
@@ -194,18 +207,6 @@ begin
   SetLength(FItems, FCount + 1);
   FItems[FCount] := AItem;
   Inc(FCount);
-end;
-
-
-function TObjectItemList.IndexOfObject(AObjName: String): Integer;
-var
-  i: Integer;
-begin
-  Result := -1;
-  AObjName := Trim(LowerCase(AObjName));
-  for i := 0 to FCount - 1 do
-    if Trim(LowerCase(FItems[i].ObjName)) = AObjName then
-      Exit(i);
 end;
 
 

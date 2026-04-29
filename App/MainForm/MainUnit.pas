@@ -6,7 +6,7 @@ unit MainUnit;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, ShellApi,
   ExtCtrls, ComCtrls, windows, IniFiles, LCLIntf,
   sgeStringList, EventSystem, GitVersion,
   Language, TabParameters, TabCommonUnit,
@@ -24,6 +24,7 @@ type
     ilTrayDirectory: TImageList;
     ilLanguages: TImageList;
     MainMenu: TMainMenu;
+    miMainUtils: TMenuItem;
     miMainTabBuilderEraseAll: TMenuItem;
     miMainTabBuilderSeparator2: TMenuItem;
     miMainTabStringTableSort: TMenuItem;
@@ -95,7 +96,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure miMainHideClick(Sender: TObject);
     procedure miExitClick(Sender: TObject);
-    procedure miMainInfoCheckVersionClick(Sender:TObject);
+    procedure miMainInfoCheckVersionClick(Sender: TObject);
     procedure miMainInfoDonateClick(Sender: TObject);
     procedure miMainTabBuilderCollapseAllClick(Sender: TObject);
     procedure miMainTabBuilderEraseAllClick(Sender: TObject);
@@ -202,6 +203,10 @@ type
     procedure miTrayLaunchClick(Sender: TObject);
     procedure miTrayStopClick(Sender: TObject);
 
+    procedure CreateUtilsMenu;
+    procedure DestroyUtilsMenu;
+    procedure miUtilsMenuClick(Sender: TObject);
+
     procedure CreateTrayMenuDirectoryItems;
     procedure DestroyTrayMenuDirectoryItems;
     procedure miTrayDirectoryClick(Sender: TObject);
@@ -230,6 +235,26 @@ uses
   sgeFileUtils, DayZUtils, SettingsManager,
   DataExtractorUnit,
   YesNoQuestionDialogUnit, MessageDialogUnit, TimecalCulatorUnit;
+
+type
+  TToolIconInfo = class
+    ToolFile: String;
+
+    constructor Create(FileName: String);
+    function ToolName: String;
+  end;
+
+
+constructor TToolIconInfo.Create(FileName: String);
+begin
+  ToolFile := FileName;
+end;
+
+
+function TToolIconInfo.ToolName: String;
+begin
+  Result := ChangeFileExt(ExtractFileName(ToolFile), '');
+end;
 
 
 procedure TMainForm.FormCreate(Sender: TObject);
@@ -277,7 +302,7 @@ begin
 end;
 
 
-procedure TMainForm.miMainInfoCheckVersionClick(Sender:TObject);
+procedure TMainForm.miMainInfoCheckVersionClick(Sender: TObject);
 var
   ver: TGitHubVersion;
   mode: Byte;
@@ -622,6 +647,9 @@ begin
   //Создать элементы запуска/останова приложений
   CreateTrayMenuLaunchItems;
 
+  //Создать меню инструментов
+  CreateUtilsMenu;
+
   //Прочитать параметры
   LoadSettings;
 
@@ -648,6 +676,9 @@ begin
 
   //Удалить закладки
   DestroyTabs;
+
+  //Удалить меню утилит
+  DestroyUtilsMenu;
 
   //Почистить объекты
   FLanguageFileList.Free;
@@ -756,12 +787,28 @@ procedure TMainForm.ApplyLanguage;
       FFrames[i].ApplyLanguage;
   end;
 
+  procedure TranslateUtilsMenu;
+  var
+    i: Integer;
+    s: String;
+    Itm: TMenuItem;
+  begin
+    for i := 0 to miMainUtils.Count - 1 do
+    begin
+      Itm := miMainUtils.Items[i];
+      s := TToolIconInfo(Itm.Tag).ToolName;
+      s := FLanguage.GetLocalizedString('UtilsMenu.' + s, s);
+      Itm.Caption := s;
+    end;
+  end;
+
 const
   LANGUAGE_PREFIX = 'MainForm.';
 begin
   //Меню
   TranslateMenu(MainMenu.Items, 'MainForm.MainMenu.');
   TranslateMenu(TrayMenu.Items, 'MainForm.TrayMenu.');
+  TranslateUtilsMenu;
 
   //Имена закладок
   TranslateTabsCaption;
@@ -898,6 +945,84 @@ begin
 
   Frame := TLaunchItemFrame((Sender as TMenuItem).Tag);
   Frame.Stop;
+end;
+
+
+procedure TMainForm.CreateUtilsMenu;
+
+  procedure AddMenu(RootMenu: TMenuItem; Title: String; ToolFile: String; Icon: TIcon; Proc: TNotifyEvent);
+  var
+    MenuItem: TMenuItem;
+  begin
+    MenuItem := TMenuItem.Create(RootMenu);
+    MenuItem.Caption := Title;
+    MenuItem.Bitmap.Assign(Icon);
+    MenuItem.OnClick := Proc;
+    MenuItem.Tag := PtrUInt(TToolIconInfo.Create(ToolFile));
+
+    RootMenu.Add(MenuItem);
+  end;
+
+var
+  Dir: String;
+  ToolList: TsgeStringList;
+  ToolFn, s: String;
+  i: Integer;
+  Icn: TIcon;
+  FileInfo: SHFILEINFO;
+begin
+  Dir := FMainDir + 'Tools\';
+
+  ToolList := TsgeStringList.Create;
+  try
+    sgeFindFilesInFolderByExt(Dir, ToolList, 'exe');
+    ToolList.Sort;
+
+    for i := 0 to ToolList.Count - 1 do
+    begin
+      ToolFn := Dir + ToolList.Part[i];
+      s := ChangeFileExt(ToolList.Part[i], '');
+
+      try
+        SHGetFileInfo(PChar(ToolFn), 0, FileInfo, SizeOf(FileInfo), SHGFI_ICON);
+        Icn := TIcon.Create;
+        Icn.Handle := FileInfo.hIcon;
+        AddMenu(miMainUtils, s, ToolFn, Icn, @miUtilsMenuClick);
+        Icn.Free;
+      except
+        //Подавим исключение, но лучше бы сделать иконку приложения
+      end;
+
+    end;
+
+    //Покажем меню если есть хоть один элемент
+    miMainUtils.Visible := miMainUtils.Count > 0;
+
+  finally
+    ToolList.Free;
+  end;
+end;
+
+procedure TMainForm.DestroyUtilsMenu;
+var
+  i: Integer;
+begin
+  for i := 0 to miMainUtils.Count - 1 do
+  begin
+    TToolIconInfo(miMainUtils.Items[i].Tag).Free;
+  end;
+end;
+
+
+procedure TMainForm.miUtilsMenuClick(Sender: TObject);
+var
+  Info: TToolIconInfo;
+begin
+  if not (Sender is TMenuItem) then
+    Exit;
+
+  Info := TToolIconInfo((Sender as TMenuItem).Tag);
+  ExecuteFile(Info.ToolFile, '');
 end;
 
 

@@ -139,6 +139,8 @@ type
     procedure SaveSettings;
     procedure LoadSettings;
 
+    procedure ReloadProfile;
+
     property Icon: TIcon read FIcon write SetIcon;
     property Caption: String read FCaption write FCaption;
     property LocaleCaption: String read GetLocaleCaption;
@@ -588,8 +590,11 @@ end;
 
 destructor TLaunchItemFrame.Destroy;
 begin
-  //Сохранить настройки
-  SaveProfile(FCurrentProfile);
+  //Пока не буденм сохранять автоматом настройки профиля, из-за того что,
+  //могут быть ссылки на диск P и при закрытии список модов затирается
+
+  //Сохранить настройки.
+  //SaveProfile(FCurrentProfile);
   SaveFrameSettings;
 
   //Почистим память
@@ -706,6 +711,12 @@ end;
 procedure TLaunchItemFrame.LoadSettings;
 begin
   LoadFrameSettings;
+  ApplyProfile(FCurrentProfile);
+end;
+
+
+procedure TLaunchItemFrame.ReloadProfile;
+begin
   ApplyProfile(FCurrentProfile);
 end;
 

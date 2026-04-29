@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, IniFiles,
-  TabParameters, TabCommonUnit, LaunchItemUnit;
+  TabParameters, TabCommonUnit, LaunchItemUnit, EventSystem;
 
 type
   TLaunchFrame = class(TTabCommonFrame)
@@ -18,13 +18,15 @@ type
     FSettingsDir: String;           //Каталог с настройками
     FLaunchListFile: String;        //Файл настроек приложений
 
-    FLockFrameArrange: Boolean;           //Блокировка расположения фреймов
+    FLockFrameArrange: Boolean;     //Блокировка расположения фреймов
 
     procedure AddItemFrame(AFrame: TLaunchItemFrame);
     procedure CreateItemFrames(const LaunchFile: String);
     procedure ClearItemFrames;
     procedure ArrangeItemFrames;
     procedure OnChangeLaunchContentHeight(Sender: TObject);
+
+    procedure EventHandler;
   public
     constructor Create(Parameters: TTabParameters; AParent: TWinControl); reintroduce;
     destructor  Destroy; override;
@@ -167,6 +169,19 @@ begin
 end;
 
 
+procedure TLaunchFrame.EventHandler;
+var
+  i: Integer;
+  Frm: TLaunchItemFrame;
+begin
+  for i := 0 to Length(FItems) - 1 do
+  begin
+    Frm := FItems[i];
+    Frm.ReloadProfile;
+  end;
+end;
+
+
 constructor TLaunchFrame.Create(Parameters: TTabParameters; AParent: TWinControl);
 begin
   inherited Create(Parameters, AParent);
@@ -191,6 +206,9 @@ begin
     ArrangeItemFrames;
     FLockFrameArrange := False;
   end;
+
+  //Подписаться на событие
+  FParams.EventSystem.Subscribe(esMountUnmountWorkDrive, @EventHandler);
 end;
 
 

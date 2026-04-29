@@ -11,7 +11,7 @@ object MainForm: TMainForm
   Menu = MainMenu
   ShowInTaskBar = stNever
   SnapOptions.SnapToMonitor = True
-  LCLVersion = '4.0.0.4'
+  LCLVersion = '4.6.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -53,7 +53,7 @@ object MainForm: TMainForm
   end
   object MainMenu: TMainMenu
     Left = 45
-    Top = 105
+    Top = 104
     object miMainSystem: TMenuItem
       Caption = 'Система'
       object miMainHide: TMenuItem
@@ -1277,6 +1277,10 @@ object MainForm: TMainForm
           OnClick = miMainToolsImportSettingsClick
         end
       end
+    end
+    object miMainUtils: TMenuItem
+      Caption = 'Утилиты'
+      Visible = False
     end
     object miMainLanguage: TMenuItem
       Caption = 'Язык'

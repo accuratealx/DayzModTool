@@ -62,23 +62,23 @@ begin
   List.LineBreak := ' ';
   try
     //Исходный каталог
-    List.Add(Format('%s', [Trim(Src)]));
+    List.Add(Format('"%s"', [ExcludeTrailingBackslash(Trim(Src))]));
 
     //Каталог назначения
-    List.Add(Format('%s', [Trim(Dst)]));
+    List.Add(Format('"%s"', [ExcludeTrailingBackslash(Trim(Dst))]));
 
     //Очищать временные файлы
     List.Add('-clear');
 
     //Путь к каталогу проекта
-    List.Add(Format('"-project=%s:"', [ProjectDrive]));
+    List.Add(Format('"-project=%s"', [ExcludeTrailingBackslash(Trim(ProjectDrive))]));
 
     //Полный лог упаковки
     List.Add('-binarizeFullLogs');
 
     //Если есть префикс pbo
     if Prefix <> '' then
-      List.Add(Format('-prefix=%s', [Trim(Prefix)]));
+      List.Add(Format('"-prefix=%s"', [Trim(Prefix)]));
 
     //Если есть файл подписи
     if SignFile <> '' then
